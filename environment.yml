@@ -7,8 +7,6 @@ dependencies:
   - numpy
   - pandas
   - matplotlib
-  - re
-  - datetime
   - seaborn
   - scipy
   - scikit-learn
