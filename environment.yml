@@ -1,0 +1,25 @@
+name: mahg-environment
+
+channels:
+  - conda-forge
+  
+dependencies:
+  - numpy
+  - pandas
+  - matplotlib
+  - re
+  - datetime
+  - seaborn
+  - scipy
+  - scikit-learn
+  - statsmodels
+  - plotly
+  - tensorflow
+  - keras
+  - pytorch
+  - spacy
+  - bokeh
+  - gensim
+  - nltk
+  - scrapy
+  - bs4
