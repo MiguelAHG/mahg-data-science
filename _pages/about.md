@@ -1,11 +1,10 @@
 ---
 layout: page
 title: About Me
-image: images/migs-germar.jpeg
 permalink: /about/
 ---
 
-![](images/migs-germar.jpeg)
+![](https://miguelahg.github.io/mahg-data-science/images/migs-germar.jpeg)
 
 I am Miguel Antonio H. Germar, but you can call me Migs. I am currently a high school student in the Philippines. I am interested in pursuing a college degree and career in Data Science. Other than this, my interests also include anime, K-dramas, and archery.
 
@@ -13,7 +12,7 @@ I am Miguel Antonio H. Germar, but you can call me Migs. I am currently a high s
 
 Email: migs.germar@gmail.com
 
-Facebook: https://www.facebook.com/miguelantonio.germar/
+Facebook: [https://www.facebook.com/miguelantonio.germar/](https://www.facebook.com/miguelantonio.germar/)
 
 # My Learning Journey
 
