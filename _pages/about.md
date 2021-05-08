@@ -12,6 +12,7 @@ I am Miguel Antonio H. Germar, but you can call me Migs. I am currently a high s
 # Contact
 
 Email: migs.germar@gmail.com
+
 Facebook: https://www.facebook.com/miguelantonio.germar/
 
 # My Learning Journey
