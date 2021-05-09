@@ -40,10 +40,10 @@ baseurl: "/mahg-data-science" # the subpath of your site, e.g. "/blog".
 minima:
   social_links:
     twitter: 
-    github: 
+    github: https://github.com/MiguelAHG
 
 # Set this to true to get LaTeX math equation support
-use_math: 
+use_math: true
 
 # Set this to true to display the summary of your blog post under your title on the Home page.
 show_description: true
