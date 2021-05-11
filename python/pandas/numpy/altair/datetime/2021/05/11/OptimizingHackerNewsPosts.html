@@ -246,14 +246,23 @@ window.onload = wrap_img;
 <p>The following is quoted from the dataset's Description.</p>
 <blockquote>
 <p>This data set is Hacker News posts from the last 12 months (up to September 26 2016).</p>
-<p>It includes the following columns:- title: title of the post (self explanatory)- url: the url of the item being linked to</p>
+<p>It includes the following columns:</p>
+</blockquote>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <ul>
+<li>title: title of the post (self explanatory)</li>
+<li>url: the url of the item being linked to</li>
 <li>num_points: the number of upvotes the post received</li>
 <li>num_comments: the number of comments the post received</li>
 <li>author: the name of the account that made the post</li>
 <li>created_at: the date and time the post was made (the time zone is Eastern Time in the US)</li>
 </ul>
-</blockquote>
 <p>Let us view the first 5 rows of the dataset below.</p>
 
 </div>
@@ -266,18 +275,19 @@ window.onload = wrap_img;
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">my_url</span> <span class="o">=</span> <span class="s2">"https://drive.google.com/file/d/1wlAtoz1TCIOAXJHjJVOfvJ4IzUU1AnkF/view?usp=sharing"</span>
-
-<span class="k">def</span> <span class="nf">csv_from_gdrive</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
-
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">csv_from_gdrive</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    
+    <span class="sd">"""Takes the URL of a CSV file in Google Drive.</span>
+<span class="sd">    Returns a new URL that allows the file to be downloaded using `pd.read_csv()`."""</span>
+    
     <span class="n">file_id</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'/'</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
     <span class="n">download_url</span> <span class="o">=</span> <span class="s1">'https://drive.google.com/uc?id='</span> <span class="o">+</span> <span class="n">file_id</span>
     <span class="k">return</span> <span class="n">download_url</span>
 
+<span class="n">my_url</span> <span class="o">=</span> <span class="s2">"https://drive.google.com/file/d/1wlAtoz1TCIOAXJHjJVOfvJ4IzUU1AnkF/view?usp=sharing"</span>
 <span class="n">dl</span> <span class="o">=</span> <span class="n">csv_from_gdrive</span><span class="p">(</span><span class="n">my_url</span><span class="p">)</span>
 
 <span class="n">hn</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">dl</span><span class="p">)</span>
-
 <span class="n">hn</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 
@@ -693,12 +703,12 @@ window.onload = wrap_img;
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 
-<div id="altair-viz-518b6d49dce1466296ee3baa6f46d175"></div>
+<div id="altair-viz-475572c3267f4a95a64da8680c0f00cd"></div>
 <script type="text/javascript">
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-518b6d49dce1466296ee3baa6f46d175") {
-      outputDiv = document.getElementById("altair-viz-518b6d49dce1466296ee3baa6f46d175");
+    if (outputDiv.id !== "altair-viz-475572c3267f4a95a64da8680c0f00cd") {
+      outputDiv = document.getElementById("altair-viz-475572c3267f4a95a64da8680c0f00cd");
     }
     const paths = {
       "vega": "https://cdn.jsdelivr.net/npm//vega@5?noext",
@@ -828,12 +838,12 @@ window.onload = wrap_img;
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 
-<div id="altair-viz-570e61c35ac44c6aa95a5f4fcc8f2551"></div>
+<div id="altair-viz-37afafec154346bea4c519a6618e7b46"></div>
 <script type="text/javascript">
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-570e61c35ac44c6aa95a5f4fcc8f2551") {
-      outputDiv = document.getElementById("altair-viz-570e61c35ac44c6aa95a5f4fcc8f2551");
+    if (outputDiv.id !== "altair-viz-37afafec154346bea4c519a6618e7b46") {
+      outputDiv = document.getElementById("altair-viz-37afafec154346bea4c519a6618e7b46");
     }
     const paths = {
       "vega": "https://cdn.jsdelivr.net/npm//vega@5?noext",
@@ -895,118 +905,6 @@ window.onload = wrap_img;
 </div>
 </div>
 </div>
-    
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">hn</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style scoped="">
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>id</th>
-      <th>title</th>
-      <th>url</th>
-      <th>num_points</th>
-      <th>num_comments</th>
-      <th>author</th>
-      <th>created_at</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>12578975</td>
-      <td>Saving the Hassle of Shopping</td>
-      <td>https://blog.menswr.com/2016/09/07/whats-new-w...</td>
-      <td>1</td>
-      <td>1</td>
-      <td>bdoux</td>
-      <td>9/26/2016 3:13</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>12578908</td>
-      <td>Ask HN: What TLD do you use for local developm...</td>
-      <td>NaN</td>
-      <td>4</td>
-      <td>7</td>
-      <td>Sevrene</td>
-      <td>9/26/2016 2:53</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>12578822</td>
-      <td>Amazons Algorithms Dont Find You the Best Deals</td>
-      <td>https://www.technologyreview.com/s/602442/amaz...</td>
-      <td>1</td>
-      <td>1</td>
-      <td>yarapavan</td>
-      <td>9/26/2016 2:26</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>12578694</td>
-      <td>Emergency dose of epinephrine that does not co...</td>
-      <td>http://m.imgur.com/gallery/th6Ua</td>
-      <td>2</td>
-      <td>1</td>
-      <td>dredmorbius</td>
-      <td>9/26/2016 1:54</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>12578624</td>
-      <td>Phone Makers Could Cut Off Drivers. So Why Don...</td>
-      <td>http://www.nytimes.com/2016/09/25/technology/p...</td>
-      <td>4</td>
-      <td>1</td>
-      <td>danso</td>
-      <td>9/26/2016 1:37</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    
-
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -1618,12 +1516,12 @@ window.onload = wrap_img;
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 
-<div id="altair-viz-9e5372206a47487da7c6060f6c7b0810"></div>
+<div id="altair-viz-896e0958879848fd8aa2d9b9c25daf2e"></div>
 <script type="text/javascript">
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-9e5372206a47487da7c6060f6c7b0810") {
-      outputDiv = document.getElementById("altair-viz-9e5372206a47487da7c6060f6c7b0810");
+    if (outputDiv.id !== "altair-viz-896e0958879848fd8aa2d9b9c25daf2e") {
+      outputDiv = document.getElementById("altair-viz-896e0958879848fd8aa2d9b9c25daf2e");
     }
     const paths = {
       "vega": "https://cdn.jsdelivr.net/npm//vega@5?noext",
@@ -1827,12 +1725,12 @@ window.onload = wrap_img;
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 
-<div id="altair-viz-3de7bc24a21646a6aa7fe1924cfca323"></div>
+<div id="altair-viz-bd1e2b7cda584ea2a938cafea13d269f"></div>
 <script type="text/javascript">
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-3de7bc24a21646a6aa7fe1924cfca323") {
-      outputDiv = document.getElementById("altair-viz-3de7bc24a21646a6aa7fe1924cfca323");
+    if (outputDiv.id !== "altair-viz-bd1e2b7cda584ea2a938cafea13d269f") {
+      outputDiv = document.getElementById("altair-viz-bd1e2b7cda584ea2a938cafea13d269f");
     }
     const paths = {
       "vega": "https://cdn.jsdelivr.net/npm//vega@5?noext",
@@ -1905,7 +1803,7 @@ window.onload = wrap_img;
 
 <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">dct</span><span class="p">:</span>
     <span class="n">median</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span>
-        <span class="n">df</span><span class="p">[</span><span class="s2">"num_comments"</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">hn</span><span class="p">[</span><span class="s2">"post_type"</span><span class="p">]</span> <span class="o">==</span> <span class="n">key</span><span class="p">]</span>
+        <span class="n">hn</span><span class="p">[</span><span class="s2">"num_comments"</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">hn</span><span class="p">[</span><span class="s2">"post_type"</span><span class="p">]</span> <span class="o">==</span> <span class="n">key</span><span class="p">]</span>
     <span class="p">)</span>
     
     <span class="n">dct</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">median</span>
@@ -1920,8 +1818,8 @@ window.onload = wrap_img;
 <span class="p">})</span>
 
 <span class="n">chart</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">table</span><span class="p">)</span><span class="o">.</span><span class="n">mark_bar</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s2">"median_comments:Q"</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s2">"Median Number of Comments per Post"</span><span class="p">),</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s2">"post_type:N"</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s2">"Post Type"</span><span class="p">),</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s2">"post_type:N"</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s2">"Post Type"</span><span class="p">),</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s2">"median_comments:Q"</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s2">"Median Number of Comments per Post"</span><span class="p">),</span>
 <span class="p">)</span><span class="o">.</span><span class="n">properties</span><span class="p">(</span>
     <span class="n">title</span> <span class="o">=</span> <span class="s2">"Median Number of Comments for the Two Post Types"</span><span class="p">,</span>
 <span class="p">)</span>
@@ -1941,12 +1839,12 @@ window.onload = wrap_img;
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 
-<div id="altair-viz-561e63a1c91c4e27b94d75f8a477d014"></div>
+<div id="altair-viz-06e9ad348f6749c2941c7e943fc82dab"></div>
 <script type="text/javascript">
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-561e63a1c91c4e27b94d75f8a477d014") {
-      outputDiv = document.getElementById("altair-viz-561e63a1c91c4e27b94d75f8a477d014");
+    if (outputDiv.id !== "altair-viz-06e9ad348f6749c2941c7e943fc82dab") {
+      outputDiv = document.getElementById("altair-viz-06e9ad348f6749c2941c7e943fc82dab");
     }
     const paths = {
       "vega": "https://cdn.jsdelivr.net/npm//vega@5?noext",
@@ -1988,7 +1886,7 @@ window.onload = wrap_img;
         .catch(showError)
         .then(() => displayChart(vegaEmbed));
     }
-  })({"config": {"view": {"continuousWidth": 400, "continuousHeight": 300}}, "data": {"name": "data-d371323bb85085bddb254c40efb06097"}, "mark": "bar", "encoding": {"x": {"type": "quantitative", "field": "median_comments", "title": "Median Number of Comments per Post"}, "y": {"type": "nominal", "field": "post_type", "title": "Post Type"}}, "title": "Median Number of Comments for the Two Post Types", "$schema": "https://vega.github.io/schema/vega-lite/v4.8.1.json", "datasets": {"data-d371323bb85085bddb254c40efb06097": [{"post_type": "Ask", "median_comments": 252.5}, {"post_type": "Show", "median_comments": 280.5}]}}, {"mode": "vega-lite"});
+  })({"config": {"view": {"continuousWidth": 400, "continuousHeight": 300}}, "data": {"name": "data-03654c0586e8eaedb11a57ab33129aa3"}, "mark": "bar", "encoding": {"x": {"type": "nominal", "field": "post_type", "title": "Post Type"}, "y": {"type": "quantitative", "field": "median_comments", "title": "Median Number of Comments per Post"}}, "title": "Median Number of Comments for the Two Post Types", "$schema": "https://vega.github.io/schema/vega-lite/v4.8.1.json", "datasets": {"data-03654c0586e8eaedb11a57ab33129aa3": [{"post_type": "Ask", "median_comments": 4.0}, {"post_type": "Show", "median_comments": 2.0}]}}, {"mode": "vega-lite"});
 </script>
 </div>
 
@@ -2418,11 +2316,12 @@ The <code>hours_comments</code> dictionary will count the <strong>number of comm
 <span class="n">hours_mean</span> <span class="o">=</span> <span class="n">hours_mean</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="o">~</span><span class="n">hours_mean</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">duplicated</span><span class="p">()]</span>
 
 <span class="n">means</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">combine</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+<span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">hours_mean</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
     <span class="n">hour</span><span class="p">,</span> <span class="n">posts</span><span class="p">,</span> <span class="n">comments</span> <span class="o">=</span> <span class="n">row</span>
     <span class="n">means</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">comments</span> <span class="o">/</span> <span class="n">posts</span><span class="p">)</span>
     
 <span class="n">hours_mean</span><span class="p">[</span><span class="s2">"comments_per_post"</span><span class="p">]</span> <span class="o">=</span> <span class="n">means</span>
+
 <span class="n">hours_mean</span>
 </pre></div>
 
@@ -2871,12 +2770,12 @@ The <code>hours_comments</code> dictionary will count the <strong>number of comm
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 
-<div id="altair-viz-83e489759af747f3afd3ebdc5e7af7aa"></div>
+<div id="altair-viz-460fc6a6f9d44f8aa97493d5c629e464"></div>
 <script type="text/javascript">
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-83e489759af747f3afd3ebdc5e7af7aa") {
-      outputDiv = document.getElementById("altair-viz-83e489759af747f3afd3ebdc5e7af7aa");
+    if (outputDiv.id !== "altair-viz-460fc6a6f9d44f8aa97493d5c629e464") {
+      outputDiv = document.getElementById("altair-viz-460fc6a6f9d44f8aa97493d5c629e464");
     }
     const paths = {
       "vega": "https://cdn.jsdelivr.net/npm//vega@5?noext",
@@ -3166,12 +3065,12 @@ The <code>hours_comments</code> dictionary will count the <strong>number of comm
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 
-<div id="altair-viz-e1e96e1ae3264a6f91b06c08bf11f3b8"></div>
+<div id="altair-viz-40b27b3a8c4d437cbb569705711183e1"></div>
 <script type="text/javascript">
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-e1e96e1ae3264a6f91b06c08bf11f3b8") {
-      outputDiv = document.getElementById("altair-viz-e1e96e1ae3264a6f91b06c08bf11f3b8");
+    if (outputDiv.id !== "altair-viz-40b27b3a8c4d437cbb569705711183e1") {
+      outputDiv = document.getElementById("altair-viz-40b27b3a8c4d437cbb569705711183e1");
     }
     const paths = {
       "vega": "https://cdn.jsdelivr.net/npm//vega@5?noext",
@@ -3511,12 +3410,12 @@ The <code>hours_comments</code> dictionary will count the <strong>number of comm
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 
-<div id="altair-viz-14a1d806aeef4867bdbcbb2ee2b8e542"></div>
+<div id="altair-viz-5def4f6da49b40448a39a9b0298093b6"></div>
 <script type="text/javascript">
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-14a1d806aeef4867bdbcbb2ee2b8e542") {
-      outputDiv = document.getElementById("altair-viz-14a1d806aeef4867bdbcbb2ee2b8e542");
+    if (outputDiv.id !== "altair-viz-5def4f6da49b40448a39a9b0298093b6") {
+      outputDiv = document.getElementById("altair-viz-5def4f6da49b40448a39a9b0298093b6");
     }
     const paths = {
       "vega": "https://cdn.jsdelivr.net/npm//vega@5?noext",
@@ -3581,7 +3480,7 @@ The <code>hours_comments</code> dictionary will count the <strong>number of comm
     <svg class="octicon octicon-zap octicon octicon-zap octicon octicon-zap octicon octicon-zap octicon octicon-zap octicon octicon-zap octicon octicon-zap" viewbox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M10.561 1.5a.016.016 0 00-.01.004L3.286 8.571A.25.25 0 003.462 9H6.75a.75.75 0 01.694 1.034l-1.713 4.188 6.982-6.793A.25.25 0 0012.538 7H9.25a.75.75 0 01-.683-1.06l2.008-4.418.003-.006a.02.02 0 00-.004-.009.02.02 0 00-.006-.006L10.56 1.5zM9.504.43a1.516 1.516 0 012.437 1.713L10.415 5.5h2.123c1.57 0 2.346 1.909 1.22 3.004l-7.34 7.142a1.25 1.25 0 01-.871.354h-.302a1.25 1.25 0 01-1.157-1.723L5.633 10.5H3.462c-1.57 0-2.346-1.909-1.22-3.004L9.503.429z"></path></svg>
     <strong>Important: </strong>Based on the results, even if users are most active in the afternoon, it may be best to post in the morning.
 </div>
-If you post in the morning, you will receive at least some attention since you won't have to compete with many other new posts. You may get a few upvotes and comments. Then, the many users logging in during the afternoon would see that your posted has already received comments. Thus, they would be interested in it and bring more attention to it.
+<p>If you post in the morning, you will receive at least some attention since you won't have to compete with many other new posts. You may get a few upvotes and comments. Then, the many users logging in during the afternoon would see that your posted has already received comments. Thus, they would be interested in it and bring more attention to it.</p>
 
 </div>
 </div>
