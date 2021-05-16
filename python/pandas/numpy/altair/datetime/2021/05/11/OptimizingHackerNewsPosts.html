@@ -266,19 +266,7 @@ window.onload = wrap_img;
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">csv_from_gdrive</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
-    
-    <span class="sd">"""Takes the URL of a CSV file in Google Drive.</span>
-<span class="sd">    Returns a new URL that allows the file to be downloaded using `pd.read_csv()`."""</span>
-    
-    <span class="n">file_id</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'/'</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
-    <span class="n">download_url</span> <span class="o">=</span> <span class="s1">'https://drive.google.com/uc?id='</span> <span class="o">+</span> <span class="n">file_id</span>
-    <span class="k">return</span> <span class="n">download_url</span>
-
-<span class="n">my_url</span> <span class="o">=</span> <span class="s2">"https://drive.google.com/file/d/1wlAtoz1TCIOAXJHjJVOfvJ4IzUU1AnkF/view?usp=sharing"</span>
-<span class="n">dl</span> <span class="o">=</span> <span class="n">csv_from_gdrive</span><span class="p">(</span><span class="n">my_url</span><span class="p">)</span>
-
-<span class="n">hn</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">dl</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">hn</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"./2021-05-11-OHNP-Files/HN_posts_year_to_Sep_26_2016.csv"</span><span class="p">)</span>
 <span class="n">hn</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 
@@ -694,12 +682,12 @@ window.onload = wrap_img;
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 
-<div id="altair-viz-475572c3267f4a95a64da8680c0f00cd"></div>
+<div id="altair-viz-42711d3cd1f246c497699fb38301d9ce"></div>
 <script type="text/javascript">
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-475572c3267f4a95a64da8680c0f00cd") {
-      outputDiv = document.getElementById("altair-viz-475572c3267f4a95a64da8680c0f00cd");
+    if (outputDiv.id !== "altair-viz-42711d3cd1f246c497699fb38301d9ce") {
+      outputDiv = document.getElementById("altair-viz-42711d3cd1f246c497699fb38301d9ce");
     }
     const paths = {
       "vega": "https://cdn.jsdelivr.net/npm//vega@5?noext",
@@ -829,12 +817,12 @@ window.onload = wrap_img;
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 
-<div id="altair-viz-37afafec154346bea4c519a6618e7b46"></div>
+<div id="altair-viz-61fc7af268f9435fbefcb7d0b9b72257"></div>
 <script type="text/javascript">
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-37afafec154346bea4c519a6618e7b46") {
-      outputDiv = document.getElementById("altair-viz-37afafec154346bea4c519a6618e7b46");
+    if (outputDiv.id !== "altair-viz-61fc7af268f9435fbefcb7d0b9b72257") {
+      outputDiv = document.getElementById("altair-viz-61fc7af268f9435fbefcb7d0b9b72257");
     }
     const paths = {
       "vega": "https://cdn.jsdelivr.net/npm//vega@5?noext",
@@ -1507,12 +1495,12 @@ window.onload = wrap_img;
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 
-<div id="altair-viz-896e0958879848fd8aa2d9b9c25daf2e"></div>
+<div id="altair-viz-b9bfce36d70148789159752e63e63dbd"></div>
 <script type="text/javascript">
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-896e0958879848fd8aa2d9b9c25daf2e") {
-      outputDiv = document.getElementById("altair-viz-896e0958879848fd8aa2d9b9c25daf2e");
+    if (outputDiv.id !== "altair-viz-b9bfce36d70148789159752e63e63dbd") {
+      outputDiv = document.getElementById("altair-viz-b9bfce36d70148789159752e63e63dbd");
     }
     const paths = {
       "vega": "https://cdn.jsdelivr.net/npm//vega@5?noext",
@@ -1716,12 +1704,12 @@ window.onload = wrap_img;
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 
-<div id="altair-viz-bd1e2b7cda584ea2a938cafea13d269f"></div>
+<div id="altair-viz-a8cd36a6addb4773ac85d4c774c52a5b"></div>
 <script type="text/javascript">
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-bd1e2b7cda584ea2a938cafea13d269f") {
-      outputDiv = document.getElementById("altair-viz-bd1e2b7cda584ea2a938cafea13d269f");
+    if (outputDiv.id !== "altair-viz-a8cd36a6addb4773ac85d4c774c52a5b") {
+      outputDiv = document.getElementById("altair-viz-a8cd36a6addb4773ac85d4c774c52a5b");
     }
     const paths = {
       "vega": "https://cdn.jsdelivr.net/npm//vega@5?noext",
@@ -1830,12 +1818,12 @@ window.onload = wrap_img;
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 
-<div id="altair-viz-06e9ad348f6749c2941c7e943fc82dab"></div>
+<div id="altair-viz-630a628b3f504f85baa75fc1dd55b63b"></div>
 <script type="text/javascript">
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-06e9ad348f6749c2941c7e943fc82dab") {
-      outputDiv = document.getElementById("altair-viz-06e9ad348f6749c2941c7e943fc82dab");
+    if (outputDiv.id !== "altair-viz-630a628b3f504f85baa75fc1dd55b63b") {
+      outputDiv = document.getElementById("altair-viz-630a628b3f504f85baa75fc1dd55b63b");
     }
     const paths = {
       "vega": "https://cdn.jsdelivr.net/npm//vega@5?noext",
@@ -2768,12 +2756,12 @@ The <code>hours_comments</code> dictionary will count the <strong>number of comm
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 
-<div id="altair-viz-460fc6a6f9d44f8aa97493d5c629e464"></div>
+<div id="altair-viz-acd1b9a15e3e43c6a6ac8d15b9a5565a"></div>
 <script type="text/javascript">
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-460fc6a6f9d44f8aa97493d5c629e464") {
-      outputDiv = document.getElementById("altair-viz-460fc6a6f9d44f8aa97493d5c629e464");
+    if (outputDiv.id !== "altair-viz-acd1b9a15e3e43c6a6ac8d15b9a5565a") {
+      outputDiv = document.getElementById("altair-viz-acd1b9a15e3e43c6a6ac8d15b9a5565a");
     }
     const paths = {
       "vega": "https://cdn.jsdelivr.net/npm//vega@5?noext",
@@ -3063,12 +3051,12 @@ The <code>hours_comments</code> dictionary will count the <strong>number of comm
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 
-<div id="altair-viz-40b27b3a8c4d437cbb569705711183e1"></div>
+<div id="altair-viz-3dbb031a4bfa44fa9a7679ba147b8082"></div>
 <script type="text/javascript">
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-40b27b3a8c4d437cbb569705711183e1") {
-      outputDiv = document.getElementById("altair-viz-40b27b3a8c4d437cbb569705711183e1");
+    if (outputDiv.id !== "altair-viz-3dbb031a4bfa44fa9a7679ba147b8082") {
+      outputDiv = document.getElementById("altair-viz-3dbb031a4bfa44fa9a7679ba147b8082");
     }
     const paths = {
       "vega": "https://cdn.jsdelivr.net/npm//vega@5?noext",
@@ -3408,12 +3396,12 @@ The <code>hours_comments</code> dictionary will count the <strong>number of comm
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 
-<div id="altair-viz-5def4f6da49b40448a39a9b0298093b6"></div>
+<div id="altair-viz-fa9bfc6a55df4d6eb70a2964584deeb5"></div>
 <script type="text/javascript">
   (function(spec, embedOpt){
     let outputDiv = document.currentScript.previousElementSibling;
-    if (outputDiv.id !== "altair-viz-5def4f6da49b40448a39a9b0298093b6") {
-      outputDiv = document.getElementById("altair-viz-5def4f6da49b40448a39a9b0298093b6");
+    if (outputDiv.id !== "altair-viz-fa9bfc6a55df4d6eb70a2964584deeb5") {
+      outputDiv = document.getElementById("altair-viz-fa9bfc6a55df4d6eb70a2964584deeb5");
     }
     const paths = {
       "vega": "https://cdn.jsdelivr.net/npm//vega@5?noext",
