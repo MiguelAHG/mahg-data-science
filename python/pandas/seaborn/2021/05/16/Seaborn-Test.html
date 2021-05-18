@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Seaborn Test | MG Data Science</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Seaborn Test" />
+<meta name="author" content="Migs Germar" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Temporary blog post to test seaborn functionality." />
+<meta property="og:description" content="Temporary blog post to test seaborn functionality." />
+<link rel="canonical" href="https://miguelahg.github.io/mahg-data-science/python/pandas/seaborn/2021/05/16/Seaborn-Test.html" />
+<meta property="og:url" content="https://miguelahg.github.io/mahg-data-science/python/pandas/seaborn/2021/05/16/Seaborn-Test.html" />
+<meta property="og:site_name" content="MG Data Science" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-05-16T00:00:00-05:00" />
+<script type="application/ld+json">
+{"url":"https://miguelahg.github.io/mahg-data-science/python/pandas/seaborn/2021/05/16/Seaborn-Test.html","@type":"BlogPosting","headline":"Seaborn Test","dateModified":"2021-05-16T00:00:00-05:00","datePublished":"2021-05-16T00:00:00-05:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://miguelahg.github.io/mahg-data-science/python/pandas/seaborn/2021/05/16/Seaborn-Test.html"},"author":{"@type":"Person","name":"Migs Germar"},"description":"Temporary blog post to test seaborn functionality.","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/mahg-data-science/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://miguelahg.github.io/mahg-data-science/feed.xml" title="MG Data Science" /><link rel="shortcut icon" type="image/x-icon" href="/mahg-data-science/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/mahg-data-science/">MG Data Science</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/mahg-data-science/about/">About Me</a><a class="page-link" href="/mahg-data-science/search/">Search</a><a class="page-link" href="/mahg-data-science/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Seaborn Test</h1><p class="page-description">Temporary blog post to test seaborn functionality.</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2021-05-16T00:00:00-05:00" itemprop="datePublished">
+        May 16, 2021
+      </time>• 
+          <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+            <span class="p-author h-card" itemprop="name">Migs Germar</span></span>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      1 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/mahg-data-science/categories/#python">python</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/mahg-data-science/categories/#pandas">pandas</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/mahg-data-science/categories/#seaborn">seaborn</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-wrap flex-justify-end">
+          <div class="px-2">
+
+    <a href="https://github.com/MiguelAHG/mahg-data-science/tree/master/_notebooks/2021-05-16-Seaborn-Test.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/mahg-data-science/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h1"><a href="#Package-Installs">Package Installs </a></li>
+<li class="toc-entry toc-h1"><a href="#Data">Data </a></li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2021-05-16-Seaborn-Test.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Package-Installs">
+<a class="anchor" href="#Package-Installs" aria-hidden="true"><span class="octicon octicon-link"></span></a>Package Installs<a class="anchor-link" href="#Package-Installs"> </a>
+</h1>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Data">
+<a class="anchor" href="#Data" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data<a class="anchor-link" href="#Data"> </a>
+</h1>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">autos</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"./2021-05-16-BDC-Files/autos.csv"</span><span class="p">)</span>
+
+<span class="n">autos</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>dateCrawled</th>
+      <th>name</th>
+      <th>seller</th>
+      <th>offerType</th>
+      <th>price</th>
+      <th>abtest</th>
+      <th>vehicleType</th>
+      <th>yearOfRegistration</th>
+      <th>gearbox</th>
+      <th>powerPS</th>
+      <th>model</th>
+      <th>kilometer</th>
+      <th>monthOfRegistration</th>
+      <th>fuelType</th>
+      <th>brand</th>
+      <th>notRepairedDamage</th>
+      <th>dateCreated</th>
+      <th>nrOfPictures</th>
+      <th>postalCode</th>
+      <th>lastSeen</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2016-03-24 11:52:17</td>
+      <td>Golf_3_1.6</td>
+      <td>privat</td>
+      <td>Angebot</td>
+      <td>480</td>
+      <td>test</td>
+      <td>NaN</td>
+      <td>1993</td>
+      <td>manuell</td>
+      <td>0</td>
+      <td>golf</td>
+      <td>150000</td>
+      <td>0</td>
+      <td>benzin</td>
+      <td>volkswagen</td>
+      <td>NaN</td>
+      <td>2016-03-24 00:00:00</td>
+      <td>0</td>
+      <td>70435</td>
+      <td>2016-04-07 03:16:57</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2016-03-24 10:58:45</td>
+      <td>A5_Sportback_2.7_Tdi</td>
+      <td>privat</td>
+      <td>Angebot</td>
+      <td>18300</td>
+      <td>test</td>
+      <td>coupe</td>
+      <td>2011</td>
+      <td>manuell</td>
+      <td>190</td>
+      <td>NaN</td>
+      <td>125000</td>
+      <td>5</td>
+      <td>diesel</td>
+      <td>audi</td>
+      <td>ja</td>
+      <td>2016-03-24 00:00:00</td>
+      <td>0</td>
+      <td>66954</td>
+      <td>2016-04-07 01:46:50</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2016-03-14 12:52:21</td>
+      <td>Jeep_Grand_Cherokee_"Overland"</td>
+      <td>privat</td>
+      <td>Angebot</td>
+      <td>9800</td>
+      <td>test</td>
+      <td>suv</td>
+      <td>2004</td>
+      <td>automatik</td>
+      <td>163</td>
+      <td>grand</td>
+      <td>125000</td>
+      <td>8</td>
+      <td>diesel</td>
+      <td>jeep</td>
+      <td>NaN</td>
+      <td>2016-03-14 00:00:00</td>
+      <td>0</td>
+      <td>90480</td>
+      <td>2016-04-05 12:47:46</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2016-03-17 16:54:04</td>
+      <td>GOLF_4_1_4__3T�RER</td>
+      <td>privat</td>
+      <td>Angebot</td>
+      <td>1500</td>
+      <td>test</td>
+      <td>kleinwagen</td>
+      <td>2001</td>
+      <td>manuell</td>
+      <td>75</td>
+      <td>golf</td>
+      <td>150000</td>
+      <td>6</td>
+      <td>benzin</td>
+      <td>volkswagen</td>
+      <td>nein</td>
+      <td>2016-03-17 00:00:00</td>
+      <td>0</td>
+      <td>91074</td>
+      <td>2016-03-17 17:40:17</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2016-03-31 17:25:20</td>
+      <td>Skoda_Fabia_1.4_TDI_PD_Classic</td>
+      <td>privat</td>
+      <td>Angebot</td>
+      <td>3600</td>
+      <td>test</td>
+      <td>kleinwagen</td>
+      <td>2008</td>
+      <td>manuell</td>
+      <td>69</td>
+      <td>fabia</td>
+      <td>90000</td>
+      <td>7</td>
+      <td>diesel</td>
+      <td>skoda</td>
+      <td>nein</td>
+      <td>2016-03-31 00:00:00</td>
+      <td>0</td>
+      <td>60437</td>
+      <td>2016-04-06 10:17:21</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">autos</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">autos</span><span class="p">[</span><span class="s2">"price"</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">15000</span><span class="p">],</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="s2">"price"</span>
+<span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="s2">"Boxplot of Used Car Prices"</span><span class="p">,</span>
+    <span class="n">xlabel</span> <span class="o">=</span> <span class="s1">'Used Cars'</span><span class="p">,</span>
+    <span class="n">ylabel</span> <span class="o">=</span> <span class="s1">'Price'</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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%0A">
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="MiguelAHG/mahg-data-science"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/mahg-data-science/python/pandas/seaborn/2021/05/16/Seaborn-Test.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/mahg-data-science/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/mahg-data-science/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/mahg-data-science/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>A blog and portfolio of data science projects by Migs Germar.</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/MiguelAHG" title="MiguelAHG"><svg class="svg-icon grey"><use xlink:href="/mahg-data-science/assets/minima-social-icons.svg#github"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
