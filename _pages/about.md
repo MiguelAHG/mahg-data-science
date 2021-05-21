@@ -43,12 +43,10 @@ I had to learn new things in order to do this, including:
 - Dummy-coding categorical variables
 - Multiple linear regression
 - Testing the assumptions of OLS regression
-- Interpreting and reporting p-values
+- Interpreting model results
 
 ## The Present: Summer of 2021
 
 Currently, I am working on the Data Scientist in Python course on [Dataquest](https://dataquest.io). The course includes many guided projects in Jupyter Notebook, and I will post each project on my blog as I go along.
-
-I also aim to complete a few courses in the Data Scientist pathway of [DOST's Sparta project](https://sparta.dap.edu.ph/), for the sake of learning theory and concepts.
 
 ![](https://miguelahg.github.io/mahg-data-science/images/logo.png)
