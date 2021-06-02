@@ -1532,23 +1532,6 @@ DETE Columns
 </div>
     
 
-    
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dete</span> <span class="o">=</span> <span class="n">dete</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"Not Stated"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    
-
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -2392,54 +2375,6 @@ Name: institute_service, dtype: int64</pre>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The distribution is right-skewed. Most employees who resigned had worked at DETE for under 10 years.</p>
-
-</div>
-</div>
-</div>
-    
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tafe</span><span class="p">[</span><span class="s2">"dissatisfaction"</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">tafe</span><span class="p">[[</span><span class="s2">"Contributing Factors. Dissatisfaction"</span><span class="p">,</span> <span class="s2">"Contributing Factors. Job Dissatisfaction"</span><span class="p">]]</span>
-    <span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">skipna</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-<span class="p">)</span>
-
-<span class="n">tafe</span><span class="p">[</span><span class="s2">"dissatisfaction"</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">dropna</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>-                                         277
-Contributing Factors. Dissatisfaction      55
-NaN                                         8
-Name: dissatisfaction, dtype: int64</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    
-
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 
 </div>
 </div>
