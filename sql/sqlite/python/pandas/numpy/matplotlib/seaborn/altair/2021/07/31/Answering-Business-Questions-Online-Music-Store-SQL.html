@@ -1,0 +1,4044 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Answering Business Questions for an Online Music Store using SQL | MG Data Science</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Answering Business Questions for an Online Music Store using SQL" />
+<meta name="author" content="Migs Germar" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="I use intermediate SQL techniques like views, joins, aggregations, and set operations in order to solve 4 scenarios about a hypothetical online music store. Results are communicated with Matplotlib and Altair visualizations." />
+<meta property="og:description" content="I use intermediate SQL techniques like views, joins, aggregations, and set operations in order to solve 4 scenarios about a hypothetical online music store. Results are communicated with Matplotlib and Altair visualizations." />
+<link rel="canonical" href="https://miguelahg.github.io/mahg-data-science/sql/sqlite/python/pandas/numpy/matplotlib/seaborn/altair/2021/07/31/Answering-Business-Questions-Online-Music-Store-SQL.html" />
+<meta property="og:url" content="https://miguelahg.github.io/mahg-data-science/sql/sqlite/python/pandas/numpy/matplotlib/seaborn/altair/2021/07/31/Answering-Business-Questions-Online-Music-Store-SQL.html" />
+<meta property="og:site_name" content="MG Data Science" />
+<meta property="og:image" content="https://miguelahg.github.io/mahg-data-science/images/2021-07-31-music-shop.jfif" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-07-31T00:00:00-05:00" />
+<script type="application/ld+json">
+{"url":"https://miguelahg.github.io/mahg-data-science/sql/sqlite/python/pandas/numpy/matplotlib/seaborn/altair/2021/07/31/Answering-Business-Questions-Online-Music-Store-SQL.html","@type":"BlogPosting","headline":"Answering Business Questions for an Online Music Store using SQL","dateModified":"2021-07-31T00:00:00-05:00","datePublished":"2021-07-31T00:00:00-05:00","image":"https://miguelahg.github.io/mahg-data-science/images/2021-07-31-music-shop.jfif","mainEntityOfPage":{"@type":"WebPage","@id":"https://miguelahg.github.io/mahg-data-science/sql/sqlite/python/pandas/numpy/matplotlib/seaborn/altair/2021/07/31/Answering-Business-Questions-Online-Music-Store-SQL.html"},"author":{"@type":"Person","name":"Migs Germar"},"description":"I use intermediate SQL techniques like views, joins, aggregations, and set operations in order to solve 4 scenarios about a hypothetical online music store. Results are communicated with Matplotlib and Altair visualizations.","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/mahg-data-science/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://miguelahg.github.io/mahg-data-science/feed.xml" title="MG Data Science" /><link rel="shortcut icon" type="image/x-icon" href="/mahg-data-science/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/mahg-data-science/">MG Data Science</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/mahg-data-science/about/">About Me</a><a class="page-link" href="/mahg-data-science/search/">Search</a><a class="page-link" href="/mahg-data-science/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Answering Business Questions for an Online Music Store using SQL</h1><p class="page-description">I use intermediate SQL techniques like views, joins, aggregations, and set operations in order to solve 4 scenarios about a hypothetical online music store. Results are communicated with Matplotlib and Altair visualizations.</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2021-07-31T00:00:00-05:00" itemprop="datePublished">
+        Jul 31, 2021
+      </time>• 
+          <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+            <span class="p-author h-card" itemprop="name">Migs Germar</span></span>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      29 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/mahg-data-science/categories/#sql">sql</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/mahg-data-science/categories/#sqlite">sqlite</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/mahg-data-science/categories/#python">python</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/mahg-data-science/categories/#pandas">pandas</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/mahg-data-science/categories/#numpy">numpy</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/mahg-data-science/categories/#matplotlib">matplotlib</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/mahg-data-science/categories/#seaborn">seaborn</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/mahg-data-science/categories/#altair">altair</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-wrap flex-justify-end">
+          <div class="px-2">
+
+    <a href="https://github.com/MiguelAHG/mahg-data-science/tree/master/_notebooks/2021-07-31-Answering-Business-Questions-Online-Music-Store-SQL.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/mahg-data-science/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h1"><a href="#Overview">Overview </a></li>
+<li class="toc-entry toc-h1"><a href="#Preparations">Preparations </a></li>
+<li class="toc-entry toc-h1"><a href="#Analysis">Analysis </a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#Tables-and-Views">Tables and Views </a></li>
+<li class="toc-entry toc-h2"><a href="#Best-Selling-Music-Genres-in-the-USA">Best-Selling Music Genres in the USA </a></li>
+<li class="toc-entry toc-h2"><a href="#Sales-Support-Agent-Performance">Sales Support Agent Performance </a></li>
+<li class="toc-entry toc-h2"><a href="#Sales-Data-by-Country">Sales Data by Country </a></li>
+<li class="toc-entry toc-h2"><a href="#Comparing-Purchase-Types:-Full-Album-vs-Selected-Sets">Comparing Purchase Types: Full Album vs Selected Sets </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#Conclusion">Conclusion </a></li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2021-07-31-Answering-Business-Questions-Online-Music-Store-SQL.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<center><img src="https://miguelahg.github.io/mahg-data-science/images/2021-07-31-music-shop.jfif" alt="A wall of square vinyl record cases."></center>
+<center><a href="https://unsplash.com/photos/fEVaiLwWvlU">Unsplash | Clay Banks</a></center>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Overview">
+<a class="anchor" href="#Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview<a class="anchor-link" href="#Overview"> </a>
+</h1>
+<p>The <a href="https://github.com/lerocha/chinook-database">Chinook database</a> by Luis Rocha and Brice Lambson is a sample database about a hypothetical digital media store called Chinook. This store sells individual music tracks online, similar to iTunes. The database contains tables covering various aspects of the company, such as the employees, customers, invoices, tracks, albums, and artists.</p>
+<p>The schema below, which was designed by Dataquest, lists the columns under each table. Columns connected by lines contain <strong>matching information</strong>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<center><img src="https://miguelahg.github.io/mahg-data-science/images/chinook-schema-dataquest.png" alt="Dataquest's schema of the Chinook database."></center>
+<center><a href="https://app.dataquest.io/c/46/m/191/guided-project%3A-answering-business-questions-using-sql/1/introduction-and-schema-diagram">Dataquest Guided Project: Answering Business Questions Using SQL</a></center>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The matching columns allow us to perform joins on these tables. Thus, we are able to answer more complicated questions about the data.</p>
+<p>In our hypothetical scenario, the Chinook company has requested us to answer the following business questions:</p>
+<ul>
+<li>What are the best-selling music genres with regards to USA customers? Based on this, which new albums should be purchased for the Chinook store?</li>
+<li>Which of Chinook's sales support agents has the highest total sales from their assigned customers? Can the exemplary performance of these employees be explained by any information in the database?</li>
+<li>What are the statistics on the customers and sales for each country where Chinook offers its service?</li>
+<li>How many purchases are full albums, and how many are selected sets of tracks? Based on this, what strategy should Chinook adopt when buying new tracks from record companies?</li>
+</ul>
+<p>SQL will be used to answer all of these questions. Matplotlib and Altair will also be used to produce helpful visualizations.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p></p>
+<div class="flash">
+    <svg class="octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info" viewbox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm6.5-.25A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75zM8 6a1 1 0 100-2 1 1 0 000 2z"></path></svg>
+    <strong>Note: </strong>I wrote this notebook by following a guided project on the <a href="https://www.dataquest.io/">Dataquest</a> platform, specifically the <a href="https://app.dataquest.io/c/46/m/191/guided-project%3A-answering-business-questions-using-sql/1/introduction-and-schema-diagram">Guided Project: Answering Business Questions Using SQL</a>. The general project flow and research questions came from Dataquest. However, the text and code here are written by me unless stated otherwise.
+</div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Preparations">
+<a class="anchor" href="#Preparations" aria-hidden="true"><span class="octicon octicon-link"></span></a>Preparations<a class="anchor-link" href="#Preparations"> </a>
+</h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Install the necessary packages.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">import</span> <span class="nn">altair</span> <span class="k">as</span> <span class="nn">alt</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Connect to the database using SQLite.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">load_ext</span> sql
+<span class="o">%</span><span class="k">sql</span> sqlite:///2021-07-31-Intermediate-SQL-Files/chinook.db
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>'Connected: @2021-07-31-Intermediate-SQL-Files/chinook.db'</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Analysis">
+<a class="anchor" href="#Analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Analysis<a class="anchor-link" href="#Analysis"> </a>
+</h1>
+<h2 id="Tables-and-Views">
+<a class="anchor" href="#Tables-and-Views" aria-hidden="true"><span class="octicon octicon-link"></span></a>Tables and Views<a class="anchor-link" href="#Tables-and-Views"> </a>
+</h2>
+<p>First, we'll inspect the tables and views available in the <code>chinook.db</code> database.</p>
+<ul>
+<li>Tables contain columns of data. Each column has a different name and data type.</li>
+<li>Views do not contain data. Instead, these are pre-written SQL queries which show a transformation of existing data. Thus, it can be called a "virtual table." (<a href="https://learnsql.com/blog/sql-view/">Sławińska 2020</a>)</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sql</span>
+SELECT
+    name,
+    type
+FROM sqlite_master
+WHERE type IN ("table", "view")
+;
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> * sqlite:///2021-07-31-Intermediate-SQL-Files/chinook.db
+Done.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<table>
+    <thead>
+        <tr>
+            <th>name</th>
+            <th>type</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>album</td>
+            <td>table</td>
+        </tr>
+        <tr>
+            <td>artist</td>
+            <td>table</td>
+        </tr>
+        <tr>
+            <td>customer</td>
+            <td>table</td>
+        </tr>
+        <tr>
+            <td>employee</td>
+            <td>table</td>
+        </tr>
+        <tr>
+            <td>genre</td>
+            <td>table</td>
+        </tr>
+        <tr>
+            <td>invoice</td>
+            <td>table</td>
+        </tr>
+        <tr>
+            <td>invoice_line</td>
+            <td>table</td>
+        </tr>
+        <tr>
+            <td>media_type</td>
+            <td>table</td>
+        </tr>
+        <tr>
+            <td>playlist</td>
+            <td>table</td>
+        </tr>
+        <tr>
+            <td>playlist_track</td>
+            <td>table</td>
+        </tr>
+        <tr>
+            <td>track</td>
+            <td>table</td>
+        </tr>
+        <tr>
+            <td>usa_track_purchases</td>
+            <td>view</td>
+        </tr>
+        <tr>
+            <td>usa_genre_sales</td>
+            <td>view</td>
+        </tr>
+        <tr>
+            <td>agent_customer</td>
+            <td>view</td>
+        </tr>
+        <tr>
+            <td>agent_stats</td>
+            <td>view</td>
+        </tr>
+        <tr>
+            <td>country_invoices</td>
+            <td>view</td>
+        </tr>
+        <tr>
+            <td>country_customers</td>
+            <td>view</td>
+        </tr>
+        <tr>
+            <td>country_labels</td>
+            <td>view</td>
+        </tr>
+        <tr>
+            <td>country_avg_order</td>
+            <td>view</td>
+        </tr>
+        <tr>
+            <td>country_stats</td>
+            <td>view</td>
+        </tr>
+        <tr>
+            <td>invoice_tracks_bought</td>
+            <td>view</td>
+        </tr>
+        <tr>
+            <td>invoice_album</td>
+            <td>view</td>
+        </tr>
+        <tr>
+            <td>invoice_full_album_tracks</td>
+            <td>view</td>
+        </tr>
+        <tr>
+            <td>invoice_purchase_type</td>
+            <td>view</td>
+        </tr>
+        <tr>
+            <td>purchase_type_proportion</td>
+            <td>view</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Originally, there were only 11 tables and 0 views in the database. The views listed above are ones which I made throughout this project. I will show how I created these views in later sections.</p>
+<p>For now, let's inspect the <code>customer</code> table, as we will be using it to answer most of the company's business questions.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sql</span>
+SELECT *
+FROM customer
+LIMIT 5
+;
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> * sqlite:///2021-07-31-Intermediate-SQL-Files/chinook.db
+Done.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<table>
+    <thead>
+        <tr>
+            <th>customer_id</th>
+            <th>first_name</th>
+            <th>last_name</th>
+            <th>company</th>
+            <th>address</th>
+            <th>city</th>
+            <th>state</th>
+            <th>country</th>
+            <th>postal_code</th>
+            <th>phone</th>
+            <th>fax</th>
+            <th>email</th>
+            <th>support_rep_id</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1</td>
+            <td>Luís</td>
+            <td>Gonçalves</td>
+            <td>Embraer - Empresa Brasileira de Aeronáutica S.A.</td>
+            <td>Av. Brigadeiro Faria Lima, 2170</td>
+            <td>São José dos Campos</td>
+            <td>SP</td>
+            <td>Brazil</td>
+            <td>12227-000</td>
+            <td>+55 (12) 3923-5555</td>
+            <td>+55 (12) 3923-5566</td>
+            <td>luisg@embraer.com.br</td>
+            <td>3</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>Leonie</td>
+            <td>Köhler</td>
+            <td>None</td>
+            <td>Theodor-Heuss-Straße 34</td>
+            <td>Stuttgart</td>
+            <td>None</td>
+            <td>Germany</td>
+            <td>70174</td>
+            <td>+49 0711 2842222</td>
+            <td>None</td>
+            <td>leonekohler@surfeu.de</td>
+            <td>5</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>François</td>
+            <td>Tremblay</td>
+            <td>None</td>
+            <td>1498 rue Bélanger</td>
+            <td>Montréal</td>
+            <td>QC</td>
+            <td>Canada</td>
+            <td>H2G 1A7</td>
+            <td>+1 (514) 721-4711</td>
+            <td>None</td>
+            <td>ftremblay@gmail.com</td>
+            <td>3</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>Bjørn</td>
+            <td>Hansen</td>
+            <td>None</td>
+            <td>Ullevålsveien 14</td>
+            <td>Oslo</td>
+            <td>None</td>
+            <td>Norway</td>
+            <td>0171</td>
+            <td>+47 22 44 22 22</td>
+            <td>None</td>
+            <td>bjorn.hansen@yahoo.no</td>
+            <td>4</td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td>František</td>
+            <td>Wichterlová</td>
+            <td>JetBrains s.r.o.</td>
+            <td>Klanova 9/506</td>
+            <td>Prague</td>
+            <td>None</td>
+            <td>Czech Republic</td>
+            <td>14700</td>
+            <td>+420 2 4172 5555</td>
+            <td>+420 2 4172 5555</td>
+            <td>frantisekw@jetbrains.com</td>
+            <td>4</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Each row in this table contains data on a different customer of Chinook. Each customer has a unique customer ID and an assigned support representative from Chinook. The support rep's employee ID is stored in the <code>support_rep_id</code> column. The other columns contain information on the customer's name, occupation, location, and contact details.
+</p>
+<div class="flash">
+    <svg class="octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info" viewbox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm6.5-.25A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75zM8 6a1 1 0 100-2 1 1 0 000 2z"></path></svg>
+    <strong>Note: </strong>All names and personal details in the Chinook database are fictitious and randomly generated. Public use of this database is not a breach of data privacy.
+</div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Best-Selling-Music-Genres-in-the-USA">
+<a class="anchor" href="#Best-Selling-Music-Genres-in-the-USA" aria-hidden="true"><span class="octicon octicon-link"></span></a>Best-Selling Music Genres in the USA<a class="anchor-link" href="#Best-Selling-Music-Genres-in-the-USA"> </a>
+</h2>
+<p>In our first scenario, Chinook has signed a deal with a new record company, so its tracks can now be put up for sale on the Chinook store. The record company has 4 albums so far; below are the artist names and their genres.</p>
+<ul>
+<li>Regal (Hip-Hop)</li>
+<li>Red Tone (Punk)</li>
+<li>Meteor and the Girls (Pop)</li>
+<li>Slim Jim Bites (Blues)</li>
+</ul>
+<p>However, Chinook would like to spread its releases over time, so it will only add 3 albums to the store. Thus, we have to determine the best-selling genres on the store. Furthermore, since the record company would like to target a USA audience, we can narrow our analysis to Chinook's USA customers.</p>
+<p>First, we create a view called <code>usa_track_purchases</code>. This will show the genre, track name, unit price, and quantity bought for each of the invoice lines of USA customers.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sql</span>
+DROP VIEW IF EXISTS usa_track_purchases;
+
+CREATE VIEW usa_track_purchases AS
+    SELECT
+        il.invoice_line_id AS invoice_line_id,
+        g.name AS genre,
+        t.name AS track_name,
+        il.unit_price AS unit_price,
+        il.quantity AS quantity
+    FROM customer AS c
+    INNER JOIN
+        invoice AS iv
+        ON iv.customer_id = c.customer_id
+    INNER JOIN
+        invoice_line AS il
+        ON il.invoice_id = iv.invoice_id
+    INNER JOIN
+        track AS t
+        ON t.track_id = il.track_id
+    INNER JOIN
+        genre AS g
+        ON g.genre_id = t.genre_id
+    WHERE c.country = "USA"
+;
+
+SELECT *
+FROM usa_track_purchases
+LIMIT 7
+;
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> * sqlite:///2021-07-31-Intermediate-SQL-Files/chinook.db
+Done.
+Done.
+Done.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<table>
+    <thead>
+        <tr>
+            <th>invoice_line_id</th>
+            <th>genre</th>
+            <th>track_name</th>
+            <th>unit_price</th>
+            <th>quantity</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1</td>
+            <td>Rock</td>
+            <td>Right Next Door to Hell</td>
+            <td>0.99</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>Rock</td>
+            <td>Dust N' Bones</td>
+            <td>0.99</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>Rock</td>
+            <td>Live and Let Die</td>
+            <td>0.99</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>Rock</td>
+            <td>Don't Cry (Original)</td>
+            <td>0.99</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td>Rock</td>
+            <td>Perfect Crime</td>
+            <td>0.99</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>6</td>
+            <td>Rock</td>
+            <td>You Ain't the First</td>
+            <td>0.99</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>7</td>
+            <td>Rock</td>
+            <td>Bad Obsession</td>
+            <td>0.99</td>
+            <td>1</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>By querying the view above, we will create another view, <code>usa_genre_sales</code>. This will contain the following specific information about each genre:</p>
+<ul>
+<li>Number of tracks sold</li>
+<li>Percentage of tracks sold</li>
+<li>Total sales in US dollars</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sql</span> 
+DROP VIEW IF EXISTS usa_genre_sales;
+
+CREATE VIEW usa_genre_sales AS
+    SELECT
+        genre,
+        
+        SUM(quantity) AS number_sold,
+        
+        --Get the quantity per genre and divide it by the total quantity of USA purchases.
+        ROUND(
+            CAST(SUM(quantity) AS Float)
+            / CAST(
+                (SELECT COUNT(*) FROM usa_track_purchases)
+                AS Float
+            )
+            * 100.0,
+            2
+        ) AS percentage_sold,
+        
+        ROUND(
+            SUM(unit_price * CAST(quantity AS Float)),
+            2
+        ) AS total_sales
+        
+    FROM usa_track_purchases
+    GROUP BY genre
+    ORDER BY number_sold DESC, total_sales DESC
+;
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> * sqlite:///2021-07-31-Intermediate-SQL-Files/chinook.db
+Done.
+Done.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sql</span> result &lt;&lt;
+SELECT *
+FROM usa_genre_sales
+;
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> * sqlite:///2021-07-31-Intermediate-SQL-Files/chinook.db
+Done.
+Returning data to local variable result
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">usa_genre_df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+<span class="n">usa_genre_df</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>genre</th>
+      <th>number_sold</th>
+      <th>percentage_sold</th>
+      <th>total_sales</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Rock</td>
+      <td>561</td>
+      <td>53.38</td>
+      <td>555.39</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Alternative &amp; Punk</td>
+      <td>130</td>
+      <td>12.37</td>
+      <td>128.70</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Metal</td>
+      <td>124</td>
+      <td>11.80</td>
+      <td>122.76</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>R&amp;B/Soul</td>
+      <td>53</td>
+      <td>5.04</td>
+      <td>52.47</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Blues</td>
+      <td>36</td>
+      <td>3.43</td>
+      <td>35.64</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Alternative</td>
+      <td>35</td>
+      <td>3.33</td>
+      <td>34.65</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Latin</td>
+      <td>22</td>
+      <td>2.09</td>
+      <td>21.78</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>Pop</td>
+      <td>22</td>
+      <td>2.09</td>
+      <td>21.78</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Hip Hop/Rap</td>
+      <td>20</td>
+      <td>1.90</td>
+      <td>19.80</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>Jazz</td>
+      <td>14</td>
+      <td>1.33</td>
+      <td>13.86</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>Easy Listening</td>
+      <td>13</td>
+      <td>1.24</td>
+      <td>12.87</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>Reggae</td>
+      <td>6</td>
+      <td>0.57</td>
+      <td>5.94</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>Electronica/Dance</td>
+      <td>5</td>
+      <td>0.48</td>
+      <td>4.95</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>Classical</td>
+      <td>4</td>
+      <td>0.38</td>
+      <td>3.96</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>Heavy Metal</td>
+      <td>3</td>
+      <td>0.29</td>
+      <td>2.97</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>Soundtrack</td>
+      <td>2</td>
+      <td>0.19</td>
+      <td>1.98</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>TV Shows</td>
+      <td>1</td>
+      <td>0.10</td>
+      <td>0.99</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can make a bar graph from this result in order to communicate findings better.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="p">(</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">usa_genre_df</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">mark_bar</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s2">"genre:N"</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s2">"Music Genre"</span><span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="s2">"-y"</span><span class="p">),</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s2">"percentage_sold:Q"</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s2">"Percentage of All Purchases in the USA"</span><span class="p">),</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="s2">"total_sales:Q"</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s2">"Total Sales (USD)"</span><span class="p">),</span>
+        <span class="n">tooltip</span> <span class="o">=</span> <span class="n">usa_genre_df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+    <span class="p">)</span>
+    <span class="o">.</span><span class="n">properties</span><span class="p">(</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="s2">"Popularity of Music Genres with Chinook's USA Customers"</span><span class="p">,</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="mi">300</span><span class="p">,</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="mi">600</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="o">.</span><span class="n">configure_axis</span><span class="p">(</span>
+        <span class="n">labelAngle</span> <span class="o">=</span> <span class="mi">30</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="o">.</span><span class="n">interactive</span><span class="p">()</span>
+<span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+
+<div id="altair-viz-4e690edf26bf47c7a06a0cf663fdd6fa"></div>
+<script type="text/javascript">
+  (function(spec, embedOpt){
+    let outputDiv = document.currentScript.previousElementSibling;
+    if (outputDiv.id !== "altair-viz-4e690edf26bf47c7a06a0cf663fdd6fa") {
+      outputDiv = document.getElementById("altair-viz-4e690edf26bf47c7a06a0cf663fdd6fa");
+    }
+    const paths = {
+      "vega": "https://cdn.jsdelivr.net/npm//vega@5?noext",
+      "vega-lib": "https://cdn.jsdelivr.net/npm//vega-lib?noext",
+      "vega-lite": "https://cdn.jsdelivr.net/npm//vega-lite@4.8.1?noext",
+      "vega-embed": "https://cdn.jsdelivr.net/npm//vega-embed@6?noext",
+    };
+
+    function loadScript(lib) {
+      return new Promise(function(resolve, reject) {
+        var s = document.createElement('script');
+        s.src = paths[lib];
+        s.async = true;
+        s.onload = () => resolve(paths[lib]);
+        s.onerror = () => reject(`Error loading script: ${paths[lib]}`);
+        document.getElementsByTagName("head")[0].appendChild(s);
+      });
+    }
+
+    function showError(err) {
+      outputDiv.innerHTML = `<div class="error" style="color:red;">${err}</div>`;
+      throw err;
+    }
+
+    function displayChart(vegaEmbed) {
+      vegaEmbed(outputDiv, spec, embedOpt)
+        .catch(err => showError(`Javascript Error: ${err.message}<br>This usually means there's a typo in your chart specification. See the javascript console for the full traceback.`));
+    }
+
+    if(typeof define === "function" && define.amd) {
+      requirejs.config({paths});
+      require(["vega-embed"], displayChart, err => showError(`Error loading script: ${err.message}`));
+    } else if (typeof vegaEmbed === "function") {
+      displayChart(vegaEmbed);
+    } else {
+      loadScript("vega")
+        .then(() => loadScript("vega-lite"))
+        .then(() => loadScript("vega-embed"))
+        .catch(showError)
+        .then(() => displayChart(vegaEmbed));
+    }
+  })({"config": {"view": {"continuousWidth": 400, "continuousHeight": 300}, "axis": {"labelAngle": 30}}, "data": {"name": "data-efd7bdfa4680b65be149f0a063c6d6e7"}, "mark": "bar", "encoding": {"color": {"type": "quantitative", "field": "total_sales", "title": "Total Sales (USD)"}, "tooltip": [{"type": "nominal", "field": "genre"}, {"type": "quantitative", "field": "number_sold"}, {"type": "quantitative", "field": "percentage_sold"}, {"type": "quantitative", "field": "total_sales"}], "x": {"type": "nominal", "field": "genre", "sort": "-y", "title": "Music Genre"}, "y": {"type": "quantitative", "field": "percentage_sold", "title": "Percentage of All Purchases in the USA"}}, "height": 300, "selection": {"selector001": {"type": "interval", "bind": "scales", "encodings": ["x", "y"]}}, "title": "Popularity of Music Genres with Chinook's USA Customers", "width": 600, "$schema": "https://vega.github.io/schema/vega-lite/v4.8.1.json", "datasets": {"data-efd7bdfa4680b65be149f0a063c6d6e7": [{"genre": "Rock", "number_sold": 561, "percentage_sold": 53.38, "total_sales": 555.39}, {"genre": "Alternative & Punk", "number_sold": 130, "percentage_sold": 12.37, "total_sales": 128.7}, {"genre": "Metal", "number_sold": 124, "percentage_sold": 11.8, "total_sales": 122.76}, {"genre": "R&B/Soul", "number_sold": 53, "percentage_sold": 5.04, "total_sales": 52.47}, {"genre": "Blues", "number_sold": 36, "percentage_sold": 3.43, "total_sales": 35.64}, {"genre": "Alternative", "number_sold": 35, "percentage_sold": 3.33, "total_sales": 34.65}, {"genre": "Latin", "number_sold": 22, "percentage_sold": 2.09, "total_sales": 21.78}, {"genre": "Pop", "number_sold": 22, "percentage_sold": 2.09, "total_sales": 21.78}, {"genre": "Hip Hop/Rap", "number_sold": 20, "percentage_sold": 1.9, "total_sales": 19.8}, {"genre": "Jazz", "number_sold": 14, "percentage_sold": 1.33, "total_sales": 13.86}, {"genre": "Easy Listening", "number_sold": 13, "percentage_sold": 1.24, "total_sales": 12.87}, {"genre": "Reggae", "number_sold": 6, "percentage_sold": 0.57, "total_sales": 5.94}, {"genre": "Electronica/Dance", "number_sold": 5, "percentage_sold": 0.48, "total_sales": 4.95}, {"genre": "Classical", "number_sold": 4, "percentage_sold": 0.38, "total_sales": 3.96}, {"genre": "Heavy Metal", "number_sold": 3, "percentage_sold": 0.29, "total_sales": 2.97}, {"genre": "Soundtrack", "number_sold": 2, "percentage_sold": 0.19, "total_sales": 1.98}, {"genre": "TV Shows", "number_sold": 1, "percentage_sold": 0.1, "total_sales": 0.99}]}}, {"mode": "vega-lite"});
+</script>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>One can hover over each bar in the chart above for a tooltip with more specific information.</p>
+<p>Results show that Rock is the best-selling music genre as it makes up 53% of total purchases in the USA. Rock is followed by the Alternative &amp; Punk and Metal genres, which each make up over 10% of purchases.</p>
+<p>On a side note, the <code>total_sales</code> column's values are very close to that of the <code>number_sold</code> column. This can be explained by the fact that track prices range from USD 0.99 to USD 1.99.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sql</span>
+SELECT
+    MIN(unit_price) AS min_price,
+    MAX(unit_price) AS max_price
+FROM track
+;
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> * sqlite:///2021-07-31-Intermediate-SQL-Files/chinook.db
+Done.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<table>
+    <thead>
+        <tr>
+            <th>min_price</th>
+            <th>max_price</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>0.99</td>
+            <td>1.99</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Since there is little variation among track prices, the genre with the most units sold is usually also the genre with the highest sales.</p>
+<p>Going back to the scenario at hand, we need to compare the statistics on the Hip-Hop, Punk, Pop, and Blues genres. We will run a query for this below.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sql</span>
+SELECT *
+FROM usa_genre_sales
+WHERE genre IN ("Hip Hop/Rap", "Alternative &amp; Punk", "Pop", "Blues")
+;
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> * sqlite:///2021-07-31-Intermediate-SQL-Files/chinook.db
+Done.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<table>
+    <thead>
+        <tr>
+            <th>genre</th>
+            <th>number_sold</th>
+            <th>percentage_sold</th>
+            <th>total_sales</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Alternative &amp; Punk</td>
+            <td>130</td>
+            <td>12.37</td>
+            <td>128.7</td>
+        </tr>
+        <tr>
+            <td>Blues</td>
+            <td>36</td>
+            <td>3.43</td>
+            <td>35.64</td>
+        </tr>
+        <tr>
+            <td>Pop</td>
+            <td>22</td>
+            <td>2.09</td>
+            <td>21.78</td>
+        </tr>
+        <tr>
+            <td>Hip Hop/Rap</td>
+            <td>20</td>
+            <td>1.9</td>
+            <td>19.8</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The result above shows that Alternative &amp; Punk, Blues, and Pop are the three best-selling genres out of the four. Notably, Alternative &amp; Punk makes up 12.37% of all purchases in the USA.</p>
+<p>Therefore, we would recommend the Chinook administration to add the albums of <strong>Red Tone (Punk), Slim Jim Bites (Blues), and Meteor and the Girls (Pop)</strong> to the digital store. The album of Regal (Hip-Hop) has lower priority and can be added at a later date.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Sales-Support-Agent-Performance">
+<a class="anchor" href="#Sales-Support-Agent-Performance" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sales Support Agent Performance<a class="anchor-link" href="#Sales-Support-Agent-Performance"> </a>
+</h2>
+<p>Next, Chinook is requesting us to evaluate the performance of its sales support agents. Each customer is assigned to an agent after their first purchase. Since there are only 3 agents, each agent provides support to many customers. Details about the agents are shown in the query below.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sql</span>
+SELECT *
+FROM employee
+WHERE title = "Sales Support Agent"
+;
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> * sqlite:///2021-07-31-Intermediate-SQL-Files/chinook.db
+Done.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<table>
+    <thead>
+        <tr>
+            <th>employee_id</th>
+            <th>last_name</th>
+            <th>first_name</th>
+            <th>title</th>
+            <th>reports_to</th>
+            <th>birthdate</th>
+            <th>hire_date</th>
+            <th>address</th>
+            <th>city</th>
+            <th>state</th>
+            <th>country</th>
+            <th>postal_code</th>
+            <th>phone</th>
+            <th>fax</th>
+            <th>email</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>3</td>
+            <td>Peacock</td>
+            <td>Jane</td>
+            <td>Sales Support Agent</td>
+            <td>2</td>
+            <td>1973-08-29 00:00:00</td>
+            <td>2017-04-01 00:00:00</td>
+            <td>1111 6 Ave SW</td>
+            <td>Calgary</td>
+            <td>AB</td>
+            <td>Canada</td>
+            <td>T2P 5M5</td>
+            <td>+1 (403) 262-3443</td>
+            <td>+1 (403) 262-6712</td>
+            <td>jane@chinookcorp.com</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>Park</td>
+            <td>Margaret</td>
+            <td>Sales Support Agent</td>
+            <td>2</td>
+            <td>1947-09-19 00:00:00</td>
+            <td>2017-05-03 00:00:00</td>
+            <td>683 10 Street SW</td>
+            <td>Calgary</td>
+            <td>AB</td>
+            <td>Canada</td>
+            <td>T2P 5G3</td>
+            <td>+1 (403) 263-4423</td>
+            <td>+1 (403) 263-4289</td>
+            <td>margaret@chinookcorp.com</td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td>Johnson</td>
+            <td>Steve</td>
+            <td>Sales Support Agent</td>
+            <td>2</td>
+            <td>1965-03-03 00:00:00</td>
+            <td>2017-10-17 00:00:00</td>
+            <td>7727B 41 Ave</td>
+            <td>Calgary</td>
+            <td>AB</td>
+            <td>Canada</td>
+            <td>T3B 1Y7</td>
+            <td>1 (780) 836-9987</td>
+            <td>1 (780) 836-9543</td>
+            <td>steve@chinookcorp.com</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Since we have data on each customer's purchases, we can calculate the total purchases associated with each support agent. We can then use this to compare the performance of the agents.</p>
+<p>First, we create a view called <code>agent_customer</code> by joining the <code>employee</code> table with the <code>customer</code> table based on the support representative ID. We will include some extra details about each agent, such as their birthdate and hire date. We won't include their location since we know that they are all in Calgary, AB, Canada. As for the customers, we will include their customer ID, name, and total purchases as the sum of their invoices.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sql</span>
+DROP VIEW IF EXISTS agent_customer;
+
+CREATE VIEW agent_customer AS
+    SELECT
+        e.employee_id AS agent_id,
+        e.first_name || " " || e.last_name AS agent_name,
+        e.birthdate AS agent_bd,
+        e.hire_date AS agent_hire_date,
+        c.customer_id AS customer_id,
+        c.first_name || " " || c.last_name AS customer_name,
+        SUM(iv.total) AS customer_total_purchases
+    FROM employee AS e
+    LEFT JOIN
+        customer AS c
+        ON c.support_rep_id = e.employee_id
+    LEFT JOIN
+        invoice AS iv
+        ON iv.customer_id = c.customer_id
+    WHERE e.title = "Sales Support Agent"
+    GROUP BY c.customer_id
+    ORDER BY agent_id, customer_id
+;
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> * sqlite:///2021-07-31-Intermediate-SQL-Files/chinook.db
+Done.
+Done.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sql</span> result &lt;&lt;
+SELECT *
+FROM agent_customer
+;
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> * sqlite:///2021-07-31-Intermediate-SQL-Files/chinook.db
+Done.
+Returning data to local variable result
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">agent_customer_df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+<span class="n">agent_customer_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>agent_id</th>
+      <th>agent_name</th>
+      <th>agent_bd</th>
+      <th>agent_hire_date</th>
+      <th>customer_id</th>
+      <th>customer_name</th>
+      <th>customer_total_purchases</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>3</td>
+      <td>Jane Peacock</td>
+      <td>1973-08-29 00:00:00</td>
+      <td>2017-04-01 00:00:00</td>
+      <td>1</td>
+      <td>Luís Gonçalves</td>
+      <td>108.90</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>3</td>
+      <td>Jane Peacock</td>
+      <td>1973-08-29 00:00:00</td>
+      <td>2017-04-01 00:00:00</td>
+      <td>3</td>
+      <td>François Tremblay</td>
+      <td>99.99</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>Jane Peacock</td>
+      <td>1973-08-29 00:00:00</td>
+      <td>2017-04-01 00:00:00</td>
+      <td>12</td>
+      <td>Roberto Almeida</td>
+      <td>82.17</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3</td>
+      <td>Jane Peacock</td>
+      <td>1973-08-29 00:00:00</td>
+      <td>2017-04-01 00:00:00</td>
+      <td>15</td>
+      <td>Jennifer Peterson</td>
+      <td>66.33</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>3</td>
+      <td>Jane Peacock</td>
+      <td>1973-08-29 00:00:00</td>
+      <td>2017-04-01 00:00:00</td>
+      <td>18</td>
+      <td>Michelle Brooks</td>
+      <td>79.20</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Next, we will query this view in order to determine the following information about each agent:</p>
+<ul>
+<li>number of customers</li>
+<li>total sales from the agent's customers</li>
+<li>percentage of all agents' sales</li>
+<li>average sales per customer</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sql</span>
+DROP VIEW IF EXISTS agent_stats;
+
+CREATE VIEW agent_stats AS
+    SELECT
+        agent_id,
+        agent_name,
+        agent_bd,
+        agent_hire_date,
+        COUNT(customer_id) AS number_customers,
+        ROUND(
+            SUM(customer_total_purchases),
+            2
+        ) AS sales_number,
+        ROUND(
+            SUM(customer_total_purchases) 
+            / (SELECT SUM(customer_total_purchases) FROM agent_customer)
+            * 100,
+            2
+        )AS sales_percentage,
+        ROUND(
+            AVG(customer_total_purchases),
+            2
+        ) AS average_per_customer
+    FROM agent_customer
+    GROUP BY agent_id
+;
+
+SELECT *
+FROM agent_stats
+;
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> * sqlite:///2021-07-31-Intermediate-SQL-Files/chinook.db
+Done.
+Done.
+Done.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<table>
+    <thead>
+        <tr>
+            <th>agent_id</th>
+            <th>agent_name</th>
+            <th>agent_bd</th>
+            <th>agent_hire_date</th>
+            <th>number_customers</th>
+            <th>sales_number</th>
+            <th>sales_percentage</th>
+            <th>average_per_customer</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>3</td>
+            <td>Jane Peacock</td>
+            <td>1973-08-29 00:00:00</td>
+            <td>2017-04-01 00:00:00</td>
+            <td>21</td>
+            <td>1731.51</td>
+            <td>36.77</td>
+            <td>82.45</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>Margaret Park</td>
+            <td>1947-09-19 00:00:00</td>
+            <td>2017-05-03 00:00:00</td>
+            <td>20</td>
+            <td>1584.0</td>
+            <td>33.63</td>
+            <td>79.2</td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td>Steve Johnson</td>
+            <td>1965-03-03 00:00:00</td>
+            <td>2017-10-17 00:00:00</td>
+            <td>18</td>
+            <td>1393.92</td>
+            <td>29.6</td>
+            <td>77.44</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>At first glance, Jane Peacock seems like the best-performing agent since Chinook got the highest total sales from her customers (USD 1731.51). This idea is cast into doubt when it is mentioned that she had the highest number of customers (21).</p>
+<p>Also, the differences among the average sales per customer is quite small. Each of Jane's customers spends 3 more dollars on Chinook than each of Margaret's. Each of Margaret's customers spends 2 more dollars on Chinook than each of Steve Johnson's.</p>
+<p>The average sales per customer may also be influenced by outliers, as shown by the boxplot below.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="p">(</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">agent_customer_df</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">mark_boxplot</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s2">"customer_total_purchases:Q"</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s2">"Customer Total Purchases"</span><span class="p">),</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s2">"agent_name:N"</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s2">"Agent Name"</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="o">.</span><span class="n">properties</span><span class="p">(</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="s2">"Distribution of Customer Purchases by Sales Support Agent"</span><span class="p">,</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="mi">300</span><span class="p">,</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="o">.</span><span class="n">interactive</span><span class="p">()</span>
+<span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+
+<div id="altair-viz-ebe1748bb26f4c96ac2f7d4f16ca120d"></div>
+<script type="text/javascript">
+  (function(spec, embedOpt){
+    let outputDiv = document.currentScript.previousElementSibling;
+    if (outputDiv.id !== "altair-viz-ebe1748bb26f4c96ac2f7d4f16ca120d") {
+      outputDiv = document.getElementById("altair-viz-ebe1748bb26f4c96ac2f7d4f16ca120d");
+    }
+    const paths = {
+      "vega": "https://cdn.jsdelivr.net/npm//vega@5?noext",
+      "vega-lib": "https://cdn.jsdelivr.net/npm//vega-lib?noext",
+      "vega-lite": "https://cdn.jsdelivr.net/npm//vega-lite@4.8.1?noext",
+      "vega-embed": "https://cdn.jsdelivr.net/npm//vega-embed@6?noext",
+    };
+
+    function loadScript(lib) {
+      return new Promise(function(resolve, reject) {
+        var s = document.createElement('script');
+        s.src = paths[lib];
+        s.async = true;
+        s.onload = () => resolve(paths[lib]);
+        s.onerror = () => reject(`Error loading script: ${paths[lib]}`);
+        document.getElementsByTagName("head")[0].appendChild(s);
+      });
+    }
+
+    function showError(err) {
+      outputDiv.innerHTML = `<div class="error" style="color:red;">${err}</div>`;
+      throw err;
+    }
+
+    function displayChart(vegaEmbed) {
+      vegaEmbed(outputDiv, spec, embedOpt)
+        .catch(err => showError(`Javascript Error: ${err.message}<br>This usually means there's a typo in your chart specification. See the javascript console for the full traceback.`));
+    }
+
+    if(typeof define === "function" && define.amd) {
+      requirejs.config({paths});
+      require(["vega-embed"], displayChart, err => showError(`Error loading script: ${err.message}`));
+    } else if (typeof vegaEmbed === "function") {
+      displayChart(vegaEmbed);
+    } else {
+      loadScript("vega")
+        .then(() => loadScript("vega-lite"))
+        .then(() => loadScript("vega-embed"))
+        .catch(showError)
+        .then(() => displayChart(vegaEmbed));
+    }
+  })({"config": {"view": {"continuousWidth": 400, "continuousHeight": 300}}, "data": {"name": "data-543360b264d950faaeb0d2fc6b725054"}, "mark": "boxplot", "encoding": {"x": {"type": "nominal", "field": "agent_name", "title": "Agent Name"}, "y": {"type": "quantitative", "field": "customer_total_purchases", "title": "Customer Total Purchases"}}, "height": 300, "selection": {"selector002": {"type": "interval", "bind": "scales", "encodings": ["x", "y"]}}, "title": "Distribution of Customer Purchases by Sales Support Agent", "width": 500, "$schema": "https://vega.github.io/schema/vega-lite/v4.8.1.json", "datasets": {"data-543360b264d950faaeb0d2fc6b725054": [{"agent_id": 3, "agent_name": "Jane Peacock", "agent_bd": "1973-08-29 00:00:00", "agent_hire_date": "2017-04-01 00:00:00", "customer_id": 1, "customer_name": "Lu\u00eds Gon\u00e7alves", "customer_total_purchases": 108.89999999999998}, {"agent_id": 3, "agent_name": "Jane Peacock", "agent_bd": "1973-08-29 00:00:00", "agent_hire_date": "2017-04-01 00:00:00", "customer_id": 3, "customer_name": "Fran\u00e7ois Tremblay", "customer_total_purchases": 99.99}, {"agent_id": 3, "agent_name": "Jane Peacock", "agent_bd": "1973-08-29 00:00:00", "agent_hire_date": "2017-04-01 00:00:00", "customer_id": 12, "customer_name": "Roberto Almeida", "customer_total_purchases": 82.17}, {"agent_id": 3, "agent_name": "Jane Peacock", "agent_bd": "1973-08-29 00:00:00", "agent_hire_date": "2017-04-01 00:00:00", "customer_id": 15, "customer_name": "Jennifer Peterson", "customer_total_purchases": 66.33}, {"agent_id": 3, "agent_name": "Jane Peacock", "agent_bd": "1973-08-29 00:00:00", "agent_hire_date": "2017-04-01 00:00:00", "customer_id": 18, "customer_name": "Michelle Brooks", "customer_total_purchases": 79.2}, {"agent_id": 3, "agent_name": "Jane Peacock", "agent_bd": "1973-08-29 00:00:00", "agent_hire_date": "2017-04-01 00:00:00", "customer_id": 19, "customer_name": "Tim Goyer", "customer_total_purchases": 54.449999999999996}, {"agent_id": 3, "agent_name": "Jane Peacock", "agent_bd": "1973-08-29 00:00:00", "agent_hire_date": "2017-04-01 00:00:00", "customer_id": 24, "customer_name": "Frank Ralston", "customer_total_purchases": 71.28}, {"agent_id": 3, "agent_name": "Jane Peacock", "agent_bd": "1973-08-29 00:00:00", "agent_hire_date": "2017-04-01 00:00:00", "customer_id": 29, "customer_name": "Robert Brown", "customer_total_purchases": 40.59}, {"agent_id": 3, "agent_name": "Jane Peacock", "agent_bd": "1973-08-29 00:00:00", "agent_hire_date": "2017-04-01 00:00:00", "customer_id": 30, "customer_name": "Edward Francis", "customer_total_purchases": 91.08}, {"agent_id": 3, "agent_name": "Jane Peacock", "agent_bd": "1973-08-29 00:00:00", "agent_hire_date": "2017-04-01 00:00:00", "customer_id": 33, "customer_name": "Ellie Sullivan", "customer_total_purchases": 75.24000000000001}, {"agent_id": 3, "agent_name": "Jane Peacock", "agent_bd": "1973-08-29 00:00:00", "agent_hire_date": "2017-04-01 00:00:00", "customer_id": 37, "customer_name": "Fynn Zimmermann", "customer_total_purchases": 94.05000000000001}, {"agent_id": 3, "agent_name": "Jane Peacock", "agent_bd": "1973-08-29 00:00:00", "agent_hire_date": "2017-04-01 00:00:00", "customer_id": 38, "customer_name": "Niklas Schr\u00f6der", "customer_total_purchases": 73.25999999999999}, {"agent_id": 3, "agent_name": "Jane Peacock", "agent_bd": "1973-08-29 00:00:00", "agent_hire_date": "2017-04-01 00:00:00", "customer_id": 42, "customer_name": "Wyatt Girard", "customer_total_purchases": 99.99}, {"agent_id": 3, "agent_name": "Jane Peacock", "agent_bd": "1973-08-29 00:00:00", "agent_hire_date": "2017-04-01 00:00:00", "customer_id": 43, "customer_name": "Isabelle Mercier", "customer_total_purchases": 73.25999999999999}, {"agent_id": 3, "agent_name": "Jane Peacock", "agent_bd": "1973-08-29 00:00:00", "agent_hire_date": "2017-04-01 00:00:00", "customer_id": 44, "customer_name": "Terhi H\u00e4m\u00e4l\u00e4inen", "customer_total_purchases": 79.2}, {"agent_id": 3, "agent_name": "Jane Peacock", "agent_bd": "1973-08-29 00:00:00", "agent_hire_date": "2017-04-01 00:00:00", "customer_id": 45, "customer_name": "Ladislav Kov\u00e1cs", "customer_total_purchases": 78.21}, {"agent_id": 3, "agent_name": "Jane Peacock", "agent_bd": "1973-08-29 00:00:00", "agent_hire_date": "2017-04-01 00:00:00", "customer_id": 46, "customer_name": "Hugh O'Reilly", "customer_total_purchases": 114.83999999999997}, {"agent_id": 3, "agent_name": "Jane Peacock", "agent_bd": "1973-08-29 00:00:00", "agent_hire_date": "2017-04-01 00:00:00", "customer_id": 52, "customer_name": "Emma Jones", "customer_total_purchases": 68.31}, {"agent_id": 3, "agent_name": "Jane Peacock", "agent_bd": "1973-08-29 00:00:00", "agent_hire_date": "2017-04-01 00:00:00", "customer_id": 53, "customer_name": "Phil Hughes", "customer_total_purchases": 98.01}, {"agent_id": 3, "agent_name": "Jane Peacock", "agent_bd": "1973-08-29 00:00:00", "agent_hire_date": "2017-04-01 00:00:00", "customer_id": 58, "customer_name": "Manoj Pareek", "customer_total_purchases": 111.86999999999999}, {"agent_id": 3, "agent_name": "Jane Peacock", "agent_bd": "1973-08-29 00:00:00", "agent_hire_date": "2017-04-01 00:00:00", "customer_id": 59, "customer_name": "Puja Srivastava", "customer_total_purchases": 71.28}, {"agent_id": 4, "agent_name": "Margaret Park", "agent_bd": "1947-09-19 00:00:00", "agent_hire_date": "2017-05-03 00:00:00", "customer_id": 4, "customer_name": "Bj\u00f8rn Hansen", "customer_total_purchases": 72.27000000000001}, {"agent_id": 4, "agent_name": "Margaret Park", "agent_bd": "1947-09-19 00:00:00", "agent_hire_date": "2017-05-03 00:00:00", "customer_id": 5, "customer_name": "Franti\u0161ek Wichterlov\u00e1", "customer_total_purchases": 144.54000000000002}, {"agent_id": 4, "agent_name": "Margaret Park", "agent_bd": "1947-09-19 00:00:00", "agent_hire_date": "2017-05-03 00:00:00", "customer_id": 8, "customer_name": "Daan Peeters", "customer_total_purchases": 60.38999999999999}, {"agent_id": 4, "agent_name": "Margaret Park", "agent_bd": "1947-09-19 00:00:00", "agent_hire_date": "2017-05-03 00:00:00", "customer_id": 9, "customer_name": "Kara Nielsen", "customer_total_purchases": 37.61999999999999}, {"agent_id": 4, "agent_name": "Margaret Park", "agent_bd": "1947-09-19 00:00:00", "agent_hire_date": "2017-05-03 00:00:00", "customer_id": 10, "customer_name": "Eduardo Martins", "customer_total_purchases": 60.39}, {"agent_id": 4, "agent_name": "Margaret Park", "agent_bd": "1947-09-19 00:00:00", "agent_hire_date": "2017-05-03 00:00:00", "customer_id": 13, "customer_name": "Fernanda Ramos", "customer_total_purchases": 106.91999999999999}, {"agent_id": 4, "agent_name": "Margaret Park", "agent_bd": "1947-09-19 00:00:00", "agent_hire_date": "2017-05-03 00:00:00", "customer_id": 16, "customer_name": "Frank Harris", "customer_total_purchases": 74.25}, {"agent_id": 4, "agent_name": "Margaret Park", "agent_bd": "1947-09-19 00:00:00", "agent_hire_date": "2017-05-03 00:00:00", "customer_id": 20, "customer_name": "Dan Miller", "customer_total_purchases": 95.03999999999999}, {"agent_id": 4, "agent_name": "Margaret Park", "agent_bd": "1947-09-19 00:00:00", "agent_hire_date": "2017-05-03 00:00:00", "customer_id": 22, "customer_name": "Heather Leacock", "customer_total_purchases": 92.07000000000001}, {"agent_id": 4, "agent_name": "Margaret Park", "agent_bd": "1947-09-19 00:00:00", "agent_hire_date": "2017-05-03 00:00:00", "customer_id": 23, "customer_name": "John Gordon", "customer_total_purchases": 66.33}, {"agent_id": 4, "agent_name": "Margaret Park", "agent_bd": "1947-09-19 00:00:00", "agent_hire_date": "2017-05-03 00:00:00", "customer_id": 26, "customer_name": "Richard Cunningham", "customer_total_purchases": 86.13000000000002}, {"agent_id": 4, "agent_name": "Margaret Park", "agent_bd": "1947-09-19 00:00:00", "agent_hire_date": "2017-05-03 00:00:00", "customer_id": 27, "customer_name": "Patrick Gray", "customer_total_purchases": 84.14999999999999}, {"agent_id": 4, "agent_name": "Margaret Park", "agent_bd": "1947-09-19 00:00:00", "agent_hire_date": "2017-05-03 00:00:00", "customer_id": 32, "customer_name": "Aaron Mitchell", "customer_total_purchases": 70.28999999999999}, {"agent_id": 4, "agent_name": "Margaret Park", "agent_bd": "1947-09-19 00:00:00", "agent_hire_date": "2017-05-03 00:00:00", "customer_id": 34, "customer_name": "Jo\u00e3o Fernandes", "customer_total_purchases": 102.96000000000001}, {"agent_id": 4, "agent_name": "Margaret Park", "agent_bd": "1947-09-19 00:00:00", "agent_hire_date": "2017-05-03 00:00:00", "customer_id": 35, "customer_name": "Madalena Sampaio", "customer_total_purchases": 82.17}, {"agent_id": 4, "agent_name": "Margaret Park", "agent_bd": "1947-09-19 00:00:00", "agent_hire_date": "2017-05-03 00:00:00", "customer_id": 39, "customer_name": "Camille Bernard", "customer_total_purchases": 79.2}, {"agent_id": 4, "agent_name": "Margaret Park", "agent_bd": "1947-09-19 00:00:00", "agent_hire_date": "2017-05-03 00:00:00", "customer_id": 40, "customer_name": "Dominique Lefebvre", "customer_total_purchases": 72.27}, {"agent_id": 4, "agent_name": "Margaret Park", "agent_bd": "1947-09-19 00:00:00", "agent_hire_date": "2017-05-03 00:00:00", "customer_id": 49, "customer_name": "Stanis\u0142aw W\u00f3jcik", "customer_total_purchases": 76.22999999999999}, {"agent_id": 4, "agent_name": "Margaret Park", "agent_bd": "1947-09-19 00:00:00", "agent_hire_date": "2017-05-03 00:00:00", "customer_id": 55, "customer_name": "Mark Taylor", "customer_total_purchases": 81.18}, {"agent_id": 4, "agent_name": "Margaret Park", "agent_bd": "1947-09-19 00:00:00", "agent_hire_date": "2017-05-03 00:00:00", "customer_id": 56, "customer_name": "Diego Guti\u00e9rrez", "customer_total_purchases": 39.6}, {"agent_id": 5, "agent_name": "Steve Johnson", "agent_bd": "1965-03-03 00:00:00", "agent_hire_date": "2017-10-17 00:00:00", "customer_id": 2, "customer_name": "Leonie K\u00f6hler", "customer_total_purchases": 82.17}, {"agent_id": 5, "agent_name": "Steve Johnson", "agent_bd": "1965-03-03 00:00:00", "agent_hire_date": "2017-10-17 00:00:00", "customer_id": 6, "customer_name": "Helena Hol\u00fd", "customer_total_purchases": 128.7}, {"agent_id": 5, "agent_name": "Steve Johnson", "agent_bd": "1965-03-03 00:00:00", "agent_hire_date": "2017-10-17 00:00:00", "customer_id": 7, "customer_name": "Astrid Gruber", "customer_total_purchases": 69.3}, {"agent_id": 5, "agent_name": "Steve Johnson", "agent_bd": "1965-03-03 00:00:00", "agent_hire_date": "2017-10-17 00:00:00", "customer_id": 11, "customer_name": "Alexandre Rocha", "customer_total_purchases": 69.3}, {"agent_id": 5, "agent_name": "Steve Johnson", "agent_bd": "1965-03-03 00:00:00", "agent_hire_date": "2017-10-17 00:00:00", "customer_id": 14, "customer_name": "Mark Philips", "customer_total_purchases": 29.699999999999996}, {"agent_id": 5, "agent_name": "Steve Johnson", "agent_bd": "1965-03-03 00:00:00", "agent_hire_date": "2017-10-17 00:00:00", "customer_id": 17, "customer_name": "Jack Smith", "customer_total_purchases": 98.01}, {"agent_id": 5, "agent_name": "Steve Johnson", "agent_bd": "1965-03-03 00:00:00", "agent_hire_date": "2017-10-17 00:00:00", "customer_id": 21, "customer_name": "Kathy Chase", "customer_total_purchases": 91.08000000000001}, {"agent_id": 5, "agent_name": "Steve Johnson", "agent_bd": "1965-03-03 00:00:00", "agent_hire_date": "2017-10-17 00:00:00", "customer_id": 25, "customer_name": "Victor Stevens", "customer_total_purchases": 76.23}, {"agent_id": 5, "agent_name": "Steve Johnson", "agent_bd": "1965-03-03 00:00:00", "agent_hire_date": "2017-10-17 00:00:00", "customer_id": 28, "customer_name": "Julia Barnett", "customer_total_purchases": 72.27}, {"agent_id": 5, "agent_name": "Steve Johnson", "agent_bd": "1965-03-03 00:00:00", "agent_hire_date": "2017-10-17 00:00:00", "customer_id": 31, "customer_name": "Martha Silk", "customer_total_purchases": 62.370000000000005}, {"agent_id": 5, "agent_name": "Steve Johnson", "agent_bd": "1965-03-03 00:00:00", "agent_hire_date": "2017-10-17 00:00:00", "customer_id": 36, "customer_name": "Hannah Schneider", "customer_total_purchases": 85.14}, {"agent_id": 5, "agent_name": "Steve Johnson", "agent_bd": "1965-03-03 00:00:00", "agent_hire_date": "2017-10-17 00:00:00", "customer_id": 41, "customer_name": "Marc Dubois", "customer_total_purchases": 64.35}, {"agent_id": 5, "agent_name": "Steve Johnson", "agent_bd": "1965-03-03 00:00:00", "agent_hire_date": "2017-10-17 00:00:00", "customer_id": 47, "customer_name": "Lucas Mancini", "customer_total_purchases": 50.49}, {"agent_id": 5, "agent_name": "Steve Johnson", "agent_bd": "1965-03-03 00:00:00", "agent_hire_date": "2017-10-17 00:00:00", "customer_id": 48, "customer_name": "Johannes Van der Berg", "customer_total_purchases": 65.34}, {"agent_id": 5, "agent_name": "Steve Johnson", "agent_bd": "1965-03-03 00:00:00", "agent_hire_date": "2017-10-17 00:00:00", "customer_id": 50, "customer_name": "Enrique Mu\u00f1oz", "customer_total_purchases": 98.01}, {"agent_id": 5, "agent_name": "Steve Johnson", "agent_bd": "1965-03-03 00:00:00", "agent_hire_date": "2017-10-17 00:00:00", "customer_id": 51, "customer_name": "Joakim Johansson", "customer_total_purchases": 75.24}, {"agent_id": 5, "agent_name": "Steve Johnson", "agent_bd": "1965-03-03 00:00:00", "agent_hire_date": "2017-10-17 00:00:00", "customer_id": 54, "customer_name": "Steve Murray", "customer_total_purchases": 79.2}, {"agent_id": 5, "agent_name": "Steve Johnson", "agent_bd": "1965-03-03 00:00:00", "agent_hire_date": "2017-10-17 00:00:00", "customer_id": 57, "customer_name": "Luis Rojas", "customer_total_purchases": 97.02000000000001}]}}, {"mode": "vega-lite"});
+</script>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If we hover over each of the boxes above, we can get more information such as minimum, 1st quartile, median, etc. The median is less influenced by outliers, so we can look at that. The median values are 79.20 (Jane), 77.72 (Margaret), and 75.74 (Steve). These values are still very close to each other.</p>
+<p>Therefore, we cannot conclusively state that any agent performs better than the others.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Sales-Data-by-Country">
+<a class="anchor" href="#Sales-Data-by-Country" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sales Data by Country<a class="anchor-link" href="#Sales-Data-by-Country"> </a>
+</h2>
+<p>Next, Chinook is requesting us to analyze sales in each country where it offers its service. Specifically, they would like to know the:</p>
+<ul>
+<li>total number of customers</li>
+<li>total value of sales</li>
+<li>average sales per customer</li>
+<li>average order value<ul>
+<li>Every order is a batch purchase of multiple tracks.</li>
+</ul>
+</li>
+</ul>
+<p>Furthermore, since there are some countries in the database with only one customer, we shall group these customers together under a category called "Other", which must appear at the very bottom of our final result.</p>
+<p>First, we will create a view, <code>country_invoices</code>, which shows all invoices and the country of the customer.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sql</span>
+DROP VIEW IF EXISTS country_invoices;
+
+CREATE VIEW country_invoices AS
+    SELECT
+        c.country AS country,
+        c.customer_id AS customer_id,
+        c.first_name || " " || c.last_name AS customer_name,
+        iv.invoice_id AS invoice_id,
+        iv.total AS order_value
+    FROM customer AS c
+    LEFT JOIN
+        invoice AS iv
+        ON iv.customer_id = c.customer_id
+;
+
+SELECT *
+FROM country_invoices
+LIMIT 5
+;
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> * sqlite:///2021-07-31-Intermediate-SQL-Files/chinook.db
+Done.
+Done.
+Done.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<table>
+    <thead>
+        <tr>
+            <th>country</th>
+            <th>customer_id</th>
+            <th>customer_name</th>
+            <th>invoice_id</th>
+            <th>order_value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Brazil</td>
+            <td>1</td>
+            <td>Luís Gonçalves</td>
+            <td>16</td>
+            <td>8.91</td>
+        </tr>
+        <tr>
+            <td>Brazil</td>
+            <td>1</td>
+            <td>Luís Gonçalves</td>
+            <td>77</td>
+            <td>5.9399999999999995</td>
+        </tr>
+        <tr>
+            <td>Brazil</td>
+            <td>1</td>
+            <td>Luís Gonçalves</td>
+            <td>149</td>
+            <td>8.91</td>
+        </tr>
+        <tr>
+            <td>Brazil</td>
+            <td>1</td>
+            <td>Luís Gonçalves</td>
+            <td>153</td>
+            <td>13.86</td>
+        </tr>
+        <tr>
+            <td>Brazil</td>
+            <td>1</td>
+            <td>Luís Gonçalves</td>
+            <td>182</td>
+            <td>5.9399999999999995</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Then, we will create a view, <code>country_customers</code>, which shows the total purchases per customer.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sql</span>
+DROP VIEW IF EXISTS country_customers;
+
+CREATE VIEW country_customers AS
+    SELECT
+        country,
+        customer_id,
+        customer_name,
+        SUM(order_value) AS customer_total_purchase
+    FROM country_invoices
+    GROUP BY customer_id
+;
+
+SELECT *
+FROM country_customers
+LIMIT 5
+;
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> * sqlite:///2021-07-31-Intermediate-SQL-Files/chinook.db
+Done.
+Done.
+Done.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<table>
+    <thead>
+        <tr>
+            <th>country</th>
+            <th>customer_id</th>
+            <th>customer_name</th>
+            <th>customer_total_purchase</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Brazil</td>
+            <td>1</td>
+            <td>Luís Gonçalves</td>
+            <td>108.89999999999998</td>
+        </tr>
+        <tr>
+            <td>Germany</td>
+            <td>2</td>
+            <td>Leonie Köhler</td>
+            <td>82.17</td>
+        </tr>
+        <tr>
+            <td>Canada</td>
+            <td>3</td>
+            <td>François Tremblay</td>
+            <td>99.99</td>
+        </tr>
+        <tr>
+            <td>Norway</td>
+            <td>4</td>
+            <td>Bjørn Hansen</td>
+            <td>72.27000000000001</td>
+        </tr>
+        <tr>
+            <td>Czech Republic</td>
+            <td>5</td>
+            <td>František Wichterlová</td>
+            <td>144.54000000000002</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We will then create a view called <code>country_labels</code>. It will show the number of customers per country. Countries with only 1 customer will be given a label of "Other".</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sql</span>
+DROP VIEW IF EXISTS country_labels;
+
+CREATE VIEW country_labels AS
+    SELECT
+        country,
+        COUNT(customer_id) AS number_customers,
+        CASE
+            WHEN COUNT(customer_id) &gt; 1 THEN country
+            ELSE "Other"
+            END AS country_label,
+        CASE
+            WHEN COUNT(customer_id) &gt; 1 THEN 0
+            ELSE 1
+            END AS is_other
+    FROM country_customers
+    GROUP BY country
+;
+
+SELECT *
+FROM country_labels
+LIMIT 10
+;
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> * sqlite:///2021-07-31-Intermediate-SQL-Files/chinook.db
+Done.
+Done.
+Done.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<table>
+    <thead>
+        <tr>
+            <th>country</th>
+            <th>number_customers</th>
+            <th>country_label</th>
+            <th>is_other</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Argentina</td>
+            <td>1</td>
+            <td>Other</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>Australia</td>
+            <td>1</td>
+            <td>Other</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>Austria</td>
+            <td>1</td>
+            <td>Other</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>Belgium</td>
+            <td>1</td>
+            <td>Other</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>Brazil</td>
+            <td>5</td>
+            <td>Brazil</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <td>Canada</td>
+            <td>8</td>
+            <td>Canada</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <td>Chile</td>
+            <td>1</td>
+            <td>Other</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>Czech Republic</td>
+            <td>2</td>
+            <td>Czech Republic</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <td>Denmark</td>
+            <td>1</td>
+            <td>Other</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>Finland</td>
+            <td>1</td>
+            <td>Other</td>
+            <td>1</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We will also create a view called <code>country_avg_order</code> which simply shows the average order value per country. This will be done by querying the <code>country_invoices</code> view.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sql</span>
+DROP VIEW IF EXISTS country_avg_order;
+
+CREATE VIEW country_avg_order AS
+    SELECT
+        cl.country_label,
+        AVG(civ.order_value) AS avg_order_value
+    FROM country_invoices AS civ
+    INNER JOIN
+        country_labels AS cl
+        ON cl.country = civ.country
+    GROUP BY cl.country_label
+;
+
+SELECT *
+FROM country_avg_order
+;
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> * sqlite:///2021-07-31-Intermediate-SQL-Files/chinook.db
+Done.
+Done.
+Done.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<table>
+    <thead>
+        <tr>
+            <th>country_label</th>
+            <th>avg_order_value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Brazil</td>
+            <td>7.011147540983605</td>
+        </tr>
+        <tr>
+            <td>Canada</td>
+            <td>7.047236842105264</td>
+        </tr>
+        <tr>
+            <td>Czech Republic</td>
+            <td>9.107999999999999</td>
+        </tr>
+        <tr>
+            <td>France</td>
+            <td>7.781400000000001</td>
+        </tr>
+        <tr>
+            <td>Germany</td>
+            <td>8.161463414634145</td>
+        </tr>
+        <tr>
+            <td>India</td>
+            <td>8.72142857142857</td>
+        </tr>
+        <tr>
+            <td>Other</td>
+            <td>7.44857142857143</td>
+        </tr>
+        <tr>
+            <td>Portugal</td>
+            <td>6.3837931034482756</td>
+        </tr>
+        <tr>
+            <td>USA</td>
+            <td>7.942671755725194</td>
+        </tr>
+        <tr>
+            <td>United Kingdom</td>
+            <td>8.768571428571429</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Finally, we will create a view called <code>country_stats</code> that shows all of the 4 statistics that were requested by the Chinook management. The "Other" entry will be forced to the bottom of the query result using the <code>is_other</code> column we created in the <code>country_labels</code> view.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sql</span>
+DROP VIEW IF EXISTS country_stats;
+
+CREATE VIEW country_stats AS
+    SELECT
+        l.country_label,
+        COUNT(c.customer_id) AS number_customers,
+        ROUND(SUM(c.customer_total_purchase), 2) AS total_sales,
+        ROUND(AVG(c.customer_total_purchase), 2) AS avg_sales_customer,
+        ROUND(a.avg_order_value, 2) AS avg_order_value
+    FROM country_customers AS c
+    INNER JOIN
+        country_labels AS l
+        ON l.country = c.country
+    INNER JOIN
+        country_avg_order AS a
+        ON a.country_label = l.country_label
+    GROUP BY l.country_label
+    ORDER BY
+        l.is_other ASC,
+        total_sales DESC
+;
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> * sqlite:///2021-07-31-Intermediate-SQL-Files/chinook.db
+Done.
+Done.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sql</span> result &lt;&lt;
+SELECT *
+FROM country_stats
+;
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> * sqlite:///2021-07-31-Intermediate-SQL-Files/chinook.db
+Done.
+Returning data to local variable result
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">country_stats_df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+<span class="n">country_stats_df</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>country_label</th>
+      <th>number_customers</th>
+      <th>total_sales</th>
+      <th>avg_sales_customer</th>
+      <th>avg_order_value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>USA</td>
+      <td>13</td>
+      <td>1040.49</td>
+      <td>80.04</td>
+      <td>7.94</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Canada</td>
+      <td>8</td>
+      <td>535.59</td>
+      <td>66.95</td>
+      <td>7.05</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Brazil</td>
+      <td>5</td>
+      <td>427.68</td>
+      <td>85.54</td>
+      <td>7.01</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>France</td>
+      <td>5</td>
+      <td>389.07</td>
+      <td>77.81</td>
+      <td>7.78</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Germany</td>
+      <td>4</td>
+      <td>334.62</td>
+      <td>83.66</td>
+      <td>8.16</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Czech Republic</td>
+      <td>2</td>
+      <td>273.24</td>
+      <td>136.62</td>
+      <td>9.11</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>United Kingdom</td>
+      <td>3</td>
+      <td>245.52</td>
+      <td>81.84</td>
+      <td>8.77</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>Portugal</td>
+      <td>2</td>
+      <td>185.13</td>
+      <td>92.57</td>
+      <td>6.38</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>India</td>
+      <td>2</td>
+      <td>183.15</td>
+      <td>91.58</td>
+      <td>8.72</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>Other</td>
+      <td>15</td>
+      <td>1094.94</td>
+      <td>73.00</td>
+      <td>7.45</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We can make a scatter plot with the data above in order to make results more clear.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Exclude the "Other" entry.</span>
+<span class="n">main_df</span> <span class="o">=</span> <span class="n">country_stats_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">country_stats_df</span><span class="p">[</span><span class="s2">"country_label"</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">"Other"</span><span class="p">]</span>
+
+<span class="c1"># Base layer.</span>
+<span class="n">base</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">main_df</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">mark_point</span><span class="p">(</span><span class="n">size</span> <span class="o">=</span> <span class="mi">300</span><span class="p">)</span> <span class="c1"># Set default size of points to 300 pixels.</span>
+    <span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s2">"number_customers:Q"</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s2">"Number of Customers"</span><span class="p">),</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s2">"total_sales:Q"</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s2">"Total Sales (USD)"</span><span class="p">),</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Scatter plot layer.</span>
+<span class="n">points</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+    <span class="n">color</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Color</span><span class="p">(</span><span class="s2">"avg_sales_customer:Q"</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s2">"Average Sales per Customer (USD)"</span><span class="p">),</span>
+    <span class="n">tooltip</span> <span class="o">=</span> <span class="n">country_stats_df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+<span class="p">)</span>
+
+<span class="c1"># Text layer.</span>
+<span class="n">text</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">base</span>
+    <span class="o">.</span><span class="n">mark_text</span><span class="p">(</span> <span class="c1"># Move text to the top left of each point.</span>
+        <span class="n">align</span> <span class="o">=</span> <span class="s2">"right"</span><span class="p">,</span>
+        <span class="n">dy</span> <span class="o">=</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span>
+        <span class="n">dx</span> <span class="o">=</span> <span class="o">-</span><span class="mi">20</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="s2">"country_label:N"</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Combine layers.</span>
+<span class="n">chart</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="p">(</span><span class="n">points</span> <span class="o">+</span> <span class="n">text</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">properties</span><span class="p">(</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="s2">"Chinook Sales by Country"</span><span class="p">,</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="mi">300</span><span class="p">,</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="mi">700</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="o">.</span><span class="n">interactive</span><span class="p">()</span>
+<span class="p">)</span>
+
+<span class="c1"># Display chart.</span>
+<span class="n">chart</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+
+<div id="altair-viz-c3024efaf50c4974876a5b2109b0de0e"></div>
+<script type="text/javascript">
+  (function(spec, embedOpt){
+    let outputDiv = document.currentScript.previousElementSibling;
+    if (outputDiv.id !== "altair-viz-c3024efaf50c4974876a5b2109b0de0e") {
+      outputDiv = document.getElementById("altair-viz-c3024efaf50c4974876a5b2109b0de0e");
+    }
+    const paths = {
+      "vega": "https://cdn.jsdelivr.net/npm//vega@5?noext",
+      "vega-lib": "https://cdn.jsdelivr.net/npm//vega-lib?noext",
+      "vega-lite": "https://cdn.jsdelivr.net/npm//vega-lite@4.8.1?noext",
+      "vega-embed": "https://cdn.jsdelivr.net/npm//vega-embed@6?noext",
+    };
+
+    function loadScript(lib) {
+      return new Promise(function(resolve, reject) {
+        var s = document.createElement('script');
+        s.src = paths[lib];
+        s.async = true;
+        s.onload = () => resolve(paths[lib]);
+        s.onerror = () => reject(`Error loading script: ${paths[lib]}`);
+        document.getElementsByTagName("head")[0].appendChild(s);
+      });
+    }
+
+    function showError(err) {
+      outputDiv.innerHTML = `<div class="error" style="color:red;">${err}</div>`;
+      throw err;
+    }
+
+    function displayChart(vegaEmbed) {
+      vegaEmbed(outputDiv, spec, embedOpt)
+        .catch(err => showError(`Javascript Error: ${err.message}<br>This usually means there's a typo in your chart specification. See the javascript console for the full traceback.`));
+    }
+
+    if(typeof define === "function" && define.amd) {
+      requirejs.config({paths});
+      require(["vega-embed"], displayChart, err => showError(`Error loading script: ${err.message}`));
+    } else if (typeof vegaEmbed === "function") {
+      displayChart(vegaEmbed);
+    } else {
+      loadScript("vega")
+        .then(() => loadScript("vega-lite"))
+        .then(() => loadScript("vega-embed"))
+        .catch(showError)
+        .then(() => displayChart(vegaEmbed));
+    }
+  })({"config": {"view": {"continuousWidth": 400, "continuousHeight": 300}}, "layer": [{"mark": {"type": "point", "size": 300}, "encoding": {"color": {"type": "quantitative", "field": "avg_sales_customer", "title": "Average Sales per Customer (USD)"}, "tooltip": [{"type": "nominal", "field": "country_label"}, {"type": "quantitative", "field": "number_customers"}, {"type": "quantitative", "field": "total_sales"}, {"type": "quantitative", "field": "avg_sales_customer"}, {"type": "quantitative", "field": "avg_order_value"}], "x": {"type": "quantitative", "field": "number_customers", "title": "Number of Customers"}, "y": {"type": "quantitative", "field": "total_sales", "title": "Total Sales (USD)"}}, "selection": {"selector003": {"type": "interval", "bind": "scales", "encodings": ["x", "y"]}}}, {"mark": {"type": "text", "align": "right", "dx": -20, "dy": -5}, "encoding": {"text": {"type": "nominal", "field": "country_label"}, "x": {"type": "quantitative", "field": "number_customers", "title": "Number of Customers"}, "y": {"type": "quantitative", "field": "total_sales", "title": "Total Sales (USD)"}}}], "data": {"name": "data-78bcc517d9f2ead3be0976a962e20092"}, "height": 300, "title": "Chinook Sales by Country", "width": 700, "$schema": "https://vega.github.io/schema/vega-lite/v4.8.1.json", "datasets": {"data-78bcc517d9f2ead3be0976a962e20092": [{"country_label": "USA", "number_customers": 13, "total_sales": 1040.49, "avg_sales_customer": 80.04, "avg_order_value": 7.94}, {"country_label": "Canada", "number_customers": 8, "total_sales": 535.59, "avg_sales_customer": 66.95, "avg_order_value": 7.05}, {"country_label": "Brazil", "number_customers": 5, "total_sales": 427.68, "avg_sales_customer": 85.54, "avg_order_value": 7.01}, {"country_label": "France", "number_customers": 5, "total_sales": 389.07, "avg_sales_customer": 77.81, "avg_order_value": 7.78}, {"country_label": "Germany", "number_customers": 4, "total_sales": 334.62, "avg_sales_customer": 83.66, "avg_order_value": 8.16}, {"country_label": "Czech Republic", "number_customers": 2, "total_sales": 273.24, "avg_sales_customer": 136.62, "avg_order_value": 9.11}, {"country_label": "United Kingdom", "number_customers": 3, "total_sales": 245.52, "avg_sales_customer": 81.84, "avg_order_value": 8.77}, {"country_label": "Portugal", "number_customers": 2, "total_sales": 185.13, "avg_sales_customer": 92.57, "avg_order_value": 6.38}, {"country_label": "India", "number_customers": 2, "total_sales": 183.15, "avg_sales_customer": 91.58, "avg_order_value": 8.72}]}}, {"mode": "vega-lite"});
+</script>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Looking at the top right of the chart, we can see that the USA has the highest number of Chinook customers (13), as well as the highest total sales (USD 1040.49). All of the other countries have only 2 to 8 customers.</p>
+<p>On the other hand, the Czech Republic has the highest average sales per customer at USD 136.62; this is indicated by its dark color in the chart. This country also had the highest average order value at USD 9.11. This means that though the country has few customers, these people are avid buyers of music.</p>
+<p>Chinook may benefit from marketing its service more aggressively in countries other than the USA where it has gained a good foothold, such as <strong>Canada, Brazil, and France</strong>. Chinook may also target the <strong>Czech Republic</strong> since the customers there seem to buy a lot of music on a per-person basis.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Comparing-Purchase-Types:-Full-Album-vs-Selected-Sets">
+<a class="anchor" href="#Comparing-Purchase-Types:-Full-Album-vs-Selected-Sets" aria-hidden="true"><span class="octicon octicon-link"></span></a>Comparing Purchase Types: Full Album vs Selected Sets<a class="anchor-link" href="#Comparing-Purchase-Types:-Full-Album-vs-Selected-Sets"> </a>
+</h2>
+<p>In our last scenario, we have been requested to compare the popularities of Chinook's two purchase types:</p>
+<ul>
+<li>Full album<ul>
+<li>The customer buys a full album.</li>
+<li>Albums are pre-defined in Chinook's library. The customer may not add other tracks on top of an album.</li>
+</ul>
+</li>
+<li>Selected set of tracks<ul>
+<li>The customer manually selects any number of individual tracks.</li>
+</ul>
+</li>
+</ul>
+<p>In both cases, each track is bought at its unit price; there are no discounts.</p>
+<p>Currently, Chinook's purchasing strategy is to <strong>buy full albums</strong> from record companies. However, Chinook doesn't know whether full album purchases are popular among its customers. If selected sets are more popular, then Chinook may switch to a new strategy in which it will only <strong>buy the most popular individual tracks</strong> from record companies.</p>
+<p>Our analysis will help Chinook make the final decision. For each purchase type, we will show the number of invoices and percentage of all invoices with that type. The type with the higher number will be the more popular one.</p>
+<p>First, we create a view, <code>invoice_tracks</code>, that shows all tracks under each invoice. The album associated with each track is also shown.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sql</span>
+DROP VIEW IF EXISTS invoice_tracks_bought;
+
+CREATE VIEW invoice_tracks_bought AS
+    SELECT
+        iv.invoice_id AS invoice_id,
+        il.track_id AS track_id,
+        t.name AS track_name,
+        t.album_id AS album_id,
+        a.title AS album_name
+    FROM invoice AS iv
+    INNER JOIN
+        invoice_line AS il
+        ON il.invoice_id = iv.invoice_id
+    INNER JOIN
+        track AS t
+        ON t.track_id = il.track_id
+    INNER JOIN
+        album AS a
+        ON a.album_id = t.album_id
+    ORDER BY invoice_id, track_id, album_id
+;
+
+SELECT *
+FROM invoice_tracks_bought
+LIMIT 7
+;
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> * sqlite:///2021-07-31-Intermediate-SQL-Files/chinook.db
+Done.
+Done.
+Done.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<table>
+    <thead>
+        <tr>
+            <th>invoice_id</th>
+            <th>track_id</th>
+            <th>track_name</th>
+            <th>album_id</th>
+            <th>album_name</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1</td>
+            <td>1158</td>
+            <td>Right Next Door to Hell</td>
+            <td>91</td>
+            <td>Use Your Illusion I</td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>1159</td>
+            <td>Dust N' Bones</td>
+            <td>91</td>
+            <td>Use Your Illusion I</td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>1160</td>
+            <td>Live and Let Die</td>
+            <td>91</td>
+            <td>Use Your Illusion I</td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>1161</td>
+            <td>Don't Cry (Original)</td>
+            <td>91</td>
+            <td>Use Your Illusion I</td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>1162</td>
+            <td>Perfect Crime</td>
+            <td>91</td>
+            <td>Use Your Illusion I</td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>1163</td>
+            <td>You Ain't the First</td>
+            <td>91</td>
+            <td>Use Your Illusion I</td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>1164</td>
+            <td>Bad Obsession</td>
+            <td>91</td>
+            <td>Use Your Illusion I</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Then, we create a view called <code>invoice_album</code>, which shows only the album associated with the first track of each invoice. This way, there is only <strong>one row per invoice</strong>. We will also include the total purchase amount of each invoice so that we can use it later.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sql</span>
+DROP VIEW IF EXISTS invoice_album;
+
+CREATE VIEW invoice_album AS 
+    SELECT
+        itb.invoice_id AS invoice_id,
+        MIN(itb.album_id) AS album_id,
+        itb.album_name AS album_name,
+        iv.total AS total_purchase
+    FROM invoice_tracks_bought AS itb
+    INNER JOIN
+        invoice AS iv
+        ON iv.invoice_id = itb.invoice_id
+    GROUP BY itb.invoice_id
+    ORDER BY itb.invoice_id
+;
+
+SELECT *
+FROM invoice_album
+LIMIT 5
+;
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> * sqlite:///2021-07-31-Intermediate-SQL-Files/chinook.db
+Done.
+Done.
+Done.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<table>
+    <thead>
+        <tr>
+            <th>invoice_id</th>
+            <th>album_id</th>
+            <th>album_name</th>
+            <th>total_purchase</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1</td>
+            <td>91</td>
+            <td>Use Your Illusion I</td>
+            <td>15.84</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>20</td>
+            <td>The Best Of Buddy Guy - The Millenium Collection</td>
+            <td>9.9</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>203</td>
+            <td>A-Sides</td>
+            <td>1.98</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>58</td>
+            <td>Come Taste The Band</td>
+            <td>7.92</td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td>163</td>
+            <td>From The Muddy Banks Of The Wishkah [live]</td>
+            <td>16.83</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Then, we join <code>invoice_album</code> with the <code>track</code> table in order to <strong>list all of the tracks</strong> under the album associated with each invoice. The result will be a view called <code>invoice_full_album_tracks</code>.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sql</span>
+DROP VIEW IF EXISTS invoice_full_album_tracks;
+
+CREATE VIEW invoice_full_album_tracks AS
+    SELECT
+        ia.*,
+        t.track_id AS track_id,
+        t.name AS track_name
+    FROM invoice_album AS ia
+    INNER JOIN
+        track AS t
+        ON t.album_id = ia.album_id
+    ORDER BY invoice_id, album_id, track_id
+;
+
+SELECT *
+FROM invoice_full_album_tracks
+LIMIT 5
+;
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> * sqlite:///2021-07-31-Intermediate-SQL-Files/chinook.db
+Done.
+Done.
+Done.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<table>
+    <thead>
+        <tr>
+            <th>invoice_id</th>
+            <th>album_id</th>
+            <th>album_name</th>
+            <th>total_purchase</th>
+            <th>track_id</th>
+            <th>track_name</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1</td>
+            <td>91</td>
+            <td>Use Your Illusion I</td>
+            <td>15.84</td>
+            <td>1158</td>
+            <td>Right Next Door to Hell</td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>91</td>
+            <td>Use Your Illusion I</td>
+            <td>15.84</td>
+            <td>1159</td>
+            <td>Dust N' Bones</td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>91</td>
+            <td>Use Your Illusion I</td>
+            <td>15.84</td>
+            <td>1160</td>
+            <td>Live and Let Die</td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>91</td>
+            <td>Use Your Illusion I</td>
+            <td>15.84</td>
+            <td>1161</td>
+            <td>Don't Cry (Original)</td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>91</td>
+            <td>Use Your Illusion I</td>
+            <td>15.84</td>
+            <td>1162</td>
+            <td>Perfect Crime</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The <code>invoice_full_album_tracks</code> view looks very similar to the <code>invoice_tracks_bought</code> view at first glance. However, there is a difference:</p>
+<ul>
+<li>
+<code>invoice_tracks_bought</code><ul>
+<li>It contains the tracks <strong>bought</strong> in each invoice.</li>
+<li>Each set of tracks may or may not be a full album.</li>
+</ul>
+</li>
+<li>
+<code>invoice_full_album_tracks</code><ul>
+<li>It contains all of the tracks under one album associated with an invoice.</li>
+<li>Some of these tracks <strong>may not have been bought</strong> by the customer.</li>
+</ul>
+</li>
+</ul>
+<p>Next, we will create a new view called <code>invoice_purchase_type</code> which indicates whether each invoice is a "Full Album" or "Selected Set" purchase.</p>
+<p>In order to determine this, we will have a <code>CASE</code> statement which can be explained as follows:</p>
+<ul>
+<li>
+<code>WHEN</code> clause: If the set of tracks bought and the full album are <strong>exactly the same</strong>, mark the purchase type as "Full Album".</li>
+<li>
+<code>ELSE</code> clause: Otherwise, mark the purchase type as "Selected Set".</li>
+</ul>
+<p>Inside the <code>WHEN</code> clause, we have a rather complicated-looking set of operations. Let's look at one part:</p>
+
+<pre><code>(
+    SELECT itb.track_id
+    FROM invoice_tracks_bought AS itb
+    WHERE itb.invoice_id = ia.invoice_id
+
+    EXCEPT
+
+    SELECT ifa.track_id
+    FROM invoice_full_album_tracks AS ifa
+    WHERE ifa.invoice_id = ia.invoice_id
+) IS NULL
+
+</code></pre>
+<p>In order to make the explanation more simple, we can call the subqueries above "set 1" and "set 2".</p>
+
+<pre><code>(
+    {set 1}
+
+    EXCEPT
+
+    {set 2}
+) IS NULL
+
+</code></pre>
+<ul>
+<li>Set 1 represents all tracks bought in one invoice.</li>
+<li>Set 2 represents the full set of tracks in an album associated with the invoice.</li>
+<li>Via <code>EXCEPT</code> and <code>IS NULL</code>, we check whether Set 1 is a subset of Set 2.<ul>
+<li>If it is, the result is True.</li>
+<li>Otherwise, False.</li>
+</ul>
+</li>
+</ul>
+<p>We then repeat the same process but <em>in reverse</em>, to check if Set 2 is a subset of Set 1. We thus end up with <em>two boolean values</em>, and we use the <code>AND</code> operator on these.</p>
+
+<pre><code>(
+    {set 1}
+
+    EXCEPT
+
+    {set 2}
+) IS NULL
+
+AND
+
+(
+    {set 2}
+
+    EXCEPT
+
+    {set 1}
+) IS NULL
+
+</code></pre>
+<p>The purpose of <code>AND</code> is to determine the following.</p>
+<ul>
+<li>If both conditions are True:<ul>
+<li>The two sets of tracks match exactly.</li>
+<li>The invoice is a "Full Album" purchase.</li>
+</ul>
+</li>
+<li>If any condition is False:<ul>
+<li>The two sets of tracks do not match exactly.</li>
+<li>The invoice is a "Selected Set" purchase.</li>
+</ul>
+</li>
+</ul>
+<p>The full query is shown below.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sql</span>
+DROP VIEW IF EXISTS invoice_purchase_type;
+
+CREATE VIEW invoice_purchase_type AS
+    SELECT
+        ia.invoice_id,
+        CASE
+            WHEN (
+
+                (
+                    SELECT itb.track_id
+                    FROM invoice_tracks_bought AS itb
+                    WHERE itb.invoice_id = ia.invoice_id
+
+                    EXCEPT
+
+                    SELECT ifa.track_id
+                    FROM invoice_full_album_tracks AS ifa
+                    WHERE ifa.invoice_id = ia.invoice_id
+                ) IS NULL
+
+                AND
+
+                (
+                    SELECT ifa.track_id
+                    FROM invoice_full_album_tracks AS ifa
+                    WHERE ifa.invoice_id = ia.invoice_id
+
+                    EXCEPT
+
+                    SELECT itb.track_id
+                    FROM invoice_tracks_bought AS itb
+                    WHERE itb.invoice_id = ia.invoice_id
+                ) IS NULL
+
+            ) THEN "Full Album"
+            ELSE "Selected Set"
+            END AS purchase_type,
+        ia.total_purchase AS total_purchase
+    FROM invoice_album AS ia
+;
+
+SELECT *
+FROM invoice_purchase_type
+LIMIT 10
+;
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> * sqlite:///2021-07-31-Intermediate-SQL-Files/chinook.db
+Done.
+Done.
+Done.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<table>
+    <thead>
+        <tr>
+            <th>invoice_id</th>
+            <th>purchase_type</th>
+            <th>total_purchase</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1</td>
+            <td>Full Album</td>
+            <td>15.84</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>Selected Set</td>
+            <td>9.9</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>Selected Set</td>
+            <td>1.98</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>Selected Set</td>
+            <td>7.92</td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td>Full Album</td>
+            <td>16.83</td>
+        </tr>
+        <tr>
+            <td>6</td>
+            <td>Selected Set</td>
+            <td>1.98</td>
+        </tr>
+        <tr>
+            <td>7</td>
+            <td>Selected Set</td>
+            <td>10.89</td>
+        </tr>
+        <tr>
+            <td>8</td>
+            <td>Selected Set</td>
+            <td>9.9</td>
+        </tr>
+        <tr>
+            <td>9</td>
+            <td>Selected Set</td>
+            <td>8.91</td>
+        </tr>
+        <tr>
+            <td>10</td>
+            <td>Selected Set</td>
+            <td>1.98</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>With the view above, we can finally answer the question being asked. A view called <code>purchase_type_proportion</code> will be created which shows the following information per purchase type:</p>
+<ul>
+<li>number of invoices</li>
+<li>percentage of invoices</li>
+<li>average sales per invoice</li>
+<li>sales in USD</li>
+<li>percentage of total sales</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sql</span>
+DROP VIEW IF EXISTS purchase_type_proportion;
+
+CREATE VIEW purchase_type_proportion AS
+    SELECT
+        purchase_type,
+        
+        COUNT(purchase_type) AS type_count,
+        
+        ROUND(
+            CAST(COUNT(purchase_type) AS Float)
+            / CAST(
+                (SELECT COUNT(purchase_type)
+                 FROM invoice_purchase_type)
+                AS Float
+            )
+            * 100,
+            2
+        ) AS type_percentage,
+        
+        ROUND(
+            AVG(total_purchase),
+            2
+        ) AS avg_sales_per_invoice,
+        
+        ROUND(
+            SUM(total_purchase),
+            2
+        ) AS sales_number,
+        
+        ROUND(
+            SUM(total_purchase)
+            / (SELECT SUM(total_purchase)
+               FROM invoice_purchase_type)
+            * 100,
+            2
+        ) AS sales_percentage
+        
+    FROM invoice_purchase_type
+    GROUP BY purchase_type
+    ORDER BY type_count DESC
+;
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> * sqlite:///2021-07-31-Intermediate-SQL-Files/chinook.db
+Done.
+Done.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sql</span> result &lt;&lt;
+SELECT *
+FROM purchase_type_proportion
+;
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre> * sqlite:///2021-07-31-Intermediate-SQL-Files/chinook.db
+Done.
+Returning data to local variable result
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">purchase_type_df</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+<span class="n">purchase_type_df</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>purchase_type</th>
+      <th>type_count</th>
+      <th>type_percentage</th>
+      <th>avg_sales_per_invoice</th>
+      <th>sales_number</th>
+      <th>sales_percentage</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Selected Set</td>
+      <td>500</td>
+      <td>81.43</td>
+      <td>6.50</td>
+      <td>3248.19</td>
+      <td>68.97</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Full Album</td>
+      <td>114</td>
+      <td>18.57</td>
+      <td>12.82</td>
+      <td>1461.24</td>
+      <td>31.03</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The <code>type_percentage</code> column shows that the majority (81%) of all Chinook invoices are Selected Sets. Full Album purchases only make up 19% of all invoices.</p>
+<p>This is shown in the pie chart below.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">colors</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">color_palette</span><span class="p">(</span><span class="s1">'pastel'</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">purchase_type_df</span><span class="p">[</span><span class="s2">"type_percentage"</span><span class="p">],</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">purchase_type_df</span><span class="p">[</span><span class="s2">"purchase_type"</span><span class="p">],</span>
+    <span class="n">colors</span> <span class="o">=</span> <span class="n">colors</span><span class="p">,</span>
+    <span class="n">autopct</span> <span class="o">=</span> <span class="s2">"</span><span class="si">%0.2f%%</span><span class="s2">"</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Proportion of Chinook Store Invoices by Purchase Type"</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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%0A">
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>However, the average sales per Full Album purchase is <em>almost twice</em> that of a Selected Set purchase. This is shown in the bar chart below.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Base layer with bar chart</span>
+<span class="n">base</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">alt</span><span class="o">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">purchase_type_df</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">mark_bar</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="s2">"purchase_type:N"</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s2">"Purchase Type"</span><span class="p">),</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">alt</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="s2">"avg_sales_per_invoice:Q"</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s2">"Average Sales per Invoice (USD)"</span><span class="p">),</span>
+        <span class="n">tooltip</span> <span class="o">=</span> <span class="n">purchase_type_df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Text layer</span>
+<span class="n">text</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">base</span>
+    <span class="o">.</span><span class="n">mark_text</span><span class="p">(</span>
+        <span class="n">align</span> <span class="o">=</span> <span class="s2">"center"</span><span class="p">,</span>
+        <span class="n">dy</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="s2">"white"</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="s2">"avg_sales_per_invoice:Q"</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Combine layers into one chart</span>
+<span class="n">chart</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="p">(</span><span class="n">base</span> <span class="o">+</span> <span class="n">text</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">properties</span><span class="p">(</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="s2">"Average Sales per Invoice by Purchase Type"</span><span class="p">,</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="mi">300</span><span class="p">,</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="o">.</span><span class="n">configure_axis</span><span class="p">(</span><span class="n">labelAngle</span> <span class="o">=</span> <span class="mi">30</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">interactive</span><span class="p">()</span>
+<span class="p">)</span>
+
+<span class="c1"># Display chart.</span>
+<span class="n">chart</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+
+<div id="altair-viz-b1023c944764487dab7732e30b83c638"></div>
+<script type="text/javascript">
+  (function(spec, embedOpt){
+    let outputDiv = document.currentScript.previousElementSibling;
+    if (outputDiv.id !== "altair-viz-b1023c944764487dab7732e30b83c638") {
+      outputDiv = document.getElementById("altair-viz-b1023c944764487dab7732e30b83c638");
+    }
+    const paths = {
+      "vega": "https://cdn.jsdelivr.net/npm//vega@5?noext",
+      "vega-lib": "https://cdn.jsdelivr.net/npm//vega-lib?noext",
+      "vega-lite": "https://cdn.jsdelivr.net/npm//vega-lite@4.8.1?noext",
+      "vega-embed": "https://cdn.jsdelivr.net/npm//vega-embed@6?noext",
+    };
+
+    function loadScript(lib) {
+      return new Promise(function(resolve, reject) {
+        var s = document.createElement('script');
+        s.src = paths[lib];
+        s.async = true;
+        s.onload = () => resolve(paths[lib]);
+        s.onerror = () => reject(`Error loading script: ${paths[lib]}`);
+        document.getElementsByTagName("head")[0].appendChild(s);
+      });
+    }
+
+    function showError(err) {
+      outputDiv.innerHTML = `<div class="error" style="color:red;">${err}</div>`;
+      throw err;
+    }
+
+    function displayChart(vegaEmbed) {
+      vegaEmbed(outputDiv, spec, embedOpt)
+        .catch(err => showError(`Javascript Error: ${err.message}<br>This usually means there's a typo in your chart specification. See the javascript console for the full traceback.`));
+    }
+
+    if(typeof define === "function" && define.amd) {
+      requirejs.config({paths});
+      require(["vega-embed"], displayChart, err => showError(`Error loading script: ${err.message}`));
+    } else if (typeof vegaEmbed === "function") {
+      displayChart(vegaEmbed);
+    } else {
+      loadScript("vega")
+        .then(() => loadScript("vega-lite"))
+        .then(() => loadScript("vega-embed"))
+        .catch(showError)
+        .then(() => displayChart(vegaEmbed));
+    }
+  })({"config": {"view": {"continuousWidth": 400, "continuousHeight": 300}, "axis": {"labelAngle": 30}}, "layer": [{"mark": "bar", "encoding": {"tooltip": [{"type": "nominal", "field": "purchase_type"}, {"type": "quantitative", "field": "type_count"}, {"type": "quantitative", "field": "type_percentage"}, {"type": "quantitative", "field": "avg_sales_per_invoice"}, {"type": "quantitative", "field": "sales_number"}, {"type": "quantitative", "field": "sales_percentage"}], "x": {"type": "nominal", "field": "purchase_type", "title": "Purchase Type"}, "y": {"type": "quantitative", "field": "avg_sales_per_invoice", "title": "Average Sales per Invoice (USD)"}}, "selection": {"selector004": {"type": "interval", "bind": "scales", "encodings": ["x", "y"]}}}, {"mark": {"type": "text", "align": "center", "color": "white", "dy": 10}, "encoding": {"text": {"type": "quantitative", "field": "avg_sales_per_invoice"}, "tooltip": [{"type": "nominal", "field": "purchase_type"}, {"type": "quantitative", "field": "type_count"}, {"type": "quantitative", "field": "type_percentage"}, {"type": "quantitative", "field": "avg_sales_per_invoice"}, {"type": "quantitative", "field": "sales_number"}, {"type": "quantitative", "field": "sales_percentage"}], "x": {"type": "nominal", "field": "purchase_type", "title": "Purchase Type"}, "y": {"type": "quantitative", "field": "avg_sales_per_invoice", "title": "Average Sales per Invoice (USD)"}}}], "data": {"name": "data-7eadde737a2270da8aabe4fb258c8521"}, "height": 300, "title": "Average Sales per Invoice by Purchase Type", "width": 200, "$schema": "https://vega.github.io/schema/vega-lite/v4.8.1.json", "datasets": {"data-7eadde737a2270da8aabe4fb258c8521": [{"purchase_type": "Selected Set", "type_count": 500, "type_percentage": 81.43, "avg_sales_per_invoice": 6.5, "sales_number": 3248.19, "sales_percentage": 68.97}, {"purchase_type": "Full Album", "type_count": 114, "type_percentage": 18.57, "avg_sales_per_invoice": 12.82, "sales_number": 1461.24, "sales_percentage": 31.03}]}}, {"mode": "vega-lite"});
+</script>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Full Albums cost more than Selected Sets because the former tend to have more tracks. Thus, even if Full Albums only represent 19% of all invoices, these also represent <em>31% of all dollar sales</em>. This is shown in the pie chart below.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">purchase_type_df</span><span class="p">[</span><span class="s2">"sales_percentage"</span><span class="p">],</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">purchase_type_df</span><span class="p">[</span><span class="s2">"purchase_type"</span><span class="p">],</span>
+    <span class="n">colors</span> <span class="o">=</span> <span class="n">colors</span><span class="p">,</span>
+    <span class="n">autopct</span> <span class="o">=</span> <span class="s2">"</span><span class="si">%0.2f%%</span><span class="s2">"</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Proportion of Chinook Store Sales by Purchase Type"</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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%0A">
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Overall, though, Selected Sets still represent the majority of Chinook's invoices (81%) and sales (69%). Therefore, we recommend that Chinook shift to a new purchasing strategy in which it <strong>only buys the most popular tracks</strong> from record companies. Chinook should not buy full albums since it is less likely for customers to purchase these.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Conclusion">
+<a class="anchor" href="#Conclusion" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conclusion<a class="anchor-link" href="#Conclusion"> </a>
+</h1>
+<p>In this project, we used intermediate SQL techniques to answer business questions for a hypothetical digital media store called Chinook. We solved a total of 4 scenarios by creating views and gradually working towards a final query. We also ended each scenario with a chart that communicates our findings more engagingly.</p>
+<p>Below is a summary of all of the questions and our findings.</p>
+<p><br></p>
+<p><em>What are the best-selling music genres with regards to USA customers? Based on this, which new albums should be purchased for the Chinook store?</em></p>
+<p>Rock is the best-selling music genre as it makes up 53% of total purchases in the USA. Rock is followed by the Alternative &amp; Punk genre and Metal genre, which each make up over 10% of purchases.</p>
+<p>Among the 4 new albums which may be added to the digital store, we recommend the following 3 artists' albums: Red Tone (Punk), Slim Jim Bites (Blues), and Meteor and the Girls (Pop).</p>
+<p><br></p>
+<p><em>Which of Chinook's sales support agents has the highest total sales from their assigned customers? Can the exemplary performance of these employees be explained by any information in the database?</em></p>
+<p>Sales support agent Jane Peacock has the highest total sales (37% of all sales) from her customers. She also has the highest average sales per customer (USD 82).</p>
+<p>However, her statistics are only slightly higher than that of her colleagues. Therefore, we cannot conclusively say that she is the best-performing agent.</p>
+<p><br></p>
+<p><em>What are the statistics on the customers and sales for each country where Chinook offers its service?</em></p>
+<p>The USA has the highest number of Chinook customers (13), as well as the highest total sales (USD 1040.49). All of the other countries have only 2 to 8 customers.</p>
+<p>We recommend marketing Chinook more aggressively in Canada, Brazil, and France since these countries have the highest number of customers after the USA. We also recommend expanding into the Czech Republic since it has a high average value of sales per customer.</p>
+<p><br></p>
+<p><em>How many purchases are full albums, and how many are manually selected sets of tracks? Based on this, what strategy should Chinook adopt when buying new tracks from record companies?</em></p>
+<p>Selected Sets account for 81% of all invoices and 69% of total sales. Therefore, these are more popular than Full Albums.</p>
+<p>Thus, we recommend that Chinook buy only the most popular tracks from record companies. This would be more cost-effective than buying full albums.</p>
+<hr>
+<p>That concludes this project. Thanks for reading!</p>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="MiguelAHG/mahg-data-science"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/mahg-data-science/sql/sqlite/python/pandas/numpy/matplotlib/seaborn/altair/2021/07/31/Answering-Business-Questions-Online-Music-Store-SQL.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/mahg-data-science/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/mahg-data-science/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/mahg-data-science/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>A blog and portfolio of data science projects by Migs Germar.</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/MiguelAHG" title="MiguelAHG"><svg class="svg-icon grey"><use xlink:href="/mahg-data-science/assets/minima-social-icons.svg#github"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
