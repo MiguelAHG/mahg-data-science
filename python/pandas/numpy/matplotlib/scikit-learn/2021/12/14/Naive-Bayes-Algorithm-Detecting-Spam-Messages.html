@@ -697,6 +697,13 @@ Name: sms, dtype: object</pre>
     <svg class="octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info" viewbox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm6.5-.25A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75zM8 6a1 1 0 100-2 1 1 0 000 2z"></path></svg>
     <strong>Note: </strong>The mathematical explanations below are not my own ideas. I learned these from the Dataquest course on Naive Bayes.
 </div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Main-Formulas">
 <a class="anchor" href="#Main-Formulas" aria-hidden="true"><span class="octicon octicon-link"></span></a>Main Formulas<a class="anchor-link" href="#Main-Formulas"> </a>
 </h2>
@@ -2139,7 +2146,14 @@ Vadapalli, P. (2021, January 5). Naive Bayes Explained: Function, Advantages &am
     <svg class="octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info" viewbox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm6.5-.25A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75zM8 6a1 1 0 100-2 1 1 0 000 2z"></path></svg>
     <strong>Note: </strong>The mathematical explanations below are not my own ideas. I learned these from the Dataquest course on Naive Bayes.
 </div>
-Given two events $A$ and $B$, we can use the theorem to determine the probability that $B$ happened given that $A$ happened. This probability is written as $P(B|A)$.
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Given two events $A$ and $B$, we can use the theorem to determine the probability that $B$ happened given that $A$ happened. This probability is written as $P(B|A)$.</p>
 <p>$P(B|A) = \frac{P(B) \cdot P(A|B)}{\Sigma_{i = 1}^n (P(B_i) \cdot P(A|B_i))}$</p>
 <p>In this case, $B_1$ is the event that the message is non-spam, and $B_2$ is the event that it is spam. $B$ can refer to either $B_1$ or $B_2$, depending on which probability we want to calculate. Also, $A$ refers to the specific contents of one message.</p>
 <p>In order to make things clearer, let us say that $Spam$ is the event that the message is spam, and $Ham$ is the event that the message is non-spam.</p>
