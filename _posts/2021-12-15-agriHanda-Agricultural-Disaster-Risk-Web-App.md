@@ -20,9 +20,9 @@ categories: [streamlit, pandas, geopandas, altair, git]
 
 On November 12, 2021, the [Project SPARTA Recognition Ceremony](https://www.facebook.com/watch/live/?ref=watch_permalink&v=402923554635179) took place. For the Open Data Challenge for Butuan City, my team's web app was awarded as Second Placer and Best in Ingenious Solution.
 
-In this post, I will talk about my experience participating in the competition, reflect on my output's strengths and points for improvement, and discuss the data science skills that I honed along the way.
+In this post, I will talk about my experience making the web app, reflect on my output's strengths and points for improvement, and discuss the data science skills that I honed along the way.
 
-# The Competition
+# Developing the Web App
 
 In June, I read that there was an upcoming local competition in data science and analytics. This was the Project SPARTA Hackathon and Open Data Challenge, organized by the Development Academy of the Philippines and DOST-PCIEERD. The competition sought to provide participants with open data so that they could create useful researches and innovations.
 
