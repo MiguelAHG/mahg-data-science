@@ -54,4 +54,8 @@ Finally, during the recognition ceremony in November, we were given the \"Second
 
 # Reflection
 
+I may have done well, but it is necessary for me to reflect on agriHanda so that I can do even better next time.
+
+First, I'd like to discuss the strengths of the project. One strength was the thorough data cleaning that we performed.
+
 # Data Science Skills
