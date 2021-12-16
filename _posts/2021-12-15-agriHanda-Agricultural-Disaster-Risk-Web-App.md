@@ -12,7 +12,7 @@ categories: [streamlit, pandas, geopandas, altair, git]
 
 ![](https://miguelahg.github.io/mahg-data-science/images/markdown-images/agriHanda/agriHanda-choropleth-map.png)
 
-<center><i>A sample choropleth map from agriHanda.</i></center>
+<center><i>The 'Map of Butuan City' feature of agriHanda.</i></center>
 
 </br>
 
