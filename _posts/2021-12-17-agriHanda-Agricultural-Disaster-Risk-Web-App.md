@@ -15,7 +15,7 @@ categories: [streamlit, pandas, geopandas, altair, git]
 
 <center><i>The 'Map of Butuan City' feature of agriHanda.</i></center>
 
-</br>
+<br/>
 
 On November 12, 2021, the Project SPARTA Recognition Ceremony took place. In the Open Data Challenge for Butuan City, my team was awarded as Second Placer and Best in Ingenious Solution.
 
@@ -157,6 +157,8 @@ Apart from the basic steps, I also learned how to use bindings, selections, and 
 ![](https://miguelahg.github.io/mahg-data-science/images/markdown-images/agriHanda/agriHanda-map-with-slider.png)
 
 <center><i>The slider is set to only highlight barangays with the highest vulnerability score.</i></center>
+
+<br/>
 
 For more information about Altair, visit their [documentation](https://altair-viz.github.io/).
 
