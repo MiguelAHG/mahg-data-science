@@ -182,3 +182,17 @@ Then, in the documentation, I wrote more thoroughly about the project. It includ
 ---
 
 That's all for this post. Thanks for reading!
+
+# Bibliography
+
+About READMEs. (2021). GitHub Docs. https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes
+
+Altair: Declarative Visualization in Python—Altair 4.2.0rc1 documentation. (2020). Altair. https://altair-viz.github.io/
+Development Academy of the Philippines. (n.d.-a). Approach to innovations and innovative techniques to food sufficiency using data and technology. Sparta Portal. Retrieved December 17, 2021, from https://sparta.dap.edu.ph/opendata/lgu/butuancity/challenges/butuancity-agriculture
+
+Development Academy of the Philippines. (n.d.-b). Butuan City. Sparta Portal. Retrieved December 17, 2021, from https://sparta.dap.edu.ph/opendata/lgu/butuancity/details
+
+Fachat, A. (2021, July 20). Learn the workings of Git, not just the commands. IBM Developer. https://developer.ibm.com/tutorials/d-learn-workings-git/
+
+Streamlit • The fastest way to build and share data apps. (2021). Streamlit. https://streamlit.io/
+The pandas development team. (2021). MultiIndex / advanced indexing—Pandas 1.3.5 documentation. Pandas. https://pandas.pydata.org/docs/user_guide/advanced.html
