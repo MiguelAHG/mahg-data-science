@@ -1,6 +1,6 @@
 ---
 title: "agriHanda: an Agricultural Disaster Risk Web App"
-description: "I discuss the web app that I created, which won two awards in the Project SPARTA PH Open Data Challenge for Butuan City.
+description: "I discuss the web app that I created, which won two awards in the Project SPARTA PH Open Data Challenge for Butuan City."
 layout: post
 toc: true
 comments: true
@@ -22,11 +22,11 @@ In this post, I will talk about the web app, my experience participating in the 
 
 # The Web App
 
-First, I will give a brief introduction to the web app, agriHanda. The \"agri\" part of the name refers to agriculture, whereas the \"Handa\" part is a Tagalog or Bisaya word for \"prepared\". Thus, the title encapsulates the goal of the app to help the LGU prepare for natural hazards which may pose a threat to the city's agriculture industry.
+First, I will give a brief introduction to the web app, agriHanda. The "agri" part of the name refers to agriculture, whereas the "Handa" part is a Tagalog or Bisaya word for "prepared". Thus, the title encapsulates the goal of the app to help the LGU prepare for natural hazards which may pose a threat to the city's agriculture industry.
 
 Specifically, the app is a dashboard since it focuses on creating helpful visualizations of data. It uses data about the vulnerability of Butuan City's crops, fisheries, and livestock viz-a-viz drought, flooding, rain-induced landslide, sea level rise, and storm surge. 
 
-The app has three main features. The \"Map of Butuan City\" feature shows a choropleth map. This means that the user can select a variable about agricultural disaster risk, and the colors of the barangays change based on the value of this variable. For example, it can show which general areas have a high vulnerability score of crops against flooding. The \"Barangay Data Summary\" feature presents tables and histograms that summarize the disaster risk scores of a chosen barangay. Lastly, the \"Graphing Tool\" feature allows the user to create a custom chart using one or two disaster risk variables.
+The app has three main features. The "Map of Butuan City" feature shows a choropleth map. This means that the user can select a variable about agricultural disaster risk, and the colors of the barangays change based on the value of this variable. For example, it can show which general areas have a high vulnerability score of crops against flooding. The "Barangay Data Summary" feature presents tables and histograms that summarize the disaster risk scores of a chosen barangay. Lastly, the "Graphing Tool" feature allows the user to create a custom chart using one or two disaster risk variables.
 
 For more information, you can watch our short four-minute pitch presentation about the app.: [agriHanda Video Pitch presentation](https://drive.google.com/file/d/1kw_uvdJFk2qKJkXCKcmcROv1q_6AaRE9/view?usp=sharing)
 
@@ -38,17 +38,17 @@ The recognition ceremony can also be watched here: [SPARTA Recognition Ceremony]
 
 # The Competition Experience
 
-In June 2021, I read that there was an upcoming local competition in data science and analytics. This was the Project SPARTA Open Data Challenge, which was organized by the Development Academy of the Philippines and DOST-PCIEERD. The [Sparta Portal](https://sparta.dap.edu.ph/opendata/) provided open data about Butuan City, which is the \"commercial, industrial and administrative center\" of the Caraga region (\"Butuan City\", n.d.). Participants could then use this data to create cleaned datasets, datablogs, data journalism pieces, research papers, dashboards, predictive models, software applications, or visual storytelling pieces.
+In June 2021, I read that there was an upcoming local competition in data science and analytics. This was the Project SPARTA Open Data Challenge, which was organized by the Development Academy of the Philippines and DOST-PCIEERD. The [Sparta Portal](https://sparta.dap.edu.ph/opendata/) provided open data about Butuan City, which is the "commercial, industrial and administrative center" of the Caraga region ("Butuan City", n.d.). Participants could then use this data to create cleaned datasets, datablogs, data journalism pieces, research papers, dashboards, predictive models, software applications, or visual storytelling pieces.
 
-While I looked through the provided datasets, I noticed that most of these were about vulnerability risk assessments of various aspects of the city against natural hazards. These aspects included agriculture, roads, bridges, schools, and others. Thus, out of the five available challenges in the competition, I chose to join the one entitled, \"Approach to innovations and innovative techniques to food sufficiency using data and technology.\" I would address potential risks to Butuan City's food sufficiency by focusing on the data about crops, fisheries, and livestock.
+While I looked through the provided datasets, I noticed that most of these were about vulnerability risk assessments of various aspects of the city against natural hazards. These aspects included agriculture, roads, bridges, schools, and others. Thus, out of the five available challenges in the competition, I chose to join the one entitled, "Approach to innovations and innovative techniques to food sufficiency using data and technology." I would address potential risks to Butuan City's food sufficiency by focusing on the data about crops, fisheries, and livestock.
 
-Thus, I formed a team with three of my schoolmates (Fiona Jao, Lorenzo Layug, and Yuri Dolorfino), and we entered the competition as the \"Datos Puti\" team. As team leader, I wrote planning documents, delegate tasks, set deadlines, and did the programming work. My members mainly helped with the first phase of the project, data cleaning.
+Thus, I formed a team with three of my schoolmates (Fiona Jao, Lorenzo Layug, and Yuri Dolorfino), and we entered the competition as the "Datos Puti" team. As team leader, I wrote planning documents, delegate tasks, set deadlines, and did the programming work. My members mainly helped with the first phase of the project, data cleaning.
 
 We divided the data files amongst ourselves, then we manually looked through each row and column to note missing or erroneous values. Based on our notes, I fixed some of the errors and wrote a Python program to automate the rest of the cleaning process. In the end, all of the data was combined into a single large dataset, which was organized into a hierarchy for ease of navigation. We would later submit this cleaned dataset alongside the web app so that government researchers could analyze it directly without having to use our app.
 
 Then, I programmed the agriHanda web app. The process was difficult, as I had to work on the app almost every night, balance it with my academic responsibilities, address seemingly unsolvable bugs. In the end, however, I was able to implement all three features of the app and submit it on time.
 
-Finally, during the recognition ceremony in November, we were given the \"Second Placer\" and \"Best in Ingenious Solution\" awards. I was proud of this because this was the first data science competition that I had ever joined. Furthermore, despite being a senior high school student at the time, I was able to perform well against the other eleven competing teams, most of whom were from the college and professional levels. 
+Finally, during the recognition ceremony in November, we were given the "Second Placer" and "Best in Ingenious Solution" awards. I was proud of this because this was the first data science competition that I had ever joined. Furthermore, despite being a senior high school student at the time, I was able to perform well against the other eleven competing teams, most of whom were from the college and professional levels. 
 
 # Reflection
 
@@ -74,7 +74,7 @@ In this last part, I will discuss some of the data science skills that I honed i
 
 Recall that during the data cleaning phase, I had to organize the variables into a hierarchy. Thus, I had to learn how to use the pandas MultiIndex.
 
-For context, pandas is a Python package for manipulating tables of data, which are called DataFrames. A regular Index object is used to store the row labels or column labels of a DataFrame. In my case, each of the original data files included columns such as \"Exposure\", \"Sensitivity\", etc. Each row represented a unique barangay. Each file only gave data about a specific element and hazard (for example, fisheries and storm surge).
+For context, pandas is a Python package for manipulating tables of data, which are called DataFrames. A regular Index object is used to store the row labels or column labels of a DataFrame. In my case, each of the original data files included columns such as "Exposure", "Sensitivity", etc. Each row represented a unique barangay. Each file only gave data about a specific element and hazard (for example, fisheries and storm surge).
 
 Below is a simplified example of what one file would look like.
 
@@ -163,7 +163,7 @@ For more information about Altair, visit their [documentation](https://altair-vi
 
 Another very important thing I learned was how to use basic git commands to manage my repository.
 
-Originally, I created a blank repository, then dragged the files to GitHub and pressed \"commit.\" I committed files in this way every time that I made a change. I later learned, however, that this was not the most efficient way to do things.
+Originally, I created a blank repository, then dragged the files to GitHub and pressed "commit." I committed files in this way every time that I made a change. I later learned, however, that this was not the most efficient way to do things.
 
 At some point, I learned that I could *clone* my repository to my laptop. This means that the files would be downloaded to a folder in my laptop, which would serve as my *workspace*. After I edit something in my workspace, I can commit the changes to my *local repository*. Thus, a snapshot of my files is saved, and I can go back to old versions if I need to. I can then push the changes to my *remote repository*, which is usually on GitHub. Thus, the latest changes to the repository are stored online.
 
