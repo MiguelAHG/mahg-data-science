@@ -4,7 +4,7 @@ description: "I discuss the web app that I created, which won two awards in the 
 layout: post
 toc: true
 comments: true
-image: images/markdown-images/agriHanda/sample choropleth map.png
+image: images/markdown-images/agriHanda/agriHanda-choropleth-map.png
 hide: true
 search_exclude: true
 categories: [streamlit, pandas, geopandas, altair, git]
@@ -30,7 +30,7 @@ The app has three main features. The \"Map of Butuan City\" feature shows a chor
 
 For more information, you can watch our short four-minute pitch presentation about the app.
 
-**Put video here.**
+[agriHanda Video Pitch presentation](https://drive.google.com/file/d/1kw_uvdJFk2qKJkXCKcmcROv1q_6AaRE9/view?usp=sharing)
 
 To try out the app yourself, visit this link: [bit.ly/agriHanda](https://bit.ly/agriHanda)
 
@@ -117,7 +117,10 @@ input_var = st.selectbox(
     options = ['Exposure', 'Sensitivity', 'Adaptive Capacity', 'Vulnerability', 'Risk'],
 )
 
-# Display a chart with this variable.
+# Make a chart using this variable.
+# chart = ...
+
+# Display the chart.
 st.altair_chart(chart)
 ```
 
@@ -127,3 +130,57 @@ With this simple framework, one can quickly create an interface through which ot
 
 ## Altair package for data visualization
 
+Another important skill I used for this project was making charts using Altair. This package allows me to create charts using a simple grammar which minimizes the amount of code needed. This usually involves the following steps:
+
+- Make a `Chart` object and pass a DataFrame to it
+- Specify a mark type, which determines the shapes used to represent data. The options include bar, boxplot, line, area, point, etc.
+- Specify encodings. This means deciding which variables are used in the chart, and how so.
+- Specify properties. These may include the chart title, font size, text rotation, etc.
+
+You can experience a simplified version of these steps by using the Graphing Tool in agriHanda.
+
+In terms of code, an example would look like this:
+
+```python
+import altair as alt
+
+chart = (
+    alt.Chart(df)
+    .mark_boxplot() # Make a boxplot
+    .encode(y = input_variable, type = 'quantitative') # Use the input variable on the y-axis
+    .properties(title = 'Boxplot') # Set a title
+    .interactive() # Make the chart interactive
+)
+```
+
+Apart from the basic steps, I also learned how to use bindings, selections, and conditions. These are advanced techniques which make charts more interactive. In my case, I used these to add a slider to the Map of Butuan City feature so that only barangays near a certain value would be highlighted. This allows the user to, for example, only highlight places with high exposure to a hazard.
+
+![](https://miguelahg.github.io/mahg-data-science/images/markdown-images/agriHanda/agriHanda-map-with-slider.png)
+
+<center><i>The slider is set to only highlight barangays with the highest vulnerability score.</i></center>
+
+For more information about Altair, visit their [documentation](https://altair-viz.github.io/).
+
+## Git and GitHub workflow
+
+Another very important thing I learned was how to use basic git commands to manage my repository.
+
+Originally, I created a blank repository, then dragged the files to GitHub and pressed \"commit.\" I committed files in this way every time that I made a change. I later learned, however, that this was not the most efficient way to do things.
+
+At some point, I learned that I could *clone* my repository to my laptop. This means that the files would be downloaded to a folder in my laptop, which would serve as my *workspace*. After I edit something in my workspace, I can commit the changes to my *local repository*. Thus, a snapshot of my files is saved, and I can go back to old versions if I need to. I can then push the changes to my *remote repository*, which is usually on GitHub. Thus, the latest changes to the repository are stored online.
+
+In the case of agriHanda, since the Streamlit app is deployed from the GitHub repository, I can easily change the app just by pushing to the repository.
+
+Admittedly, I am not familiar with using git commands in the command line. I rely on GitHub Desktop and Visual Studio Code, which provide graphical user interfaces for git commands. However, I hope to learn how to use Git Bash eventually.
+
+The next step I can take would be to study articles like [this article](https://developer.ibm.com/tutorials/d-learn-workings-git/) by Fachat (2021), so that I can better understand how git works and how to write commands.
+
+## Writing a README and Documentation
+
+Lastly, the agriHanda project was my first time writing a serious README and documentation for my repository. I mainly followed the GitHub [guide for READMEs](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes). I made sure to put only the most essential information in the README, including a brief description, a link tot he documentation, the sources of the open data used in the project, the names and roles of our team members, and a statement on the terms of use of the project.
+
+Then, in the documentation, I wrote more thoroughly about the project. It included the background of the project, purpose and objectives, main access links, explanations of the cleaned dataset and the web app, the procedure from data cleaning to app development, a local development guide for editing the project on one's local device, recommendations for how to improve the project, the credits to our team members, and a bibiography. You can read the agriHanda documentation [here](https://docs.google.com/document/d/1feKAvHEzJG2PmKtZrXvsGHOJL4c-kaTc4b_W_fHP-68/edit?usp=sharing).
+
+---
+
+That's all for this post. Thanks for reading!
