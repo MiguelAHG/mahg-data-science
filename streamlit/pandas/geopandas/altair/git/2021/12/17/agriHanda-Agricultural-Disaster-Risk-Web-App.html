@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>agriHanda: an Agricultural Disaster Risk Web App | MG Data Science</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="agriHanda: an Agricultural Disaster Risk Web App" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="I discuss the web app that I created, which won two awards in the Project SPARTA PH Open Data Challenge for Butuan City." />
+<meta property="og:description" content="I discuss the web app that I created, which won two awards in the Project SPARTA PH Open Data Challenge for Butuan City." />
+<link rel="canonical" href="https://miguelahg.github.io/mahg-data-science/streamlit/pandas/geopandas/altair/git/2021/12/17/agriHanda-Agricultural-Disaster-Risk-Web-App.html" />
+<meta property="og:url" content="https://miguelahg.github.io/mahg-data-science/streamlit/pandas/geopandas/altair/git/2021/12/17/agriHanda-Agricultural-Disaster-Risk-Web-App.html" />
+<meta property="og:site_name" content="MG Data Science" />
+<meta property="og:image" content="https://miguelahg.github.io/mahg-data-science/images/markdown-images/agriHanda/agriHanda-choropleth-map.png" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-12-17T00:00:00-06:00" />
+<script type="application/ld+json">
+{"url":"https://miguelahg.github.io/mahg-data-science/streamlit/pandas/geopandas/altair/git/2021/12/17/agriHanda-Agricultural-Disaster-Risk-Web-App.html","@type":"BlogPosting","headline":"agriHanda: an Agricultural Disaster Risk Web App","dateModified":"2021-12-17T00:00:00-06:00","datePublished":"2021-12-17T00:00:00-06:00","image":"https://miguelahg.github.io/mahg-data-science/images/markdown-images/agriHanda/agriHanda-choropleth-map.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://miguelahg.github.io/mahg-data-science/streamlit/pandas/geopandas/altair/git/2021/12/17/agriHanda-Agricultural-Disaster-Risk-Web-App.html"},"description":"I discuss the web app that I created, which won two awards in the Project SPARTA PH Open Data Challenge for Butuan City.","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/mahg-data-science/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://miguelahg.github.io/mahg-data-science/feed.xml" title="MG Data Science" /><link rel="shortcut icon" type="image/x-icon" href="/mahg-data-science/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/mahg-data-science/">MG Data Science</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/mahg-data-science/about/">About Me</a><a class="page-link" href="/mahg-data-science/search/">Search</a><a class="page-link" href="/mahg-data-science/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">agriHanda: an Agricultural Disaster Risk Web App</h1><p class="page-description">I discuss the web app that I created, which won two awards in the Project SPARTA PH Open Data Challenge for Butuan City.</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2021-12-17T00:00:00-06:00" itemprop="datePublished">
+        Dec 17, 2021
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      14 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/mahg-data-science/categories/#streamlit">streamlit</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/mahg-data-science/categories/#pandas">pandas</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/mahg-data-science/categories/#geopandas">geopandas</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/mahg-data-science/categories/#altair">altair</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/mahg-data-science/categories/#git">git</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h1"><a href="#the-web-app">The Web App</a></li>
+<li class="toc-entry toc-h1"><a href="#the-competition-experience">The Competition Experience</a></li>
+<li class="toc-entry toc-h1"><a href="#reflection">Reflection</a></li>
+<li class="toc-entry toc-h1"><a href="#data-science-skills">Data Science Skills</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#pandas-multiindex">pandas MultiIndex</a></li>
+<li class="toc-entry toc-h2"><a href="#streamlit-web-app-framework">Streamlit web app framework</a></li>
+<li class="toc-entry toc-h2"><a href="#altair-package-for-data-visualization">Altair package for data visualization</a></li>
+<li class="toc-entry toc-h2"><a href="#git-and-github-workflow">Git and GitHub workflow</a></li>
+<li class="toc-entry toc-h2"><a href="#writing-a-readme-and-documentation">Writing a README and Documentation</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#bibliography">Bibliography</a></li>
+</ul><p><img src="https://miguelahg.github.io/mahg-data-science/images/markdown-images/agriHanda/agriHanda-choropleth-map.png" alt=""></p>
+
+<center><i>The 'Map of Butuan City' feature of agriHanda.</i></center>
+
+<p>&lt;/br&gt;</p>
+
+<p>On November 12, 2021, the Project SPARTA Recognition Ceremony took place. In the Open Data Challenge for Butuan City, my team was awarded as Second Placer and Best in Ingenious Solution.</p>
+
+<p>In this post, I will talk about the web app, my experience participating in the competition, my web app’s strengths and points for improvement, and the data science skills that I honed along the way.</p>
+
+<h1 id="the-web-app">
+<a class="anchor" href="#the-web-app" aria-hidden="true"><span class="octicon octicon-link"></span></a>The Web App</h1>
+
+<p>First, I will give a brief introduction to the web app, agriHanda. The “agri” part of the name refers to agriculture, whereas the “Handa” part is a Tagalog or Bisaya word for “prepared”. Thus, the title encapsulates the goal of the app to help the LGU prepare for natural hazards which may pose a threat to the city’s agriculture industry.</p>
+
+<p>Specifically, the app is a dashboard since it focuses on creating helpful visualizations of data. It uses data about the vulnerability of Butuan City’s crops, fisheries, and livestock viz-a-viz drought, flooding, rain-induced landslide, sea level rise, and storm surge.</p>
+
+<p>The app has three main features. The “Map of Butuan City” feature shows a choropleth map. This means that the user can select a variable about agricultural disaster risk, and the colors of the barangays change based on the value of this variable. For example, it can show which general areas have a high vulnerability score of crops against flooding. The “Barangay Data Summary” feature presents tables and histograms that summarize the disaster risk scores of a chosen barangay. Lastly, the “Graphing Tool” feature allows the user to create a custom chart using one or two disaster risk variables.</p>
+
+<p>For more information, you can watch our short four-minute pitch presentation about the app.: <a href="https://drive.google.com/file/d/1kw_uvdJFk2qKJkXCKcmcROv1q_6AaRE9/view?usp=sharing">agriHanda Video Pitch presentation</a></p>
+
+<p>To try out the app yourself, visit this link: <a href="https://bit.ly/agriHanda">bit.ly/agriHanda</a></p>
+
+<p>For more technical details about the project, visit the documentation through this link: <a href="https://docs.google.com/document/d/1feKAvHEzJG2PmKtZrXvsGHOJL4c-kaTc4b_W_fHP-68/edit?usp=sharing">agriHanda - Agricultural Disaster Risk App</a></p>
+
+<p>The recognition ceremony can also be watched here: <a href="https://www.facebook.com/watch/live/?ref=watch_permalink&amp;v=402923554635179">SPARTA Recognition Ceremony</a></p>
+
+<h1 id="the-competition-experience">
+<a class="anchor" href="#the-competition-experience" aria-hidden="true"><span class="octicon octicon-link"></span></a>The Competition Experience</h1>
+
+<p>In June 2021, I read that there was an upcoming local competition in data science and analytics. This was the Project SPARTA Open Data Challenge, which was organized by the Development Academy of the Philippines and DOST-PCIEERD. The <a href="https://sparta.dap.edu.ph/opendata/">Sparta Portal</a> provided open data about Butuan City, which is the “commercial, industrial and administrative center” of the Caraga region (“Butuan City”, n.d.). Participants could then use this data to create cleaned datasets, datablogs, data journalism pieces, research papers, dashboards, predictive models, software applications, or visual storytelling pieces.</p>
+
+<p>While I looked through the provided datasets, I noticed that most of these were about vulnerability risk assessments of various aspects of the city against natural hazards. These aspects included agriculture, roads, bridges, schools, and others. Thus, out of the five available challenges in the competition, I chose to join the one entitled, “Approach to innovations and innovative techniques to food sufficiency using data and technology.” I would address potential risks to Butuan City’s food sufficiency by focusing on the data about crops, fisheries, and livestock.</p>
+
+<p>Thus, I formed a team with three of my schoolmates (Fiona Jao, Lorenzo Layug, and Yuri Dolorfino), and we entered the competition as the “Datos Puti” team. As team leader, I wrote planning documents, delegate tasks, set deadlines, and did the programming work. My members mainly helped with the first phase of the project, data cleaning.</p>
+
+<p>We divided the data files amongst ourselves, then we manually looked through each row and column to note missing or erroneous values. Based on our notes, I fixed some of the errors and wrote a Python program to automate the rest of the cleaning process. In the end, all of the data was combined into a single large dataset, which was organized into a hierarchy for ease of navigation. We would later submit this cleaned dataset alongside the web app so that government researchers could analyze it directly without having to use our app.</p>
+
+<p>Then, I programmed the agriHanda web app. The process was difficult, as I had to work on the app almost every night, balance it with my academic responsibilities, address seemingly unsolvable bugs. In the end, however, I was able to implement all three features of the app and submit it on time.</p>
+
+<p>Finally, during the recognition ceremony in November, we were given the “Second Placer” and “Best in Ingenious Solution” awards. I was proud of this because this was the first data science competition that I had ever joined. Furthermore, despite being a senior high school student at the time, I was able to perform well against the other eleven competing teams, most of whom were from the college and professional levels.</p>
+
+<h1 id="reflection">
+<a class="anchor" href="#reflection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Reflection</h1>
+
+<p>Now that the competition is over, it is necessary for me to reflect on agriHanda so that I can do even better next time.</p>
+
+<p>First, I’d like to discuss the strengths of the project. One was that we <strong>thoroughly cleaned and combined the data</strong> so that it could be used in our web app and other software. Furthermore, because the variables were arranged in a hierarchy, new data can be added based on it. For example, the dataset only contains agriculture data as of now, but it could be expanded to other sectors such as infrastructure and population. It could also be expanded to include more natural hazards, such as volcanic eruption and earthquakes.</p>
+
+<p>The main strength of the project, though, was that it had a <strong>variety of visualizations</strong>, which offered different perspectives on the data. For example, the choropleth map feature is useful for determining general areas or groups of adjacent barangays that share certain characteristics, such as high vulnerability or high adaptive capacity. The Barangay Data Summary is useful for focusing on a single barangay and determining which hazards pose the greatest threat against it. The Graphing Tool is versatile because it has various types of charts, so it can be used to answer specific questions about relationships between variables.</p>
+
+<p>However, it would be difficult to use the choropleth map and the Graphing Tool if I did not provide the <strong>Help page for the variable selection system</strong>. This page explained the hierarchy of variables in the dataset and provided practice for how to use the variable selection system. Thus, even if this system was unusual, the app still managed to be user-friendly.</p>
+
+<p>Lastly, the project also had <strong>detailed documentation</strong>. Apart from explaining how the web app works, it also gives instructions for how researchers can use the cleaned dataset in their own Python scripts. It also has a guide on how to start developing the web app locally, so that the LGU can revise the app instead of having me do it.</p>
+
+<p>Despite all of these positive aspects, however, I know that there was still room for improvement. The most glaring issue with the project is that it <strong>has a wide breadth but lacks depth</strong>. The web app provides many options regarding variables and graphs. However, I <strong>did not investigate a specific problem or research question</strong>. Thus, I did not make any interpretations of the graphs, and instead left this task to the app users. I did not perform any <strong>statistical tests or machine learning models</strong>, which could have then led to concrete suggestions for how the city could prepare its agriculture against disasters. That would have had a much more direct and positive impact on Butuan City.</p>
+
+<p>I must keep these things in mind the next time that I join a similar competition. Rather than a simple dashboard, I think I should try to form a research paper or a predictive model, since these have more potential to create change in a community.</p>
+
+<h1 id="data-science-skills">
+<a class="anchor" href="#data-science-skills" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data Science Skills</h1>
+
+<p>In this last part, I will discuss some of the data science skills that I honed in this project.</p>
+
+<h2 id="pandas-multiindex">
+<a class="anchor" href="#pandas-multiindex" aria-hidden="true"><span class="octicon octicon-link"></span></a>pandas MultiIndex</h2>
+
+<p>Recall that during the data cleaning phase, I had to organize the variables into a hierarchy. Thus, I had to learn how to use the pandas MultiIndex.</p>
+
+<p>For context, pandas is a Python package for manipulating tables of data, which are called DataFrames. A regular Index object is used to store the row labels or column labels of a DataFrame. In my case, each of the original data files included columns such as “Exposure”, “Sensitivity”, etc. Each row represented a unique barangay. Each file only gave data about a specific element and hazard (for example, fisheries and storm surge).</p>
+
+<p>Below is a simplified example of what one file would look like.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Barangay</th>
+      <th>Adaptive Capacity Score</th>
+      <th>Vulnerability Score</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>A</td>
+      <td>2</td>
+      <td>1.2</td>
+    </tr>
+    <tr>
+      <td>B</td>
+      <td>5</td>
+      <td>0.8</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>When I combined the files, I used MultiIndex to create a hierarchy which looked like this:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Sector</th>
+      <th>Agriculture</th>
+      <th> </th>
+      <th> </th>
+      <th> </th>
+      <th>…</th>
+      <th> </th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Element</td>
+      <td>Crops</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td>Fisheries</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Hazard</td>
+      <td>Drought</td>
+      <td> </td>
+      <td>Flood</td>
+      <td> </td>
+      <td> </td>
+      <td>Drought</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Disaster Risk Aspect</td>
+      <td>Adaptive Capacity</td>
+      <td>Overall Risk</td>
+      <td>Adaptive Capacity</td>
+      <td>Overall Risk</td>
+      <td> </td>
+      <td>Adaptive Capacity</td>
+      <td>Overall Risk</td>
+    </tr>
+    <tr>
+      <td>Detail</td>
+      <td>Adaptive Capacity Score</td>
+      <td>Vulnerability Score</td>
+      <td>Adaptive Capacity Score</td>
+      <td>Vulnerability Score</td>
+      <td> </td>
+      <td>Adaptive Capacity Score</td>
+      <td>Vulnerability Score</td>
+    </tr>
+    <tr>
+      <td>Barangay</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>A</td>
+      <td>2</td>
+      <td>1.2</td>
+      <td>5</td>
+      <td>1</td>
+      <td> </td>
+      <td>4</td>
+      <td>1.5</td>
+    </tr>
+    <tr>
+      <td>B</td>
+      <td>5</td>
+      <td>0.8</td>
+      <td>4</td>
+      <td>1.1</td>
+      <td> </td>
+      <td>1</td>
+      <td>0.6</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The first 5 rows of the table above are part of the hierarchy of labels. The levels are Sector, Element, Hazard, Disaster Risk Aspect, and Detail. With this hierarchy, the variables can be navigated easily even if there are many of them.</p>
+
+<p>For more information on MultiIndex, visit the <a href="https://pandas.pydata.org/docs/user_guide/advanced.html">pandas documentation</a>.</p>
+
+<h2 id="streamlit-web-app-framework">
+<a class="anchor" href="#streamlit-web-app-framework" aria-hidden="true"><span class="octicon octicon-link"></span></a>Streamlit web app framework</h2>
+
+<p>Another thing that I practiced in this project was the Streamlit package. This provides a framework for building simple web apps in Python. One would first write a script which uses the Streamlit API to represent text, widgets, charts, and other visual elements.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">streamlit</span> <span class="k">as</span> <span class="n">st</span>
+
+<span class="c1"># App title
+</span><span class="n">st</span><span class="p">.</span><span class="n">title</span><span class="p">(</span><span class="s">'My App'</span><span class="p">)</span>
+
+<span class="c1"># Let the user select a variable from a drop-down list.
+</span><span class="n">input_var</span> <span class="o">=</span> <span class="n">st</span><span class="p">.</span><span class="n">selectbox</span><span class="p">(</span>
+    <span class="s">'Select a variable'</span><span class="p">,</span>
+    <span class="n">options</span> <span class="o">=</span> <span class="p">[</span><span class="s">'Exposure'</span><span class="p">,</span> <span class="s">'Sensitivity'</span><span class="p">,</span> <span class="s">'Adaptive Capacity'</span><span class="p">,</span> <span class="s">'Vulnerability'</span><span class="p">,</span> <span class="s">'Risk'</span><span class="p">],</span>
+<span class="p">)</span>
+
+<span class="c1"># Make a chart using this variable.
+# chart = ...
+</span>
+<span class="c1"># Display the chart.
+</span><span class="n">st</span><span class="p">.</span><span class="n">altair_chart</span><span class="p">(</span><span class="n">chart</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Then, when the app is run, the script is run from top to bottom. When the user changes something, the entire script runs again in order to update what is shown. In the case of the script above, the app would show a title, then a drop-down list, then a chart. If the user changes their selection in the drop-down list, the chart changes as well.</p>
+
+<p>With this simple framework, one can quickly create an interface through which other people can interact with a dashboard or even a predictive model, so it will most likely be useful for future projects. For more information, visit the <a href="https://streamlit.io/">Streamlit website</a>.</p>
+
+<h2 id="altair-package-for-data-visualization">
+<a class="anchor" href="#altair-package-for-data-visualization" aria-hidden="true"><span class="octicon octicon-link"></span></a>Altair package for data visualization</h2>
+
+<p>Another important skill I used for this project was making charts using Altair. This package allows me to create charts using a simple grammar which minimizes the amount of code needed. This usually involves the following steps:</p>
+
+<ul>
+  <li>Make a <code class="language-plaintext highlighter-rouge">Chart</code> object and pass a DataFrame to it</li>
+  <li>Specify a mark type, which determines the shapes used to represent data. The options include bar, boxplot, line, area, point, etc.</li>
+  <li>Specify encodings. This means deciding which variables are used in the chart, and how so.</li>
+  <li>Specify properties. These may include the chart title, font size, text rotation, etc.</li>
+</ul>
+
+<p>You can experience a simplified version of these steps by using the Graphing Tool in agriHanda.</p>
+
+<p>In terms of code, an example would look like this:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">altair</span> <span class="k">as</span> <span class="n">alt</span>
+
+<span class="n">chart</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">alt</span><span class="p">.</span><span class="n">Chart</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+    <span class="p">.</span><span class="n">mark_boxplot</span><span class="p">()</span> <span class="c1"># Make a boxplot
+</span>    <span class="p">.</span><span class="n">encode</span><span class="p">(</span><span class="n">y</span> <span class="o">=</span> <span class="n">input_variable</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="s">'quantitative'</span><span class="p">)</span> <span class="c1"># Use the input variable on the y-axis
+</span>    <span class="p">.</span><span class="n">properties</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s">'Boxplot'</span><span class="p">)</span> <span class="c1"># Set a title
+</span>    <span class="p">.</span><span class="n">interactive</span><span class="p">()</span> <span class="c1"># Make the chart interactive
+</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Apart from the basic steps, I also learned how to use bindings, selections, and conditions. These are advanced techniques which make charts more interactive. In my case, I used these to add a slider to the Map of Butuan City feature so that only barangays near a certain value would be highlighted. This allows the user to, for example, only highlight places with high exposure to a hazard.</p>
+
+<p><img src="https://miguelahg.github.io/mahg-data-science/images/markdown-images/agriHanda/agriHanda-map-with-slider.png" alt=""></p>
+
+<center><i>The slider is set to only highlight barangays with the highest vulnerability score.</i></center>
+
+<p>For more information about Altair, visit their <a href="https://altair-viz.github.io/">documentation</a>.</p>
+
+<h2 id="git-and-github-workflow">
+<a class="anchor" href="#git-and-github-workflow" aria-hidden="true"><span class="octicon octicon-link"></span></a>Git and GitHub workflow</h2>
+
+<p>Another very important thing I learned was how to use basic git commands to manage my repository.</p>
+
+<p>Originally, I created a blank repository, then dragged the files to GitHub and pressed “commit.” I committed files in this way every time that I made a change. I later learned, however, that this was not the most efficient way to do things.</p>
+
+<p>At some point, I learned that I could <em>clone</em> my repository to my laptop. This means that the files would be downloaded to a folder in my laptop, which would serve as my <em>workspace</em>. After I edit something in my workspace, I can commit the changes to my <em>local repository</em>. Thus, a snapshot of my files is saved, and I can go back to old versions if I need to. I can then push the changes to my <em>remote repository</em>, which is usually on GitHub. Thus, the latest changes to the repository are stored online.</p>
+
+<p>In the case of agriHanda, since the Streamlit app is deployed from the GitHub repository, I can easily change the app just by pushing to the repository.</p>
+
+<p>Admittedly, I am not familiar with using git commands in the command line. I rely on GitHub Desktop and Visual Studio Code, which provide graphical user interfaces for git commands. However, I hope to learn how to use Git Bash eventually.</p>
+
+<p>The next step I can take would be to study articles like <a href="https://developer.ibm.com/tutorials/d-learn-workings-git/">this article</a> by Fachat (2021), so that I can better understand how git works and how to write commands.</p>
+
+<h2 id="writing-a-readme-and-documentation">
+<a class="anchor" href="#writing-a-readme-and-documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Writing a README and Documentation</h2>
+
+<p>Lastly, the agriHanda project was my first time writing a serious README and documentation for my repository. I mainly followed the GitHub <a href="https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes">guide for READMEs</a>. I made sure to put only the most essential information in the README, including a brief description, a link tot he documentation, the sources of the open data used in the project, the names and roles of our team members, and a statement on the terms of use of the project.</p>
+
+<p>Then, in the documentation, I wrote more thoroughly about the project. It included the background of the project, purpose and objectives, main access links, explanations of the cleaned dataset and the web app, the procedure from data cleaning to app development, a local development guide for editing the project on one’s local device, recommendations for how to improve the project, the credits to our team members, and a bibiography. You can read the agriHanda documentation <a href="https://docs.google.com/document/d/1feKAvHEzJG2PmKtZrXvsGHOJL4c-kaTc4b_W_fHP-68/edit?usp=sharing">here</a>.</p>
+
+<hr>
+
+<p>That’s all for this post. Thanks for reading!</p>
+
+<h1 id="bibliography">
+<a class="anchor" href="#bibliography" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bibliography</h1>
+
+<p>About READMEs. (2021). GitHub Docs. https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes</p>
+
+<p>Altair: Declarative Visualization in Python—Altair 4.2.0rc1 documentation. (2020). Altair. https://altair-viz.github.io/
+Development Academy of the Philippines. (n.d.-a). Approach to innovations and innovative techniques to food sufficiency using data and technology. Sparta Portal. Retrieved December 17, 2021, from https://sparta.dap.edu.ph/opendata/lgu/butuancity/challenges/butuancity-agriculture</p>
+
+<p>Development Academy of the Philippines. (n.d.-b). Butuan City. Sparta Portal. Retrieved December 17, 2021, from https://sparta.dap.edu.ph/opendata/lgu/butuancity/details</p>
+
+<p>Fachat, A. (2021, July 20). Learn the workings of Git, not just the commands. IBM Developer. https://developer.ibm.com/tutorials/d-learn-workings-git/</p>
+
+<p>Streamlit • The fastest way to build and share data apps. (2021). Streamlit. https://streamlit.io/
+The pandas development team. (2021). MultiIndex / advanced indexing—Pandas 1.3.5 documentation. Pandas. https://pandas.pydata.org/docs/user_guide/advanced.html</p>
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="MiguelAHG/mahg-data-science"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/mahg-data-science/streamlit/pandas/geopandas/altair/git/2021/12/17/agriHanda-Agricultural-Disaster-Risk-Web-App.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/mahg-data-science/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/mahg-data-science/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/mahg-data-science/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>A blog and portfolio of data science projects by Migs Germar.</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/MiguelAHG" title="MiguelAHG"><svg class="svg-icon grey"><use xlink:href="/mahg-data-science/assets/minima-social-icons.svg#github"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
