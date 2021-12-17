@@ -5,8 +5,8 @@ layout: post
 toc: true
 comments: true
 image: images/markdown-images/agriHanda/agriHanda-choropleth-map.png
-hide: true
-search_exclude: true
+hide: false
+search_exclude: false
 categories: [streamlit, pandas, geopandas, altair, git]
 ---
 
@@ -28,9 +28,7 @@ Specifically, the app is a dashboard since it focuses on creating helpful visual
 
 The app has three main features. The \"Map of Butuan City\" feature shows a choropleth map. This means that the user can select a variable about agricultural disaster risk, and the colors of the barangays change based on the value of this variable. For example, it can show which general areas have a high vulnerability score of crops against flooding. The \"Barangay Data Summary\" feature presents tables and histograms that summarize the disaster risk scores of a chosen barangay. Lastly, the \"Graphing Tool\" feature allows the user to create a custom chart using one or two disaster risk variables.
 
-For more information, you can watch our short four-minute pitch presentation about the app.
-
-[agriHanda Video Pitch presentation](https://drive.google.com/file/d/1kw_uvdJFk2qKJkXCKcmcROv1q_6AaRE9/view?usp=sharing)
+For more information, you can watch our short four-minute pitch presentation about the app.: [agriHanda Video Pitch presentation](https://drive.google.com/file/d/1kw_uvdJFk2qKJkXCKcmcROv1q_6AaRE9/view?usp=sharing)
 
 To try out the app yourself, visit this link: [bit.ly/agriHanda](https://bit.ly/agriHanda)
 
