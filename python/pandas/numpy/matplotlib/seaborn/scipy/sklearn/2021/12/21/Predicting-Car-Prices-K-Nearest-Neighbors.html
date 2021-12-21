@@ -1,0 +1,2158 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Predicting Car Prices using the K Nearest Neighbors Algorithm | MG Data Science</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Predicting Car Prices using the K Nearest Neighbors Algorithm" />
+<meta name="author" content="Migs Germar" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="I use various machine learning workflow techniques to arrive at the optimal K Nearest Neighbors (KNN) regression model for predicting car prices." />
+<meta property="og:description" content="I use various machine learning workflow techniques to arrive at the optimal K Nearest Neighbors (KNN) regression model for predicting car prices." />
+<link rel="canonical" href="https://miguelahg.github.io/mahg-data-science/python/pandas/numpy/matplotlib/seaborn/scipy/sklearn/2021/12/21/Predicting-Car-Prices-K-Nearest-Neighbors.html" />
+<meta property="og:url" content="https://miguelahg.github.io/mahg-data-science/python/pandas/numpy/matplotlib/seaborn/scipy/sklearn/2021/12/21/Predicting-Car-Prices-K-Nearest-Neighbors.html" />
+<meta property="og:site_name" content="MG Data Science" />
+<meta property="og:image" content="https://miguelahg.github.io/mahg-data-science/_notebooks/notebook-images/knn-car-prices/two-cars.jfif" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-12-21T00:00:00-06:00" />
+<script type="application/ld+json">
+{"url":"https://miguelahg.github.io/mahg-data-science/python/pandas/numpy/matplotlib/seaborn/scipy/sklearn/2021/12/21/Predicting-Car-Prices-K-Nearest-Neighbors.html","@type":"BlogPosting","headline":"Predicting Car Prices using the K Nearest Neighbors Algorithm","dateModified":"2021-12-21T00:00:00-06:00","datePublished":"2021-12-21T00:00:00-06:00","image":"https://miguelahg.github.io/mahg-data-science/_notebooks/notebook-images/knn-car-prices/two-cars.jfif","mainEntityOfPage":{"@type":"WebPage","@id":"https://miguelahg.github.io/mahg-data-science/python/pandas/numpy/matplotlib/seaborn/scipy/sklearn/2021/12/21/Predicting-Car-Prices-K-Nearest-Neighbors.html"},"author":{"@type":"Person","name":"Migs Germar"},"description":"I use various machine learning workflow techniques to arrive at the optimal K Nearest Neighbors (KNN) regression model for predicting car prices.","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/mahg-data-science/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://miguelahg.github.io/mahg-data-science/feed.xml" title="MG Data Science" /><link rel="shortcut icon" type="image/x-icon" href="/mahg-data-science/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/mahg-data-science/">MG Data Science</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/mahg-data-science/about/">About Me</a><a class="page-link" href="/mahg-data-science/search/">Search</a><a class="page-link" href="/mahg-data-science/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Predicting Car Prices using the K Nearest Neighbors Algorithm</h1><p class="page-description">I use various machine learning workflow techniques to arrive at the optimal K Nearest Neighbors (KNN) regression model for predicting car prices.</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2021-12-21T00:00:00-06:00" itemprop="datePublished">
+        Dec 21, 2021
+      </time>• 
+          <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+            <span class="p-author h-card" itemprop="name">Migs Germar</span></span>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      26 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/mahg-data-science/categories/#python">python</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/mahg-data-science/categories/#pandas">pandas</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/mahg-data-science/categories/#numpy">numpy</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/mahg-data-science/categories/#matplotlib">matplotlib</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/mahg-data-science/categories/#seaborn">seaborn</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/mahg-data-science/categories/#scipy">scipy</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/mahg-data-science/categories/#sklearn">sklearn</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-wrap flex-justify-end">
+          <div class="px-2">
+
+    <a href="https://github.com/MiguelAHG/mahg-data-science/tree/master/_notebooks/2021-12-21-Predicting-Car-Prices-K-Nearest-Neighbors.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/mahg-data-science/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h1"><a href="#Introduction">Introduction </a></li>
+<li class="toc-entry toc-h1"><a href="#Data-Inspection-and-Cleaning">Data Inspection and Cleaning </a></li>
+<li class="toc-entry toc-h1"><a href="#The-K-Nearest-Neighbors-Algorithm">The K Nearest Neighbors Algorithm </a></li>
+<li class="toc-entry toc-h1"><a href="#Techniques-for-Implementation">Techniques for Implementation </a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#Standardization">Standardization </a></li>
+<li class="toc-entry toc-h2"><a href="#Feature-Selection">Feature Selection </a></li>
+<li class="toc-entry toc-h2"><a href="#Train-Test-Split-with-Stratification">Train-Test Split with Stratification </a></li>
+<li class="toc-entry toc-h2"><a href="#Hyperparameter-Optimization">Hyperparameter Optimization </a></li>
+<li class="toc-entry toc-h2"><a href="#K-Fold-Cross-Validation">K-Fold Cross-Validation </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#Combining-Techniques">Combining Techniques </a></li>
+<li class="toc-entry toc-h1"><a href="#Summary">Summary </a></li>
+<li class="toc-entry toc-h1"><a href="#Bibliography">Bibliography </a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#Data-Source">Data Source </a></li>
+<li class="toc-entry toc-h2"><a href="#Information-Sources">Information Sources </a></li>
+<li class="toc-entry toc-h2"><a href="#Image-Source">Image Source </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2021-12-21-Predicting-Car-Prices-K-Nearest-Neighbors.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<center><img src="notebook-images/knn-car-prices/two-cars.jfif" alt=""></center>
+<center><a href="https://unsplash.com/photos/gKXKBY-C-Dk">Wheelscene | Chris Smith</a></center>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Introduction">
+<a class="anchor" href="#Introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction<a class="anchor-link" href="#Introduction"> </a>
+</h1>
+<p>K Nearest Neighbors or KNN is an an algorithm that can make predictions based on the similarity between different observations. In this project, I used KNN to predict the price of a car based on how similar its features are to those of other cars. Towards this end, I applied various machine learning techniques, such as standardization, feature selection, train-test split, hyperparameter optimization, and k-fold cross validation.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p></p>
+<div class="flash">
+    <svg class="octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info" viewbox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm6.5-.25A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75zM8 6a1 1 0 100-2 1 1 0 000 2z"></path></svg>
+    <strong>Note: </strong>I wrote this notebook by following a guided project on the <a href="https://www.dataquest.io/">Dataquest</a> platform, specifically the <a href="https://app.dataquest.io/c/36/m/155/guided-project%3A-predicting-car-prices/1/introduction-to-the-data-set">Guided Project: Predicting Car Prices</a>. The general project flow and research questions were guided by Dataquest. Furthermore, though the mathematical explanations in this post were written in my own words, I learned the theory from Dataquest.
+</div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Below are the packages used in this project.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">zscore</span>
+<span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="kn">import</span> <span class="n">KNeighborsRegressor</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">KFold</span><span class="p">,</span> <span class="n">cross_val_score</span><span class="p">,</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">sklearn.feature_selection</span> <span class="kn">import</span> <span class="n">f_regression</span><span class="p">,</span> <span class="n">SelectKBest</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">mean_squared_error</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Data-Inspection-and-Cleaning">
+<a class="anchor" href="#Data-Inspection-and-Cleaning" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data Inspection and Cleaning<a class="anchor-link" href="#Data-Inspection-and-Cleaning"> </a>
+</h1>
+<p>The dataset for this project is the Automobile Data Set by Schlimmer (1987), from the UCI Machine Learning Repository. The data and its description can be obtained <a href="https://archive.ics.uci.edu/ml/datasets/automobile">here</a>.</p>
+<p>The dataset describes 26 features of hundreds of cars. A summary of the features and their data types is shown below.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Data dictionary from documentation.</span>
+<span class="n">data_dict</span> <span class="o">=</span> <span class="s2">"""1. symboling: -3, -2, -1, 0, 1, 2, 3.</span>
+<span class="s2">2. normalized-losses: continuous from 65 to 256.</span>
+<span class="s2">3. make:</span>
+<span class="s2">alfa-romero, audi, bmw, chevrolet, dodge, honda,</span>
+<span class="s2">isuzu, jaguar, mazda, mercedes-benz, mercury,</span>
+<span class="s2">mitsubishi, nissan, peugot, plymouth, porsche,</span>
+<span class="s2">renault, saab, subaru, toyota, volkswagen, volvo</span>
+<span class="s2">4. fuel-type: diesel, gas.</span>
+<span class="s2">5. aspiration: std, turbo.</span>
+<span class="s2">6. num-of-doors: four, two.</span>
+<span class="s2">7. body-style: hardtop, wagon, sedan, hatchback, convertible.</span>
+<span class="s2">8. drive-wheels: 4wd, fwd, rwd.</span>
+<span class="s2">9. engine-location: front, rear.</span>
+<span class="s2">10. wheel-base: continuous from 86.6 120.9.</span>
+<span class="s2">11. length: continuous from 141.1 to 208.1.</span>
+<span class="s2">12. width: continuous from 60.3 to 72.3.</span>
+<span class="s2">13. height: continuous from 47.8 to 59.8.</span>
+<span class="s2">14. curb-weight: continuous from 1488 to 4066.</span>
+<span class="s2">15. engine-type: dohc, dohcv, l, ohc, ohcf, ohcv, rotor.</span>
+<span class="s2">16. num-of-cylinders: eight, five, four, six, three, twelve, two.</span>
+<span class="s2">17. engine-size: continuous from 61 to 326.</span>
+<span class="s2">18. fuel-system: 1bbl, 2bbl, 4bbl, idi, mfi, mpfi, spdi, spfi.</span>
+<span class="s2">19. bore: continuous from 2.54 to 3.94.</span>
+<span class="s2">20. stroke: continuous from 2.07 to 4.17.</span>
+<span class="s2">21. compression-ratio: continuous from 7 to 23.</span>
+<span class="s2">22. horsepower: continuous from 48 to 288.</span>
+<span class="s2">23. peak-rpm: continuous from 4150 to 6600.</span>
+<span class="s2">24. city-mpg: continuous from 13 to 49.</span>
+<span class="s2">25. highway-mpg: continuous from 16 to 54.</span>
+<span class="s2">26. price: continuous from 5118 to 45400."""</span>
+
+<span class="c1"># Use regex to extract column names from data dictionary.</span>
+<span class="n">col_names</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span>
+    <span class="n">pattern</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"^[0-9]{1,2}\. ([a-z\-]+):"</span><span class="p">,</span>
+    <span class="n">string</span> <span class="o">=</span> <span class="n">data_dict</span><span class="p">,</span>
+    <span class="c1"># Use multiline flag so that ^ indicates the start of a line.</span>
+    <span class="n">flags</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">MULTILINE</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Read data file and add column names.</span>
+<span class="n">cars_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
+    <span class="s2">"./private/Car-Prices-KNN-Files/imports-85.data"</span><span class="p">,</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="n">col_names</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">cars_df</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 205 entries, 0 to 204
+Data columns (total 26 columns):
+ #   Column             Non-Null Count  Dtype  
+---  ------             --------------  -----  
+ 0   symboling          205 non-null    int64  
+ 1   normalized-losses  205 non-null    object 
+ 2   make               205 non-null    object 
+ 3   fuel-type          205 non-null    object 
+ 4   aspiration         205 non-null    object 
+ 5   num-of-doors       205 non-null    object 
+ 6   body-style         205 non-null    object 
+ 7   drive-wheels       205 non-null    object 
+ 8   engine-location    205 non-null    object 
+ 9   wheel-base         205 non-null    float64
+ 10  length             205 non-null    float64
+ 11  width              205 non-null    float64
+ 12  height             205 non-null    float64
+ 13  curb-weight        205 non-null    int64  
+ 14  engine-type        205 non-null    object 
+ 15  num-of-cylinders   205 non-null    object 
+ 16  engine-size        205 non-null    int64  
+ 17  fuel-system        205 non-null    object 
+ 18  bore               205 non-null    object 
+ 19  stroke             205 non-null    object 
+ 20  compression-ratio  205 non-null    float64
+ 21  horsepower         205 non-null    object 
+ 22  peak-rpm           205 non-null    object 
+ 23  city-mpg           205 non-null    int64  
+ 24  highway-mpg        205 non-null    int64  
+ 25  price              205 non-null    object 
+dtypes: float64(5), int64(5), object(16)
+memory usage: 41.8+ KB
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>There are 205 cars and 26 features. Most of the features directly describe physical characteristics of the cars. Some exceptions are "symboling" and "normalized-losses", which are values related to car insurance and are beyond the scope of this project. Also, the "price" column provides the price of each car in USD.</p>
+<p>Let us look at the first five rows.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">cars_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>symboling</th>
+      <th>normalized-losses</th>
+      <th>make</th>
+      <th>fuel-type</th>
+      <th>aspiration</th>
+      <th>num-of-doors</th>
+      <th>body-style</th>
+      <th>drive-wheels</th>
+      <th>engine-location</th>
+      <th>wheel-base</th>
+      <th>...</th>
+      <th>engine-size</th>
+      <th>fuel-system</th>
+      <th>bore</th>
+      <th>stroke</th>
+      <th>compression-ratio</th>
+      <th>horsepower</th>
+      <th>peak-rpm</th>
+      <th>city-mpg</th>
+      <th>highway-mpg</th>
+      <th>price</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>3</td>
+      <td>?</td>
+      <td>alfa-romero</td>
+      <td>gas</td>
+      <td>std</td>
+      <td>two</td>
+      <td>convertible</td>
+      <td>rwd</td>
+      <td>front</td>
+      <td>88.6</td>
+      <td>...</td>
+      <td>130</td>
+      <td>mpfi</td>
+      <td>3.47</td>
+      <td>2.68</td>
+      <td>9.0</td>
+      <td>111</td>
+      <td>5000</td>
+      <td>21</td>
+      <td>27</td>
+      <td>13495</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>3</td>
+      <td>?</td>
+      <td>alfa-romero</td>
+      <td>gas</td>
+      <td>std</td>
+      <td>two</td>
+      <td>convertible</td>
+      <td>rwd</td>
+      <td>front</td>
+      <td>88.6</td>
+      <td>...</td>
+      <td>130</td>
+      <td>mpfi</td>
+      <td>3.47</td>
+      <td>2.68</td>
+      <td>9.0</td>
+      <td>111</td>
+      <td>5000</td>
+      <td>21</td>
+      <td>27</td>
+      <td>16500</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1</td>
+      <td>?</td>
+      <td>alfa-romero</td>
+      <td>gas</td>
+      <td>std</td>
+      <td>two</td>
+      <td>hatchback</td>
+      <td>rwd</td>
+      <td>front</td>
+      <td>94.5</td>
+      <td>...</td>
+      <td>152</td>
+      <td>mpfi</td>
+      <td>2.68</td>
+      <td>3.47</td>
+      <td>9.0</td>
+      <td>154</td>
+      <td>5000</td>
+      <td>19</td>
+      <td>26</td>
+      <td>16500</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2</td>
+      <td>164</td>
+      <td>audi</td>
+      <td>gas</td>
+      <td>std</td>
+      <td>four</td>
+      <td>sedan</td>
+      <td>fwd</td>
+      <td>front</td>
+      <td>99.8</td>
+      <td>...</td>
+      <td>109</td>
+      <td>mpfi</td>
+      <td>3.19</td>
+      <td>3.40</td>
+      <td>10.0</td>
+      <td>102</td>
+      <td>5500</td>
+      <td>24</td>
+      <td>30</td>
+      <td>13950</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2</td>
+      <td>164</td>
+      <td>audi</td>
+      <td>gas</td>
+      <td>std</td>
+      <td>four</td>
+      <td>sedan</td>
+      <td>4wd</td>
+      <td>front</td>
+      <td>99.4</td>
+      <td>...</td>
+      <td>136</td>
+      <td>mpfi</td>
+      <td>3.19</td>
+      <td>3.40</td>
+      <td>8.0</td>
+      <td>115</td>
+      <td>5500</td>
+      <td>18</td>
+      <td>22</td>
+      <td>17450</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 26 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>If we compare the data type of each column to its contents, several opportunities for data cleaning can be seen. For example, the "normalized-losses" feature is listed as an object-type column because it contains both strings and numbers. However, the strings in the column are question marks (?). Rather than being categories, these may be placeholders for missing data. This problem applies to several other columns, not just this one.</p>
+<p>Furthermore, in some columns like "num-of-doors", numbers are written as words. For example, 2 is written as "two". Since the numbers are in string format, these cannot be used in the K Nearest Neighbors model.</p>
+<p>Thus, in summary, the following cleaning steps have to be performed:</p>
+<ul>
+<li>Replace question mark strings ("?") with null values (NaN). These are the proper way to indicate missing values.</li>
+<li>Convert several object columns, like "normalized-losses", into numeric columns.</li>
+<li>Replace numbers written as words with their proper numeric equivalents. For example, replace "four" with 4.</li>
+</ul>
+<p>These were performed in the following code cell.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Clean the data.</span>
+
+<span class="c1"># Replace ? with NaN since these are placeholders.</span>
+<span class="n">cars_df</span> <span class="o">=</span> <span class="n">cars_df</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"?"</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+
+<span class="c1"># Change this object column to float type.</span>
+<span class="n">obj_to_numeric</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"normalized-losses"</span><span class="p">,</span>
+    <span class="s2">"bore"</span><span class="p">,</span>
+    <span class="s2">"stroke"</span><span class="p">,</span>
+    <span class="s2">"horsepower"</span><span class="p">,</span>
+    <span class="s2">"peak-rpm"</span><span class="p">,</span>
+    <span class="s2">"price"</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">obj_to_numeric</span><span class="p">:</span>
+    <span class="n">cars_df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">cars_df</span><span class="p">[</span><span class="n">col</span><span class="p">],</span> <span class="n">errors</span> <span class="o">=</span> <span class="s2">"coerce"</span><span class="p">)</span>
+
+<span class="c1"># Replace strings with numeric equivalents.</span>
+<span class="n">cars_df</span><span class="p">[</span><span class="s2">"num-of-doors"</span><span class="p">]</span> <span class="o">=</span> <span class="n">cars_df</span><span class="p">[</span><span class="s2">"num-of-doors"</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">"four"</span><span class="p">:</span> <span class="mf">4.0</span><span class="p">,</span>
+        <span class="s2">"two"</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+<span class="n">cars_df</span><span class="p">[</span><span class="s2">"num-of-cylinders"</span><span class="p">]</span> <span class="o">=</span> <span class="n">cars_df</span><span class="p">[</span><span class="s2">"num-of-cylinders"</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">"four"</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+        <span class="s2">"six"</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+        <span class="s2">"five"</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="s2">"eight"</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+        <span class="s2">"two"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="s2">"three"</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="s2">"twelve"</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+<span class="n">cars_df</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 205 entries, 0 to 204
+Data columns (total 26 columns):
+ #   Column             Non-Null Count  Dtype  
+---  ------             --------------  -----  
+ 0   symboling          205 non-null    int64  
+ 1   normalized-losses  164 non-null    float64
+ 2   make               205 non-null    object 
+ 3   fuel-type          205 non-null    object 
+ 4   aspiration         205 non-null    object 
+ 5   num-of-doors       203 non-null    float64
+ 6   body-style         205 non-null    object 
+ 7   drive-wheels       205 non-null    object 
+ 8   engine-location    205 non-null    object 
+ 9   wheel-base         205 non-null    float64
+ 10  length             205 non-null    float64
+ 11  width              205 non-null    float64
+ 12  height             205 non-null    float64
+ 13  curb-weight        205 non-null    int64  
+ 14  engine-type        205 non-null    object 
+ 15  num-of-cylinders   205 non-null    int64  
+ 16  engine-size        205 non-null    int64  
+ 17  fuel-system        205 non-null    object 
+ 18  bore               201 non-null    float64
+ 19  stroke             201 non-null    float64
+ 20  compression-ratio  205 non-null    float64
+ 21  horsepower         203 non-null    float64
+ 22  peak-rpm           203 non-null    float64
+ 23  city-mpg           205 non-null    int64  
+ 24  highway-mpg        205 non-null    int64  
+ 25  price              201 non-null    float64
+dtypes: float64(12), int64(6), object(8)
+memory usage: 41.8+ KB
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The new summary of columns is shown above. Several columns which were once "object" columns are now numeric. Also, since we replaced "?" placeholders with null values, we can now see that some columns have missing values.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">null_percs</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">cars_df</span>
+    <span class="o">.</span><span class="n">isnull</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">cars_df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">null_percs</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">null_percs</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>normalized-losses    20.00000
+num-of-doors          0.97561
+bore                  1.95122
+stroke                1.95122
+horsepower            0.97561
+peak-rpm              0.97561
+price                 1.95122
+dtype: float64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The table above shows the percentage of missing values in each column that has them. In particular, "normalized-losses" has missing values in 20% of the observations. Thus, we will have to drop this column from the dataset. This is better than the alternative, which is to delete all rows where "normalized-losses" is missing.</p>
+<p>As for the other 6 columns, we will use listwise deletion. This means that we will drop all rows with missing values in any of those columns.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">cars_df</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">cars_df</span>
+    <span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">"normalized-losses"</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">dropna</span><span class="p">(</span>
+        <span class="n">subset</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">"num-of-doors"</span><span class="p">,</span>
+            <span class="s2">"bore"</span><span class="p">,</span>
+            <span class="s2">"stroke"</span><span class="p">,</span>
+            <span class="s2">"horsepower"</span><span class="p">,</span>
+            <span class="s2">"peak-rpm"</span><span class="p">,</span>
+            <span class="s2">"price"</span><span class="p">,</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">num_null</span> <span class="o">=</span> <span class="n">cars_df</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Total number of missing values: </span><span class="si">{</span><span class="n">num_null</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"New shape of dataset: </span><span class="si">{</span><span class="n">cars_df</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Total number of missing values: 0
+New shape of dataset: (193, 25)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now, there are no more missing values in the dataset. There are 193 rows and 25 columns left.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="The-K-Nearest-Neighbors-Algorithm">
+<a class="anchor" href="#The-K-Nearest-Neighbors-Algorithm" aria-hidden="true"><span class="octicon octicon-link"></span></a>The K Nearest Neighbors Algorithm<a class="anchor-link" href="#The-K-Nearest-Neighbors-Algorithm"> </a>
+</h1>
+<p>Next, I will discuss the theory behind the KNN algorithm, then implement it on the dataset.</p>
+<p>First, let us discuss basic terminology. For your reference, below is a small part of the dataset:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">cars_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:</span><span class="mi">5</span><span class="p">,</span> <span class="p">[</span><span class="s2">"make"</span><span class="p">,</span> <span class="s2">"fuel-type"</span><span class="p">,</span> <span class="s2">"num-of-doors"</span><span class="p">,</span> <span class="s2">"body-style"</span><span class="p">,</span> <span class="s2">"price"</span><span class="p">]]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>make</th>
+      <th>fuel-type</th>
+      <th>num-of-doors</th>
+      <th>body-style</th>
+      <th>price</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>alfa-romero</td>
+      <td>gas</td>
+      <td>2.0</td>
+      <td>convertible</td>
+      <td>13495.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>alfa-romero</td>
+      <td>gas</td>
+      <td>2.0</td>
+      <td>convertible</td>
+      <td>16500.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>alfa-romero</td>
+      <td>gas</td>
+      <td>2.0</td>
+      <td>hatchback</td>
+      <td>16500.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>audi</td>
+      <td>gas</td>
+      <td>4.0</td>
+      <td>sedan</td>
+      <td>13950.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>audi</td>
+      <td>gas</td>
+      <td>4.0</td>
+      <td>sedan</td>
+      <td>17450.0</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>audi</td>
+      <td>gas</td>
+      <td>2.0</td>
+      <td>sedan</td>
+      <td>15250.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Each row of data is called an observation; in this case, each observation is a car.</p>
+<p>On the other hand, each column is either a feature or a target. The target is the variable that we try to predict, and the features are information used to make the prediction. In the case of this project, the features may include the size of the car, the number of doors, etc. The target is the price of the car.</p>
+<p>The set of cars whose prices we will predict is called the testing set. On the other hand, the training set is the set of cars used to train the model to make predictions. Put more simply, in order to predict the price of a car in the testing set, we must compare it to the cars in the training set.</p>
+<p>In order to compare cars, KNN uses the Euclidean distance as a similarity metric between two observations. A low distance close to 0 means that the observations are very similar to each other. The following formula is used:</p>
+<p>$d = \sqrt{\sum_{i=1}^n (q_i - p_i)^2}$</p>
+<ul>
+<li>$d$ is the Euclidean distance.</li>
+<li>$n$ is the number of features.</li>
+<li>$q$ and $p$ each refer to a different observation in the data. In this case, each is a different car. </li>
+<li>$q_i$ is the value of feature $i$ for observation $q$. For example, if feature $1$ is the number of doors, $q_1$ is the number of doors on car $q$.</li>
+<li>The differences between the two observations' features are squared, then summed up. Finally, the square root of the sum gives the Euclidean distance.</li>
+</ul>
+<p>Given that we want to predict the price of a car $q$, KNN computes the Euclidean distance of $q$ from <em>every single car in the training set</em>. The cars most similar to $q$ are its "nearest neighbors."</p>
+<p>We then choose a number $k$, which will determine how many of the nearest neighbors will be selected. For example, if $k = 5$, we select the five most similar cars. Then, we take the mean price of these five cars, and we predict that this is the price of car $q$.</p>
+<p>Since we make a prediction based on an observation's $k$ nearest neighbors, the algorithm is called K Nearest Neighbors. Note that what I have described is an example of a KNN regression model, as it predicts a numeric target. There are still several other forms of KNN. Some use a different similarity metric like Manhattan distance, and some perform classification, which means that they predict a categorical target (Miller, 2019).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Techniques-for-Implementation">
+<a class="anchor" href="#Techniques-for-Implementation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Techniques for Implementation<a class="anchor-link" href="#Techniques-for-Implementation"> </a>
+</h1>
+<p>Unlike with my previous <a href="https://miguelahg.github.io/mahg-data-science/python/pandas/numpy/matplotlib/scikit-learn/2021/12/14/Naive-Bayes-Algorithm-Detecting-Spam-Messages.html">post</a> on the Naive Bayes Algorithm, I will not be programming this algorithm manually. Instead, I will use the scikit-learn workflow, which involves pre-packaged machine learning functions.</p>
+<p>In this part, I will individually discuss certain important techniques used in the machine learning workflow. In the next part, I will combine these techniques in order to obtain the optimal KNN model.</p>
+<h2 id="Standardization">
+<a class="anchor" href="#Standardization" aria-hidden="true"><span class="octicon octicon-link"></span></a>Standardization<a class="anchor-link" href="#Standardization"> </a>
+</h2>
+<p>The first important technique is standardization. So that each feature will contribute equally to the Euclidean distance, we will standardize each numeric feature. In other words, each value will be converted into a z-score so that the mean of each feature is 0 and its standard deviation is 1. The following equation is used:</p>
+<p>$z = \frac{x - \bar{x}}{s}$</p>
+<ul>
+<li>$z$ is the z-score.</li>
+<li>$x$ is a value in a feature.</li>
+<li>$\bar{x}$ is the mean of the feature.</li>
+<li>$s$ is the sample standard deviation.</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">all_feature_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">cars_df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">col</span> <span class="o">!=</span> <span class="s2">"price"</span><span class="p">]</span>
+
+<span class="c1"># Series of feature:data type</span>
+<span class="n">fdt</span> <span class="o">=</span> <span class="n">cars_df</span><span class="p">[</span><span class="n">all_feature_cols</span><span class="p">]</span><span class="o">.</span><span class="n">dtypes</span>
+
+<span class="c1"># Identify numeric features</span>
+<span class="n">all_numeric_features</span> <span class="o">=</span> <span class="n">fdt</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">fdt</span> <span class="o">!=</span> <span class="s2">"object"</span><span class="p">]</span>
+
+<span class="c1"># Standardize</span>
+<span class="n">cars_df</span><span class="p">[</span><span class="n">all_numeric_features</span><span class="p">]</span> <span class="o">=</span> <span class="n">cars_df</span><span class="p">[</span><span class="n">all_numeric_features</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">zscore</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="n">cars_df</span><span class="p">[</span><span class="n">all_numeric_features</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>symboling</th>
+      <th>num-of-doors</th>
+      <th>wheel-base</th>
+      <th>length</th>
+      <th>width</th>
+      <th>height</th>
+      <th>curb-weight</th>
+      <th>num-of-cylinders</th>
+      <th>engine-size</th>
+      <th>bore</th>
+      <th>stroke</th>
+      <th>compression-ratio</th>
+      <th>horsepower</th>
+      <th>peak-rpm</th>
+      <th>city-mpg</th>
+      <th>highway-mpg</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1.78685</td>
+      <td>-1.175889</td>
+      <td>-1.682379</td>
+      <td>-0.444024</td>
+      <td>-0.841263</td>
+      <td>-2.122598</td>
+      <td>-0.025713</td>
+      <td>-0.411247</td>
+      <td>0.045215</td>
+      <td>0.513027</td>
+      <td>-1.808186</td>
+      <td>-0.288273</td>
+      <td>0.198569</td>
+      <td>-0.213359</td>
+      <td>-0.679053</td>
+      <td>-0.557058</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1.78685</td>
+      <td>-1.175889</td>
+      <td>-1.682379</td>
+      <td>-0.444024</td>
+      <td>-0.841263</td>
+      <td>-2.122598</td>
+      <td>-0.025713</td>
+      <td>-0.411247</td>
+      <td>0.045215</td>
+      <td>0.513027</td>
+      <td>-1.808186</td>
+      <td>-0.288273</td>
+      <td>0.198569</td>
+      <td>-0.213359</td>
+      <td>-0.679053</td>
+      <td>-0.557058</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.16397</td>
+      <td>-1.175889</td>
+      <td>-0.720911</td>
+      <td>-0.251195</td>
+      <td>-0.184679</td>
+      <td>-0.615412</td>
+      <td>0.497764</td>
+      <td>1.548523</td>
+      <td>0.575559</td>
+      <td>-2.394827</td>
+      <td>0.702918</td>
+      <td>-0.288273</td>
+      <td>1.334283</td>
+      <td>-0.213359</td>
+      <td>-0.992963</td>
+      <td>-0.704134</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.97541</td>
+      <td>0.850420</td>
+      <td>0.142781</td>
+      <td>0.182672</td>
+      <td>0.143612</td>
+      <td>0.180047</td>
+      <td>-0.427362</td>
+      <td>-0.411247</td>
+      <td>-0.461021</td>
+      <td>-0.517605</td>
+      <td>0.480415</td>
+      <td>-0.036204</td>
+      <td>-0.039139</td>
+      <td>0.856208</td>
+      <td>-0.208189</td>
+      <td>-0.115832</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.97541</td>
+      <td>0.850420</td>
+      <td>0.077596</td>
+      <td>0.182672</td>
+      <td>0.237410</td>
+      <td>0.180047</td>
+      <td>0.499668</td>
+      <td>0.568638</td>
+      <td>0.189854</td>
+      <td>-0.517605</td>
+      <td>0.480415</td>
+      <td>-0.540341</td>
+      <td>0.304217</td>
+      <td>0.856208</td>
+      <td>-1.149918</td>
+      <td>-1.292436</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The table above shows the first 5 rows of all of the numeric features. Notice that each feature now contains positive and negative values close to 0 because it was standardized.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Feature-Selection">
+<a class="anchor" href="#Feature-Selection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Feature Selection<a class="anchor-link" href="#Feature-Selection"> </a>
+</h2>
+<p>The second technique is feature selection. We must choose features which we think are most relevant to a car's price. We can only select numeric features since categorical ones cannot be used to calculate Euclidean distance. Thus, we must select from the following features:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">all_numeric_features</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>['symboling',
+ 'num-of-doors',
+ 'wheel-base',
+ 'length',
+ 'width',
+ 'height',
+ 'curb-weight',
+ 'num-of-cylinders',
+ 'engine-size',
+ 'bore',
+ 'stroke',
+ 'compression-ratio',
+ 'horsepower',
+ 'peak-rpm',
+ 'city-mpg',
+ 'highway-mpg']</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>All of these features are physical characteristics of a car, except for "symboling". According to the dataset documentation by Schlimmer (2019), this feature is an "insurance risk rating." It elaborates:</p>
+<blockquote>
+<p>Cars are initially assigned a risk factor symbol associated with its price. Then, if it is more risky (or less), this symbol is adjusted by moving it up (or down) the scale. Actuarians call this process "symboling". A value of +3 indicates that the auto is risky, -3 that it is probably pretty safe.</p>
+</blockquote>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Given that this feature is systematically associated with the price of a car, it may be relevant to our model. Thus, we will consider it along with the other numeric features.</p>
+<p>In order to determine which combination of features is the best, we will use univariate feature selection. "Univariate" refers to the use of a single variable. We will perform a statistical test between each feature and the target. Then, we will select the features with the highest scores from the statistical test (scikit-learn developers, 2021).</p>
+<p>In our case, we have a regression problem, since we want to predict a continuous variable, car price. Thus, we will use the F-statistic as our score function. According to Frost (2017), the F-statistic indicates the "overall significance" of a linear regression model. In univariate feature selection, we would do the following steps:</p>
+<ul>
+<li>For each feature:<ul>
+<li>Perform linear regression where the independent variable is the feature and the dependent variable is the target (in this case, price).</li>
+<li>Obtain the F-statistic.</li>
+</ul>
+</li>
+<li>Compile a list with the F-statistic of each feature.</li>
+<li>Identify the features with the highest F-statistics.</li>
+</ul>
+<p>This can be implemented automatically using the scikit-learn's <code>SelectKBest</code> class. It is called <code>SelectKBest</code> because we can set a parameter <code>k</code> which tells how many features to select. For example, if <code>k = 3</code>, the top three features with the highest F-statistic are selected. This is done below:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">skb</span> <span class="o">=</span> <span class="n">SelectKBest</span><span class="p">(</span>
+    <span class="n">score_func</span> <span class="o">=</span> <span class="n">f_regression</span><span class="p">,</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">cars_df</span><span class="p">[</span><span class="n">all_numeric_features</span><span class="p">]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">cars_df</span><span class="p">[</span><span class="s2">"price"</span><span class="p">]</span>
+
+<span class="n">X_new</span> <span class="o">=</span> <span class="n">skb</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+<span class="n">best_features</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">skb</span><span class="o">.</span><span class="n">get_feature_names_out</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Top 3 features:"</span><span class="p">,</span> <span class="n">best_features</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Top 3 features: ['curb-weight', 'engine-size', 'horsepower']
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The results show that curb weight, engine size, and horsepower are the highest-scoring features. However, we will not select these yet for the final model, since other steps still must be discussed.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Train-Test-Split-with-Stratification">
+<a class="anchor" href="#Train-Test-Split-with-Stratification" aria-hidden="true"><span class="octicon octicon-link"></span></a>Train-Test Split with Stratification<a class="anchor-link" href="#Train-Test-Split-with-Stratification"> </a>
+</h2>
+<p>Train-test split is the third important technique.</p>
+<p>Before model training, the dataset has to be split into training and testing sets. We will use 80% of the data in the training set and 20% in the testing set. As the names suggest, the training set is used to train the model or help it <em>learn</em> how to predict car prices. Then, we make predictions on the cars on the testing set to see whether the predictions are accurate.</p>
+<p>Before we split the data, though, we have to ensure that the frequency distribution of the target is similar between the training and testing sets. Below is a histogram of the frequency distribution of car price across the entire dataset:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">cars_df</span><span class="p">[</span><span class="s2">"price"</span><span class="p">],</span> <span class="n">bins</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Frequency Distribution of Car Price"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">"Price (USD)"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">"Number of Cars"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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">
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The graph shows a right-skewed distribution, which means that most of the car prices are low and there are outliers with high prices. Therefore, we must label each price as "high" or "normal", then stratify the training and testing sets so that each set has the same proportions of price labels. Based on the histogram, we can label all prices under USD 20,000 as "normal" and prices greater than or equal to USD 20,000 as "high".</p>
+<p>The stratification and train-test split are both performed in the code below.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Label praces as normal or high</span>
+<span class="n">cars_df</span><span class="p">[</span><span class="s2">"price_label"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"normal"</span>
+<span class="n">cars_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">cars_df</span><span class="p">[</span><span class="s2">"price"</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">20000</span><span class="p">,</span> <span class="s2">"price_label"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"high"</span>
+
+<span class="c1"># Train-test split with stratification</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
+    <span class="n">cars_df</span><span class="p">[</span><span class="n">all_numeric_features</span><span class="p">],</span>
+    <span class="n">cars_df</span><span class="p">[</span><span class="s2">"price"</span><span class="p">],</span>
+    <span class="n">train_size</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">,</span>
+    <span class="n">test_size</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span>
+    <span class="n">random_state</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">shuffle</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">stratify</span> <span class="o">=</span> <span class="n">cars_df</span><span class="p">[</span><span class="s2">"price_label"</span><span class="p">],</span>
+<span class="p">)</span>
+
+<span class="c1"># Check stratification.</span>
+<span class="n">X_train_labeled</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+    <span class="p">[</span><span class="n">X_train</span><span class="p">,</span> <span class="n">cars_df</span><span class="o">.</span><span class="n">price_label</span><span class="p">],</span>
+    <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">join</span> <span class="o">=</span> <span class="s2">"inner"</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">X_test_labeled</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+    <span class="p">[</span><span class="n">X_test</span><span class="p">,</span> <span class="n">cars_df</span><span class="o">.</span><span class="n">price_label</span><span class="p">],</span>
+    <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">join</span> <span class="o">=</span> <span class="s2">"inner"</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"X_train price label distribution"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">X_train_labeled</span><span class="o">.</span><span class="n">price_label</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">normalize</span> <span class="o">=</span> <span class="kc">True</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">X_test Price label distribution"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">X_test_labeled</span><span class="o">.</span><span class="n">price_label</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">normalize</span> <span class="o">=</span> <span class="kc">True</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>X_train price label distribution
+normal    0.87013
+high      0.12987
+Name: price_label, dtype: float64
+
+X_test Price label distribution
+normal    0.871795
+high      0.128205
+Name: price_label, dtype: float64
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Both sets are now composed of around 87% cars with normal prices and 13% outliers with high prices.</p>
+<p>Let us compare the price distributions using KDE plots:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">kdeplot</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">"Training set"</span><span class="p">)</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">kdeplot</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">"Testing set"</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Comparison of Car Prices Between Sets"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">"Price (USD)"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">"Probability Density"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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">
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The KDE plots both seem to follow the same shape and have the same center. This shows that the training and testing sets have roughly the same distribution of car prices. Thus, these were stratified correctly.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Hyperparameter-Optimization">
+<a class="anchor" href="#Hyperparameter-Optimization" aria-hidden="true"><span class="octicon octicon-link"></span></a>Hyperparameter Optimization<a class="anchor-link" href="#Hyperparameter-Optimization"> </a>
+</h2>
+<p>The fourth technique is hyperparameter optimization. This involves training the KNN model using different hyperparameter values to see which one performs the best.</p>
+<p>A hyperparameter is a value that influences the behavior of a model and has no relation to the data. In the case of KNN, one important hyperparameter is the $k$ value, or the number of neighbors used to make a prediction. If $k = 5$, we take the mean price of the top five most similar cars and call this our prediction. However, if $k = 10$, we take the top ten cars, so the mean price may be different.</p>
+<p>We can optimize $k$ in this way:</p>
+<ul>
+<li>Decide values of $k$ to test.</li>
+<li>For each $k$ value, fit and evaluate a KNN model.</li>
+<li>Identify the best-performing model and use its $k$ value in the final model.</li>
+</ul>
+<p>In order to evaluate a model, we need an evaluation metric. In our case, we will use the Root Mean Squared Error or RMSE. This is calculated with the following equation:</p>
+<p>$RMSE = \sqrt{\frac{1}{n} \sum_{i=1}^n (\text{actual}_i - \text{predicted}_i)^2}$</p>
+<ul>
+<li>$n$ is the sample size.</li>
+<li>$\text{actual}$ is the actual target value, or in this case, the actual price of a car.</li>
+<li>$\text{predicted}$ is the predicted target value.</li>
+</ul>
+<p>RMSE can be interpreted as the average error of a regression model. For example, if $RMSE = 1000$, this means that the model's predicted car prices are USD 1000 away from the actual car prices, on average.</p>
+<p>Below is an example of hyperparameter optimization using RMSE. All of the numeric features were used for this example.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">k_values</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+
+<span class="n">k_rmse</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">dtype</span> <span class="o">=</span> <span class="s2">"float64"</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">k_values</span><span class="p">:</span>
+    <span class="n">knn</span> <span class="o">=</span> <span class="n">KNeighborsRegressor</span><span class="p">(</span>
+        <span class="n">n_neighbors</span> <span class="o">=</span> <span class="n">k</span><span class="p">,</span>
+        <span class="n">algorithm</span> <span class="o">=</span> <span class="s2">"auto"</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">knn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">knn</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+
+    <span class="n">rmse</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">))</span>
+
+    <span class="n">k_rmse</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">rmse</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"k value and RMSE"</span><span class="p">)</span>
+<span class="n">k_rmse</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>k value and RMSE
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>1    2734.951408
+3    3793.441921
+5    3980.051639
+dtype: float64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The table above shows that RMSE was lowest for $k = 1$. The RMSE was about USD 2735, which means that on average, the predicted prices are USD 2735 away from the actual prices.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="K-Fold-Cross-Validation">
+<a class="anchor" href="#K-Fold-Cross-Validation" aria-hidden="true"><span class="octicon octicon-link"></span></a>K-Fold Cross-Validation<a class="anchor-link" href="#K-Fold-Cross-Validation"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The last technique that will be discussed is K-Fold Cross-Validation. Earlier, we split the data into one training set and one testing set. The K-Fold Cross-Validation allows us to obtain a more holistic view of model performance by rotating the observations used in the two sets.</p>
+<p>Here, $k$ has a different meaning. It determines the number of splits to make in a dataset. For example, if $k = 5$, the dataset will be split into 5 sets, each set containing 20% of the total data.</p>
+<p>In summary, the following steps are performed:</p>
+<ul>
+<li>Split the data into 5 sets: A, B, C, D, E.</li>
+<li>Use set A as the testing set and use the others as the training set.</li>
+<li>Fit and evaluate a KNN model, thus obtaining RMSE.</li>
+<li>Repeat the above process for a total of 5 times, so that each set is used as a testing set once.</li>
+<li>Compile a list of the five RMSE values obtained.</li>
+<li>Compute the mean RMSE value. This is the final metric of model performance.</li>
+</ul>
+<p>K-Fold Cross-Validation can be implemented using scikit-learn's <code>KFold</code> and <code>cross_val_score</code> . An example of 5-fold cross-validation is shown below.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">knn</span> <span class="o">=</span> <span class="n">KNeighborsRegressor</span><span class="p">(</span>
+    <span class="n">n_neighbors</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="n">algorithm</span> <span class="o">=</span> <span class="s2">"auto"</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">knn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">knn</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+
+<span class="n">kf</span> <span class="o">=</span> <span class="n">KFold</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">shuffle</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">random_state</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">mses</span> <span class="o">=</span> <span class="n">cross_val_score</span><span class="p">(</span>
+    <span class="n">estimator</span> <span class="o">=</span> <span class="n">knn</span><span class="p">,</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">X_new</span><span class="p">,</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">cars_df</span><span class="p">[</span><span class="s2">"price"</span><span class="p">],</span>
+    <span class="n">scoring</span> <span class="o">=</span> <span class="s2">"neg_mean_squared_error"</span><span class="p">,</span>
+    <span class="n">cv</span> <span class="o">=</span> <span class="n">kf</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">mses</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">mses</span><span class="p">)</span>
+
+<span class="n">rmses</span> <span class="o">=</span> <span class="n">mses</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">mean_rmse</span> <span class="o">=</span> <span class="n">rmses</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Mean RMSE from 5-fold cross-validation: </span><span class="si">{</span><span class="n">mean_rmse</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Mean RMSE from 5-fold cross-validation: 3272.5428252341467
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The mean RMSE above presents a better picture of the model's performance because it takes into account different possible combinations of training and testing sets.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Combining-Techniques">
+<a class="anchor" href="#Combining-Techniques" aria-hidden="true"><span class="octicon octicon-link"></span></a>Combining Techniques<a class="anchor-link" href="#Combining-Techniques"> </a>
+</h1>
+<p>In this part, we will combine several of the discussed techniques to optimize the KNN model.
+</p>
+<div class="flash">
+    <svg class="octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info" viewbox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm6.5-.25A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75zM8 6a1 1 0 100-2 1 1 0 000 2z"></path></svg>
+    <strong>Note: </strong>Stratification will not be applied since scikit-learn’s k-fold cross-validation workflow cannot stratify data in a regression problem.
+</div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The steps are as follows:</p>
+<ul>
+<li>Use the standardized features that were calculated earlier.</li>
+<li>For each number <code>n_features</code> from 1 to 10:<ul>
+<li>Perform univariate feature selection using the F-statistic.</li>
+<li>Identify the best <code>n_features</code> features.</li>
+<li>For each number <code>k</code> from 1 to 20:<ul>
+<li>Evaluate the model using 5-fold cross-validation. For each fold, train a <code>k</code> nearest neighbors model using the best features.</li>
+<li>Obtain the mean RMSE value.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Compile a list of all mean RMSE values obtained.</li>
+<li>Identify the model with the lowest mean RMSE. This is the final model.</li>
+</ul>
+<p>This is implemented in the code below.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">n_feature_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">11</span><span class="p">))</span>
+
+<span class="n">result_lst</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">n_features</span> <span class="ow">in</span> <span class="n">n_feature_list</span><span class="p">:</span>
+    
+    <span class="c1"># Univariate feature selection</span>
+    <span class="n">skb</span> <span class="o">=</span> <span class="n">SelectKBest</span><span class="p">(</span>
+        <span class="n">score_func</span> <span class="o">=</span> <span class="n">f_regression</span><span class="p">,</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="n">n_features</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">X</span> <span class="o">=</span> <span class="n">cars_df</span><span class="p">[</span><span class="n">all_numeric_features</span><span class="p">]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">cars_df</span><span class="p">[</span><span class="s2">"price"</span><span class="p">]</span>
+
+    <span class="n">X_new</span> <span class="o">=</span> <span class="n">skb</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+    <span class="c1"># List of "best" features</span>
+    <span class="n">best_features</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">skb</span><span class="o">.</span><span class="n">get_feature_names_out</span><span class="p">())</span>
+
+    <span class="n">k_values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">21</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">k_values</span><span class="p">:</span>
+
+        <span class="c1"># 5-fold cross validation</span>
+
+        <span class="n">knn</span> <span class="o">=</span> <span class="n">KNeighborsRegressor</span><span class="p">(</span>
+            <span class="c1"># Use a different k value each time</span>
+            <span class="n">n_neighbors</span> <span class="o">=</span> <span class="n">k</span><span class="p">,</span>
+            <span class="n">algorithm</span> <span class="o">=</span> <span class="s2">"auto"</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">kf</span> <span class="o">=</span> <span class="n">KFold</span><span class="p">(</span>
+            <span class="n">n_splits</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+            <span class="n">shuffle</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">random_state</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">mses</span> <span class="o">=</span> <span class="n">cross_val_score</span><span class="p">(</span>
+            <span class="n">estimator</span> <span class="o">=</span> <span class="n">knn</span><span class="p">,</span>
+            <span class="c1"># Use selected "best" features</span>
+            <span class="n">X</span> <span class="o">=</span> <span class="n">X_new</span><span class="p">,</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="p">,</span>
+            <span class="n">scoring</span> <span class="o">=</span> <span class="s2">"neg_mean_squared_error"</span><span class="p">,</span>
+            <span class="n">cv</span> <span class="o">=</span> <span class="n">kf</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Get mean RMSE</span>
+        <span class="n">mses</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">mses</span><span class="p">)</span>
+        <span class="n">rmses</span> <span class="o">=</span> <span class="n">mses</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">mean_rmse</span> <span class="o">=</span> <span class="n">rmses</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="c1"># Sample standard deviation with Bessel's correction</span>
+        <span class="n">std_rmse</span> <span class="o">=</span> <span class="n">rmses</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">ddof</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">new_row</span> <span class="o">=</span> <span class="p">(</span><span class="n">n_features</span><span class="p">,</span> <span class="n">best_features</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">mean_rmse</span><span class="p">,</span> <span class="n">std_rmse</span><span class="p">)</span>
+        <span class="n">result_lst</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_row</span><span class="p">)</span>
+
+<span class="n">result_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">result_lst</span><span class="p">)</span>
+<span class="n">result_df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Number of Features"</span><span class="p">,</span> <span class="s2">"Best Features"</span><span class="p">,</span> <span class="s2">"k Neighbors"</span><span class="p">,</span> <span class="s2">"Mean RMSE"</span><span class="p">,</span> <span class="s2">"StDev RMSE"</span><span class="p">]</span>
+
+<span class="n">result_df</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">result_df</span>
+    <span class="o">.</span><span class="n">sort_values</span><span class="p">([</span><span class="s2">"Mean RMSE"</span><span class="p">,</span> <span class="s2">"StDev RMSE"</span><span class="p">],</span> <span class="n">ascending</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">result_df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Number of Features</th>
+      <th>Best Features</th>
+      <th>k Neighbors</th>
+      <th>Mean RMSE</th>
+      <th>StDev RMSE</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>8</td>
+      <td>[length, width, curb-weight, num-of-cylinders,...</td>
+      <td>1</td>
+      <td>2454.203510</td>
+      <td>413.071651</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>8</td>
+      <td>[length, width, curb-weight, num-of-cylinders,...</td>
+      <td>2</td>
+      <td>2518.060919</td>
+      <td>808.857640</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>6</td>
+      <td>[width, curb-weight, num-of-cylinders, engine-...</td>
+      <td>2</td>
+      <td>2585.370554</td>
+      <td>675.971286</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>9</td>
+      <td>[wheel-base, length, width, curb-weight, num-o...</td>
+      <td>1</td>
+      <td>2599.735872</td>
+      <td>421.922706</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>3</td>
+      <td>[curb-weight, engine-size, horsepower]</td>
+      <td>2</td>
+      <td>2646.228088</td>
+      <td>399.456761</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>5</td>
+      <td>[width, curb-weight, num-of-cylinders, engine-...</td>
+      <td>2</td>
+      <td>2648.268299</td>
+      <td>766.679196</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>9</td>
+      <td>[wheel-base, length, width, curb-weight, num-o...</td>
+      <td>2</td>
+      <td>2668.221481</td>
+      <td>765.810089</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>7</td>
+      <td>[width, curb-weight, num-of-cylinders, engine-...</td>
+      <td>2</td>
+      <td>2671.360011</td>
+      <td>731.138019</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>5</td>
+      <td>[width, curb-weight, num-of-cylinders, engine-...</td>
+      <td>3</td>
+      <td>2688.434799</td>
+      <td>659.329939</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>8</td>
+      <td>[length, width, curb-weight, num-of-cylinders,...</td>
+      <td>3</td>
+      <td>2699.447492</td>
+      <td>333.801398</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The table above shows the ten models with the lowest mean RMSE. Interestingly, the best-performing model had 8 features and a k-value of 1. This means that only 1 neighbor was used in order to predict price.</p>
+<p>Its RMSE was 2454, so on average, the predicted prices were USD 2454 off from the actual prices. This is decent considering that the car prices mostly fall between USD 5000 and USD 20000, though it could be better.</p>
+<p>We could use this as the final model, but we need to consider some of its possible drawbacks.</p>
+<p>The SD RMSE is around 413. This means that the RMSE values usually varied by 413 from the mean. It would be problematic to have a high SD RMSE because it means that the model may not be reliable when trained on certain sets of the data.</p>
+<p>The number of features is somewhat large, and this may be a problem because it can cause overfitting. This means that the model may be too sensitive to small but meaningless variations in the training data. It may be unable to recognize <em>general trends</em> properly.</p>
+<p>Lastly, the k-value is particularly alarming because only one neighbor is considered when predicting a car's price. I would prefer to have $k &gt; 1$ so that multiple neighbors are taken into consideration.</p>
+<p>Based on these problems, it may be better to go with the 5th best performing model:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">result_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[[</span><span class="mi">4</span><span class="p">],</span> <span class="p">:]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Number of Features</th>
+      <th>Best Features</th>
+      <th>k Neighbors</th>
+      <th>Mean RMSE</th>
+      <th>StDev RMSE</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>4</th>
+      <td>3</td>
+      <td>[curb-weight, engine-size, horsepower]</td>
+      <td>2</td>
+      <td>2646.228088</td>
+      <td>399.456761</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This model uses only 3 features, which means that it is able to make useful generalizations based on a small amount of information. It makes sense that the curb weight would be important since it is the "weight of an automobile with standard equipment and fuel, oil, and coolant. (Merriam-Webster, 2021)" The weight of a car corresponds to the total mass of materials used to build it. The engine size and horsepower determine how powerful a car is, and higher horsepower cars are usually expensive (Fraser, 2020; Threewitt, 2017).</p>
+<p>Furthermore, the model uses two neighbors, which is better than using just one. Also, its SD RMSE is slightly lower than that of the first model, meaning that it is consistently reliable even when trained on different sets of data.</p>
+<p>Therefore, we will use this as our final KNN model.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Summary">
+<a class="anchor" href="#Summary" aria-hidden="true"><span class="octicon octicon-link"></span></a>Summary<a class="anchor-link" href="#Summary"> </a>
+</h1>
+<p>In this project, we cleaned a dataset about car features and prices, discussed the logic behind the K Nearest Neighbors algorithm for regression, explained techniques used in the machine learning workflow, then applied these techniques to determine the optimal model for predicting car prices.</p>
+<p>Thanks for reading!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Bibliography">
+<a class="anchor" href="#Bibliography" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bibliography<a class="anchor-link" href="#Bibliography"> </a>
+</h1>
+<h2 id="Data-Source">
+<a class="anchor" href="#Data-Source" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data Source<a class="anchor-link" href="#Data-Source"> </a>
+</h2>
+<p>Schlimmer, J. C. (1987, May 19). UCI Machine Learning Repository: Automobile Data Set. UCI Machine Learning Repository. <a href="https://archive.ics.uci.edu/ml/datasets/automobile">https://archive.ics.uci.edu/ml/datasets/automobile</a></p>
+<h2 id="Information-Sources">
+<a class="anchor" href="#Information-Sources" aria-hidden="true"><span class="octicon octicon-link"></span></a>Information Sources<a class="anchor-link" href="#Information-Sources"> </a>
+</h2>
+<p>Dataquest. (n.d.). Predicting Car Prices: Machine Learning Project. Dataquest. Retrieved December 21, 2021, from <a href="https://www.dataquest.io/c/36/m/155/guided-project%3A-predicting-car-prices">https://www.dataquest.io/c/36/m/155/guided-project%3A-predicting-car-prices</a></p>
+<p>Fraser, T. (2020, March 31). What is engine size, and why does it matter? WhichCar. <a href="https://www.whichcar.com.au/car-advice/what-is-engine-size-and-why-does-it-matter">https://www.whichcar.com.au/car-advice/what-is-engine-size-and-why-does-it-matter</a></p>
+<p>Frost, J. (2017, April 4). How to Interpret the F-test of Overall Significance in Regression Analysis. Statistics By Jim. <a href="http://statisticsbyjim.com/regression/interpret-f-test-overall-significance-regression/">http://statisticsbyjim.com/regression/interpret-f-test-overall-significance-regression/</a></p>
+<p>Merriam-Webster. (2021). Definition of CURB WEIGHT. Merriam-Webster. <a href="https://www.merriam-webster.com/dictionary/curb+weight">https://www.merriam-webster.com/dictionary/curb+weight</a></p>
+<p>Miller, M. (2019, October 18). The Basics: KNN for classification and regression. Medium. <a href="https://towardsdatascience.com/the-basics-knn-for-classification-and-regression-c1e8a6c955">https://towardsdatascience.com/the-basics-knn-for-classification-and-regression-c1e8a6c955</a></p>
+<p>scikit-learn developers. (2021). 1.13.2. Univariate Feature Selection. Scikit-Learn. <a href="https://scikit-learn/stable/modules/feature_selection.html">https://scikit-learn/stable/modules/feature_selection.html</a></p>
+<p>Threewitt, C. (2017, May 11). Why Does Horsepower Matter? | U.S. News &amp; World Report. US News. <a href="https://cars.usnews.com/cars-trucks/why-does-horsepower-matter">https://cars.usnews.com/cars-trucks/why-does-horsepower-matter</a></p>
+<h2 id="Image-Source">
+<a class="anchor" href="#Image-Source" aria-hidden="true"><span class="octicon octicon-link"></span></a>Image Source<a class="anchor-link" href="#Image-Source"> </a>
+</h2>
+<p>Smith, C. (2018, January 20). Charger vs Challenger: All-American Muscle Car Comparison. WheelScene. <a href="https://wheelscene.com/charger-vs-challenger/">https://wheelscene.com/charger-vs-challenger/</a></p>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="MiguelAHG/mahg-data-science"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/mahg-data-science/python/pandas/numpy/matplotlib/seaborn/scipy/sklearn/2021/12/21/Predicting-Car-Prices-K-Nearest-Neighbors.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/mahg-data-science/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/mahg-data-science/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/mahg-data-science/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>A blog and portfolio of data science projects by Migs Germar.</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/MiguelAHG" title="MiguelAHG"><svg class="svg-icon grey"><use xlink:href="/mahg-data-science/assets/minima-social-icons.svg#github"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
