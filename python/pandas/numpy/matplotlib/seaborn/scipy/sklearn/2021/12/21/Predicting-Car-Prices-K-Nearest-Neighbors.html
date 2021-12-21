@@ -1013,7 +1013,7 @@ New shape of dataset: (193, 25)
 <span class="n">all_numeric_features</span> <span class="o">=</span> <span class="n">fdt</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">fdt</span> <span class="o">!=</span> <span class="s2">"object"</span><span class="p">]</span>
 
 <span class="c1"># Standardize</span>
-<span class="n">cars_df</span><span class="p">[</span><span class="n">all_numeric_features</span><span class="p">]</span> <span class="o">=</span> <span class="n">cars_df</span><span class="p">[</span><span class="n">all_numeric_features</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">zscore</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">cars_df</span><span class="p">[</span><span class="n">all_numeric_features</span><span class="p">]</span> <span class="o">=</span> <span class="n">cars_df</span><span class="p">[</span><span class="n">all_numeric_features</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">zscore</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ddof</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
 
 <span class="n">cars_df</span><span class="p">[</span><span class="n">all_numeric_features</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
@@ -1069,98 +1069,98 @@ New shape of dataset: (193, 25)
   <tbody>
     <tr>
       <th>0</th>
-      <td>1.78685</td>
-      <td>-1.175889</td>
-      <td>-1.682379</td>
-      <td>-0.444024</td>
-      <td>-0.841263</td>
-      <td>-2.122598</td>
-      <td>-0.025713</td>
-      <td>-0.411247</td>
-      <td>0.045215</td>
-      <td>0.513027</td>
-      <td>-1.808186</td>
-      <td>-0.288273</td>
-      <td>0.198569</td>
-      <td>-0.213359</td>
-      <td>-0.679053</td>
-      <td>-0.557058</td>
+      <td>1.782215</td>
+      <td>-1.172839</td>
+      <td>-1.678015</td>
+      <td>-0.442872</td>
+      <td>-0.839080</td>
+      <td>-2.117092</td>
+      <td>-0.025646</td>
+      <td>-0.410180</td>
+      <td>0.045098</td>
+      <td>0.511697</td>
+      <td>-1.803495</td>
+      <td>-0.287525</td>
+      <td>0.198054</td>
+      <td>-0.212806</td>
+      <td>-0.677292</td>
+      <td>-0.555613</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>1.78685</td>
-      <td>-1.175889</td>
-      <td>-1.682379</td>
-      <td>-0.444024</td>
-      <td>-0.841263</td>
-      <td>-2.122598</td>
-      <td>-0.025713</td>
-      <td>-0.411247</td>
-      <td>0.045215</td>
-      <td>0.513027</td>
-      <td>-1.808186</td>
-      <td>-0.288273</td>
-      <td>0.198569</td>
-      <td>-0.213359</td>
-      <td>-0.679053</td>
-      <td>-0.557058</td>
+      <td>1.782215</td>
+      <td>-1.172839</td>
+      <td>-1.678015</td>
+      <td>-0.442872</td>
+      <td>-0.839080</td>
+      <td>-2.117092</td>
+      <td>-0.025646</td>
+      <td>-0.410180</td>
+      <td>0.045098</td>
+      <td>0.511697</td>
+      <td>-1.803495</td>
+      <td>-0.287525</td>
+      <td>0.198054</td>
+      <td>-0.212806</td>
+      <td>-0.677292</td>
+      <td>-0.555613</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>0.16397</td>
-      <td>-1.175889</td>
-      <td>-0.720911</td>
-      <td>-0.251195</td>
-      <td>-0.184679</td>
-      <td>-0.615412</td>
-      <td>0.497764</td>
-      <td>1.548523</td>
-      <td>0.575559</td>
-      <td>-2.394827</td>
-      <td>0.702918</td>
-      <td>-0.288273</td>
-      <td>1.334283</td>
-      <td>-0.213359</td>
-      <td>-0.992963</td>
-      <td>-0.704134</td>
+      <td>0.163544</td>
+      <td>-1.172839</td>
+      <td>-0.719041</td>
+      <td>-0.250543</td>
+      <td>-0.184200</td>
+      <td>-0.613816</td>
+      <td>0.496473</td>
+      <td>1.544506</td>
+      <td>0.574066</td>
+      <td>-2.388614</td>
+      <td>0.701095</td>
+      <td>-0.287525</td>
+      <td>1.330822</td>
+      <td>-0.212806</td>
+      <td>-0.990387</td>
+      <td>-0.702307</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>0.97541</td>
-      <td>0.850420</td>
-      <td>0.142781</td>
-      <td>0.182672</td>
-      <td>0.143612</td>
-      <td>0.180047</td>
-      <td>-0.427362</td>
-      <td>-0.411247</td>
-      <td>-0.461021</td>
-      <td>-0.517605</td>
-      <td>0.480415</td>
-      <td>-0.036204</td>
-      <td>-0.039139</td>
-      <td>0.856208</td>
-      <td>-0.208189</td>
-      <td>-0.115832</td>
+      <td>0.972880</td>
+      <td>0.848214</td>
+      <td>0.142410</td>
+      <td>0.182198</td>
+      <td>0.143240</td>
+      <td>0.179580</td>
+      <td>-0.426254</td>
+      <td>-0.410180</td>
+      <td>-0.459826</td>
+      <td>-0.516262</td>
+      <td>0.479169</td>
+      <td>-0.036110</td>
+      <td>-0.039037</td>
+      <td>0.853987</td>
+      <td>-0.207649</td>
+      <td>-0.115531</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>0.97541</td>
-      <td>0.850420</td>
-      <td>0.077596</td>
-      <td>0.182672</td>
-      <td>0.237410</td>
-      <td>0.180047</td>
-      <td>0.499668</td>
-      <td>0.568638</td>
-      <td>0.189854</td>
-      <td>-0.517605</td>
-      <td>0.480415</td>
-      <td>-0.540341</td>
-      <td>0.304217</td>
-      <td>0.856208</td>
-      <td>-1.149918</td>
-      <td>-1.292436</td>
+      <td>0.972880</td>
+      <td>0.848214</td>
+      <td>0.077395</td>
+      <td>0.182198</td>
+      <td>0.236794</td>
+      <td>0.179580</td>
+      <td>0.498371</td>
+      <td>0.567163</td>
+      <td>0.189362</td>
+      <td>-0.516262</td>
+      <td>0.479169</td>
+      <td>-0.538940</td>
+      <td>0.303427</td>
+      <td>0.853987</td>
+      <td>-1.146935</td>
+      <td>-1.289083</td>
     </tr>
   </tbody>
 </table>
@@ -1904,8 +1904,8 @@ dtype: float64</pre>
       <td>6</td>
       <td>[width, curb-weight, num-of-cylinders, engine-...</td>
       <td>2</td>
-      <td>2585.370554</td>
-      <td>675.971286</td>
+      <td>2584.903404</td>
+      <td>676.295917</td>
     </tr>
     <tr>
       <th>3</th>
@@ -1920,16 +1920,16 @@ dtype: float64</pre>
       <td>3</td>
       <td>[curb-weight, engine-size, horsepower]</td>
       <td>2</td>
-      <td>2646.228088</td>
-      <td>399.456761</td>
+      <td>2645.773580</td>
+      <td>399.990189</td>
     </tr>
     <tr>
       <th>5</th>
       <td>5</td>
       <td>[width, curb-weight, num-of-cylinders, engine-...</td>
       <td>2</td>
-      <td>2648.268299</td>
-      <td>766.679196</td>
+      <td>2647.796919</td>
+      <td>767.031575</td>
     </tr>
     <tr>
       <th>6</th>
@@ -1944,8 +1944,8 @@ dtype: float64</pre>
       <td>7</td>
       <td>[width, curb-weight, num-of-cylinders, engine-...</td>
       <td>2</td>
-      <td>2671.360011</td>
-      <td>731.138019</td>
+      <td>2670.896878</td>
+      <td>731.488478</td>
     </tr>
     <tr>
       <th>8</th>
@@ -2046,8 +2046,8 @@ dtype: float64</pre>
       <td>3</td>
       <td>[curb-weight, engine-size, horsepower]</td>
       <td>2</td>
-      <td>2646.228088</td>
-      <td>399.456761</td>
+      <td>2645.77358</td>
+      <td>399.990189</td>
     </tr>
   </tbody>
 </table>
