@@ -97,7 +97,7 @@ window.onload = wrap_img;
        • <span class="read-time" title="Estimated read time">
     
     
-      26 min read
+      28 min read
     
 </span></p>
 
@@ -170,6 +170,7 @@ window.onload = wrap_img;
 </li>
 </ul>
 </li>
+<li class="toc-entry toc-h1"><a href="#scikit-learn-Classes-for-Naive-Bayes">scikit-learn Classes for Naive Bayes </a></li>
 <li class="toc-entry toc-h1"><a href="#Conclusion">Conclusion </a></li>
 <li class="toc-entry toc-h1"><a href="#Bibliography">Bibliography </a>
 <ul>
@@ -205,7 +206,7 @@ window.onload = wrap_img;
 <p>The Multinomial Naive Bayes Algorithm is a machine learning algorithm based on the Bayes Theorem. It calculates the probability that an event $B$ occurred given that event $A$ occurred. Thus, it is usually used in classification problems. (Vadapalli, 2021)</p>
 <p>In this project, we will use the algorithm to determine the probability that a message is spam given its contents. We will then use this probability to decide whether to treat new messages as spam or not. For example, if the probability of being spam is over 50%, then we may treat the message as spam.</p>
 <p>Identifying spam is important in the Philippines because phishing campaigns went up by 200% after the pandemic began (Devanesan, 2020), and a telecommunications provider recently had to block around 71 million spam messages (Yap, 2021). Such messages may attempt to steal personal information, steal money from an account, or install malware (FTC, 2020). Thus, machine learning can be a very helpful tool in preventing such harm from occurring.</p>
-<p>Though the algorithm can be easily implemented using existing functions such as those in the <a href="https://scikit-learn.org/stable/modules/naive_bayes.html#multinomial-naive-bayes"><code>scikit-learn</code> package</a>, I will manually code the algorithm step-by-step in order to explain the mathematical intuition behind it.</p>
+<p>Though the algorithm can be easily implemented using existing functions such as those in the <a href="https://scikit-learn.org/stable/modules/naive_bayes.html#multinomial-naive-bayes">scikit-learn package</a>, I will manually code the algorithm step-by-step in order to explain the mathematical intuition behind it.</p>
 
 </div>
 </div>
@@ -1108,16 +1109,16 @@ First few items:
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>['ptbo',
- 'unsecured',
- '0808',
- 'brothers',
- 'invnted',
- '08702490080',
- 'funny',
- 'shining',
- 'jason',
- 'kills']</pre>
+<pre>['silent',
+ 'receivea',
+ 'dismay',
+ 'noise',
+ 'platt',
+ 'li',
+ 'woohoo',
+ 'ucall',
+ 'wondarfull',
+ '80082']</pre>
 </div>
 
 </div>
@@ -1157,17 +1158,22 @@ First few items:
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">vocab_lst</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">vocab</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">to_word_counts</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">vocab</span> <span class="o">=</span> <span class="n">vocab</span><span class="p">):</span>
+    <span class="n">vocab_lst</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">vocab</span><span class="p">))</span>
 
-<span class="n">word_counts</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
-    <span class="n">w</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">X_train</span><span class="o">.</span><span class="n">sms</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">vocab_lst</span>
-<span class="p">})</span>
+    <span class="n">word_counts</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+        <span class="n">w</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">series</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">vocab_lst</span>
+    <span class="p">})</span>
 
-<span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">word_lst</span> <span class="ow">in</span> <span class="n">X_train</span><span class="o">.</span><span class="n">sms</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-    <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">word_lst</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">vocab</span><span class="p">:</span>
-            <span class="n">word_counts</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="n">w</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">word_lst</span> <span class="ow">in</span> <span class="n">series</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">word_lst</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">vocab</span><span class="p">:</span>
+                <span class="n">word_counts</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">index</span><span class="p">,</span> <span class="n">w</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">word_counts</span>
+
+<span class="n">word_counts</span> <span class="o">=</span> <span class="n">to_word_counts</span><span class="p">(</span><span class="n">X_train</span><span class="o">.</span><span class="n">sms</span><span class="p">)</span>
 
 <span class="n">word_counts</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
@@ -2089,10 +2095,174 @@ f1: 95.10%
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="scikit-learn-Classes-for-Naive-Bayes">
+<a class="anchor" href="#scikit-learn-Classes-for-Naive-Bayes" aria-hidden="true"><span class="octicon octicon-link"></span></a>scikit-learn Classes for Naive Bayes<a class="anchor-link" href="#scikit-learn-Classes-for-Naive-Bayes"> </a>
+</h1>
+<p>In practice, a data scientist would not code the entire algorithm each time they use it, since this is time-consuming. Instead, one can use prepackaged classes in scikit-learn.</p>
+<p>For the purpose of classifying spam based on word counts, we can apply the following classes, according to the scikit-learn developers (2021):</p>
+<ul>
+<li>
+<code>MultinomialNB</code>: This uses the same logic as the algorithm explained earlier.</li>
+<li>
+<code>GaussianNB</code>: "The likelihood of the features is assumed to be Gaussian," so the mean and standard deviation of each features is considered.</li>
+<li>
+<code>ComplementNB</code>: It is an "adaptation of the standard multinomial naive Bayes (MNB) algorithm that is particularly suited for imbalanced data sets." This may be useful for our dataset because the percentages of spam and non-spam messages are imbalanced.</li>
+</ul>
+<p>Other classes which will not be used in this project include <code>BernoulliNB</code>, which assumes each feature to be binary (only two categories), and <code>CategoricalNB</code>, which assumes that each feature is categorical rather than numeric.</p>
+<p>Let us try using the first three classes and comparing them. We will also use functions from <code>sklearn.metrics</code> to calculate accuracy score and the other metrics.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.naive_bayes</span> <span class="kn">import</span> <span class="n">MultinomialNB</span><span class="p">,</span> <span class="n">GaussianNB</span><span class="p">,</span> <span class="n">ComplementNB</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">precision_score</span><span class="p">,</span> <span class="n">recall_score</span><span class="p">,</span> <span class="n">f1_score</span>
+
+<span class="n">nb_classes</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"Multinomial"</span><span class="p">:</span> <span class="n">MultinomialNB</span><span class="p">,</span>
+    <span class="s2">"Gaussian"</span><span class="p">:</span> <span class="n">GaussianNB</span><span class="p">,</span>
+    <span class="s2">"Complement"</span><span class="p">:</span> <span class="n">ComplementNB</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">metric_funcs</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"Accuracy"</span><span class="p">:</span> <span class="n">accuracy_score</span><span class="p">,</span>
+    <span class="s2">"Precision"</span><span class="p">:</span> <span class="n">precision_score</span><span class="p">,</span>
+    <span class="s2">"Recall"</span><span class="p">:</span> <span class="n">recall_score</span><span class="p">,</span>
+    <span class="s2">"F1"</span><span class="p">:</span> <span class="n">f1_score</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">result_rows</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="n">test_word_counts</span> <span class="o">=</span> <span class="n">to_word_counts</span><span class="p">(</span><span class="n">X_test_preprocessed</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">class_name</span> <span class="ow">in</span> <span class="n">nb_classes</span><span class="p">:</span>
+    <span class="n">nb</span> <span class="o">=</span> <span class="n">nb_classes</span><span class="p">[</span><span class="n">class_name</span><span class="p">]</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">nb</span><span class="p">()</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+        <span class="n">word_counts</span><span class="p">,</span>
+        <span class="n">y_train</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">test_word_counts</span><span class="p">)</span>
+
+    <span class="n">metric_results</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="n">class_name</span><span class="p">,</span> <span class="n">dtype</span> <span class="o">=</span> <span class="s2">"float64"</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">metric_name</span><span class="p">,</span> <span class="n">score_func</span> <span class="ow">in</span> <span class="n">metric_funcs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">metric_name</span> <span class="o">==</span> <span class="s2">"Accuracy"</span><span class="p">:</span>
+            <span class="n">score</span> <span class="o">=</span> <span class="n">score_func</span><span class="p">(</span>
+                <span class="n">y_true</span> <span class="o">=</span> <span class="n">y_test</span><span class="p">,</span>
+                <span class="n">y_pred</span> <span class="o">=</span> <span class="n">y_pred</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">score</span> <span class="o">=</span> <span class="n">score_func</span><span class="p">(</span>
+                <span class="n">y_true</span> <span class="o">=</span> <span class="n">y_test</span><span class="p">,</span>
+                <span class="n">y_pred</span> <span class="o">=</span> <span class="n">y_pred</span><span class="p">,</span>
+                <span class="n">pos_label</span> <span class="o">=</span> <span class="s2">"spam"</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="n">metric_results</span><span class="p">[</span><span class="n">metric_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">score</span> <span class="o">*</span> <span class="mi">100</span>
+
+    <span class="n">result_rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metric_results</span><span class="p">)</span>
+
+<span class="n">result_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">result_rows</span><span class="p">)</span>
+
+<span class="n">result_df</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Accuracy</th>
+      <th>Precision</th>
+      <th>Recall</th>
+      <th>F1</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Multinomial</th>
+      <td>98.743268</td>
+      <td>99.270073</td>
+      <td>91.275168</td>
+      <td>95.104895</td>
+    </tr>
+    <tr>
+      <th>Gaussian</th>
+      <td>90.843806</td>
+      <td>60.444444</td>
+      <td>91.275168</td>
+      <td>72.727273</td>
+    </tr>
+    <tr>
+      <th>Complement</th>
+      <td>97.396768</td>
+      <td>88.461538</td>
+      <td>92.617450</td>
+      <td>90.491803</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><code>MultinomialNB</code> performed the best, as it had the highest accuracy, precision, and F1 score. Its accuracy was 98.74%, which is the same as the accuracy of the algorithm that I manually coded earlier. Thus, I know that what I coded was correct.</p>
+<p><code>ComplementNB</code> also performed well, though its precision was 88%, meaning that it was more prone to labeling ham messages as spam. However, the <code>GaussianNB</code> class was the worst performing one, as its precision was 60% and its F1 was 73%. This likely occurred because the assumption that the features' likelihoods were Gaussian did not hold.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Conclusion">
 <a class="anchor" href="#Conclusion" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conclusion<a class="anchor-link" href="#Conclusion"> </a>
 </h1>
-<p>In this project, we obtained a dataset of spam and non-spam messages, used this to calculate the parameters for a multinomial naive bayes algorithm, wrote a function to predict whether a new message is spam or non-spam, and evaluated the model using various performance metrics.</p>
+<p>In this project, we obtained a dataset of spam and non-spam messages, used this to calculate the parameters for a multinomial naive bayes algorithm, wrote a function to predict whether a new message is spam or non-spam, evaluated the model using various performance metrics, and tried three variations of the model in scikit-learn.</p>
 <p>Naive bayes is just one of various classification models, such as SVM, logistic regression, random forest, etc. It is useful as most of its calculations are done during the training stage, so it is fast at making predictions. However, it is not perfect, as the assumption that the features are independent usually does not hold true in real life. (Gupta, 2020)</p>
 <p>However, models cannot represent reality perfectly. Simplifications like this are good enough if they are useful in making predictions or testing relationships among variables.</p>
 <p>Another important insight from this project is that accuracy should not be the only metric used to evaluate model performance. We should use other metrics like recall, precision, and F1 score, which provide more nuanced perspectives. Though this was not done for this project, in other scenarios, we may have to adjust the model to favor either recall or precision depending on the specific use case.</p>
@@ -2121,6 +2291,7 @@ f1: 95.10%
 <p>Devanesan, J. (2020, August 19). Phishing scams dominate the Philippines cybercrime landscape. Tech Wire Asia. <a href="https://techwireasia.com/2020/08/phishing-scams-dominate-the-philippines-cybercrime-landscape/">https://techwireasia.com/2020/08/phishing-scams-dominate-the-philippines-cybercrime-landscape/</a></p>
 <p>FTC CI. (2020, February 19). How To Recognize and Report Spam Text Messages. Federal Trade Commission Consumer Information. <a href="https://www.consumer.ftc.gov/articles/how-recognize-and-report-spam-text-messages">https://www.consumer.ftc.gov/articles/how-recognize-and-report-spam-text-messages</a></p>
 <p>Gupta, S. (2020, February 28). Pros and cons of various Classification ML algorithms. Medium. <a href="https://towardsdatascience.com/pros-and-cons-of-various-classification-ml-algorithms-3b5bfb3c87d6">https://towardsdatascience.com/pros-and-cons-of-various-classification-ml-algorithms-3b5bfb3c87d6</a></p>
+<p>scikit-learn developers. (2021). 1.9. Naive Bayes. Scikit-Learn. <a href="https://scikit-learn/stable/modules/naive_bayes.html">https://scikit-learn/stable/modules/naive_bayes.html</a></p>
 <p>scikit-learn developers. (2021). 3.3. Metrics and scoring: Quantifying the quality of predictions. Scikit-Learn. <a href="https://scikit-learn/stable/modules/model_evaluation.html">https://scikit-learn/stable/modules/model_evaluation.html</a></p>
 <p>Thomas, L. (2020, September 18). How to use stratified sampling. Scribbr. <a href="https://www.scribbr.com/methodology/stratified-sampling/">https://www.scribbr.com/methodology/stratified-sampling/</a>
 Vadapalli, P. (2021, January 5). Naive Bayes Explained: Function, Advantages &amp; Disadvantages, Applications in 2021. UpGrad Blog. <a href="https://www.upgrad.com/blog/naive-bayes-explained/">https://www.upgrad.com/blog/naive-bayes-explained/</a></p>
