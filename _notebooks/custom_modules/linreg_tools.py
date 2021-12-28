@@ -3,7 +3,7 @@ author: Miguel Antonio H. Germar"""
 
 import pandas as pd
 import matplotlib.pyplot as plt
-import statsmodels.api as sm
+import statsmodels.api as sms
 from statsmodels.stats.outliers_influence import variance_inflation_factor as sm_vif
 
 def get_vif(X):
@@ -53,8 +53,8 @@ Returns: list of DataFrame
 
         if i == 1:
             # Combine summary table 1 with the VIF column.
-            table_df = pd.concat([table_df, vif_df], axis = 1)
-            table_df.rename_axis("label", inplace = True)
+            table_df = pd.concat(objs = [table_df, vif_df], axis = 1)
+            table_df.rename_axis("feature", inplace = True)
 
         else:
             # For tables 0 and 2, turn the index back into a column.
@@ -82,7 +82,7 @@ Returns: None"""
     # List of all IVs other than the current one.
     others = [col for col in feature_cols if col != main_feature]
     
-    fig = sm.graphics.plot_partregress(
+    fig = sms.graphics.plot_partregress(
         endog = target_col,
         exog_i = main_feature,
         exog_others = others,
