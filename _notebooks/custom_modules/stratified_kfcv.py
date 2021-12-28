@@ -1,4 +1,4 @@
-"""A custom module for stratified k-fold cross-validation.
+"""A custom module for stratified k-fold cross-validation in regression problems.
 author: Miguel Antonio H. Germar"""
 
 import pandas as pd

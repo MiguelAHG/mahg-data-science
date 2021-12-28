@@ -1,4 +1,4 @@
-"""A custom module for functions that I often use in linear regression projects.
+"""A custom module for functions that I often use in OLS linear regression projects with statsmodels.
 author: Miguel Antonio H. Germar"""
 
 import pandas as pd
