@@ -2,18 +2,60 @@
 author: Miguel Antonio H. Germar"""
 
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 import statsmodels.api as sms
 from statsmodels.stats.outliers_influence import variance_inflation_factor as sm_vif
+
+def correlation_heatmap(corr):
+
+    """Take a correlation matrix and plot it as a heatmap. Note that I am not the author. This was adapted from code provided in a Dataquest course.
+
+    corr: DataFrame returned by pd.DataFrame.corr()"""
+    
+    # Create a mask that selects the bottom left triangle of the data.
+    corr = corr.iloc[1:, :-1]
+    mask = np.triu(np.ones_like(corr), k = 1)
+    
+    # Plot a heatmap of the values.
+    plt.figure(figsize = (20,14))
+    ax = sns.heatmap(
+        corr,
+        vmin = -1, # Anchor colors on -1 and 1.
+        vmax = 1,
+        cbar = False, # Do not draw a color bar.
+        cmap = 'RdBu', # Use Red for negatives and Blue for positives.
+        mask = mask, # Use a mask to remove the upper right triangle of the matrix.
+        annot = True, # Write the data value in each cell.
+    )
+    
+    # Format the text in the plot to make it easier to read.
+    for text in ax.texts:
+        t = float(text.get_text())
+        
+        if -0.01 < t < 0.01: # Remove data values with very low correlation.
+            text.set_text('')
+        else: # Round all visible data values to the hundredths place.
+            text.set_text(round(t, 2))
+        
+        text.set_fontsize('x-large')
+    
+    plt.xticks(rotation = 90, size = 'x-large') # Rotate x-ticks to read from top to bottom.
+    plt.yticks(rotation = 0, size = 'x-large')
+
+    plt.show()
+
+    return None
 
 def get_vif(X):
 
     """Obtain a VIF value for each feature in a X.
-Return a single-column DataFrame containing VIF values.
+    Return a single-column DataFrame containing VIF values.
 
-X: DataFrame containing continuous feature data.
+    X: DataFrame containing continuous feature data.
 
-Returns: DataFrame with one column."""
+    Returns: DataFrame with one column."""
     
     vif_df = pd.DataFrame() 
     vif_df["feature"] = X.columns
@@ -28,14 +70,13 @@ Returns: DataFrame with one column."""
 def extract_summary(ols_summary, vif_df):
 
     """Take an OLS results summary and split it into three tables.
-Merge the second table with a DataFrame returned from get_vif().
-Return a list of the tables as DataFrames.
+    Merge the second table with a DataFrame returned from get_vif().
+    Return a list of the tables as DataFrames.
 
-ols_summary: The object returned by statsmodels.OLS.fit().summary()
-vif_df: DataFrame returned by get_vif()
+    ols_summary: The object returned by statsmodels.OLS.fit().summary()
+    vif_df: DataFrame returned by get_vif()
 
-Returns: list of DataFrame
-"""
+    Returns: list of DataFrame"""
 
     tables = []
     t_inds = list(range(3))
@@ -68,13 +109,13 @@ def par_reg_plot(data, feature_cols, main_feature, target_col, obs_labels = Fals
     
     """Take a feature and plot its partial regression plot, which takes the other features into account.
 
-data: DataFrame containing features and target as columns.
-feature_cols: List of features or predictor used in linear regression.
-main_feature: String representing the feature whose partial regression plot will be generated.
-target_col: String representing the target variable.
-obs_labels: Boolean, whether or not to show index labels of observations in the plot.
+    data: DataFrame containing features and target as columns.
+    feature_cols: List of features or predictor used in linear regression.
+    main_feature: String representing the feature whose partial regression plot will be generated.
+    target_col: String representing the target variable.
+    obs_labels: Boolean, whether or not to show index labels of observations in the plot.
 
-Returns: None"""
+    Returns: None"""
     
     title = f"Partial Regression Plot\nSAT Score against {main_feature}"
     x_label = f"{main_feature}\nPartial Residuals"
