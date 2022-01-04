@@ -16,3 +16,4 @@ __pycache__
 # Custom additions
 # Folder for the notebook template and the data files for the notebook-posts
 _notebooks/private/
+_notebooks/DRAFT-*.ipynb
