@@ -803,14 +803,14 @@ New shape: (2900, 11)
     <tr>
       <th>3</th>
       <td>Date:</td>
-      <td>Sat, 01 Jan 2022</td>
+      <td>Fri, 14 Jan 2022</td>
       <td>Prob (F-statistic):</td>
       <td>0.000</td>
     </tr>
     <tr>
       <th>4</th>
       <td>Time:</td>
-      <td>21:02:51</td>
+      <td>14:44:14</td>
       <td>Log-Likelihood:</td>
       <td>-34163.000</td>
     </tr>
@@ -1251,18 +1251,17 @@ New shape: (2900, 11)
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">houses_strat</span> <span class="o">=</span> <span class="n">skf</span><span class="o">.</span><span class="n">stratify_continuous</span><span class="p">(</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">fold_series</span> <span class="o">=</span> <span class="n">skf</span><span class="o">.</span><span class="n">stratify_continuous</span><span class="p">(</span>
     <span class="n">n_folds</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">sms</span><span class="o">.</span><span class="n">add_constant</span><span class="p">(</span><span class="n">houses</span><span class="p">),</span>
-    <span class="n">target_col</span> <span class="o">=</span> <span class="s2">"SalePrice"</span><span class="p">,</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">houses</span><span class="p">[</span><span class="s2">"SalePrice"</span><span class="p">],</span>
 <span class="p">)</span>
 
 <span class="n">lr</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span>
 
 <span class="n">mse_lst</span> <span class="o">=</span> <span class="n">skf</span><span class="o">.</span><span class="n">stratified_kfcv</span><span class="p">(</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">houses_strat</span><span class="p">,</span>
-    <span class="n">feature_cols</span> <span class="o">=</span> <span class="n">feature_cols</span><span class="p">,</span>
-    <span class="n">target_col</span> <span class="o">=</span> <span class="n">target_col</span><span class="p">,</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">sms</span><span class="o">.</span><span class="n">add_constant</span><span class="p">(</span><span class="n">houses</span><span class="p">[</span><span class="n">feature_cols</span><span class="p">]),</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">houses</span><span class="p">[</span><span class="n">target_col</span><span class="p">],</span>
+    <span class="n">fold_series</span> <span class="o">=</span> <span class="n">fold_series</span><span class="p">,</span>
     <span class="n">regression_model</span> <span class="o">=</span> <span class="n">lr</span><span class="p">,</span>
 <span class="p">)</span>
 
@@ -1286,14 +1285,14 @@ New shape: (2900, 11)
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>RMSE Values:
-0    32057.976128
-1    32398.933239
-2    32370.030294
-3    31424.087803
-4    31150.353121
+0    32046.873780
+1    30927.932397
+2    30637.750905
+3    33020.953872
+4    32832.216461
 dtype: float64
-Mean RMSE: 31880.2761168574
-SD RMSE: 565.9807894056149
+Mean RMSE: 31893.145482987817
+SD RMSE: 1082.253470974206
 </pre>
 </div>
 </div>
@@ -1316,7 +1315,7 @@ SD RMSE: 565.9807894056149
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The mean RMSE is 31,880. Therefore, the predicted prices are usually USD 31,880 away from the true prices. Also, the standard deviation RMSE is around 566, so the RMSE values were relatively consistent from test to test.</p>
+<p>The mean RMSE is 31,893. Therefore, the predicted prices are usually USD 31,893 away from the true prices. Also, the standard deviation RMSE is around 1082, so the RMSE values were relatively consistent from test to test.</p>
 <p>The mean RMSE may seem high, but remember the distribution of house prices in the dataset:</p>
 
 </div>
