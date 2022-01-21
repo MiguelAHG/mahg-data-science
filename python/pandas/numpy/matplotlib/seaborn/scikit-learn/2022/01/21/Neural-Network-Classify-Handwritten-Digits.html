@@ -964,6 +964,9 @@ dtype: float64</pre>
     
     
 <div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
 <div class="input">
 
 <div class="inner_cell">
@@ -997,6 +1000,7 @@ dtype: float64</pre>
 </div>
 </div>
 
+    </details>
 <div class="output_wrapper">
 <div class="output">
 
@@ -1028,6 +1032,9 @@ dtype: float64</pre>
     
     
 <div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
 <div class="input">
 
 <div class="inner_cell">
@@ -1042,6 +1049,7 @@ dtype: float64</pre>
 </div>
 </div>
 
+    </details>
 <div class="output_wrapper">
 <div class="output">
 
@@ -1085,6 +1093,9 @@ dtype: float64</pre>
     
     
 <div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
 <div class="input">
 
 <div class="inner_cell">
@@ -1096,6 +1107,7 @@ dtype: float64</pre>
 </div>
 </div>
 
+    </details>
 <div class="output_wrapper">
 <div class="output">
 
@@ -1122,7 +1134,7 @@ dtype: bool</pre>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The table above shows <code>False</code> where the neural network outperformed the KNN, and <code>True</code> where the KNN performed better.</p>
+<p>The table above shows <code>True</code> where the neural network outperformed the KNN, and <code>False</code> where the KNN performed better.</p>
 <p>It seems that the KNN performed slightly better than the neural network on all metrics: accuracy, recall, precision, and F1 score.</p>
 <p>However, this does not mean that KNN is always inherently better than a neural network. There are certain tradeoffs to consider.</p>
 <p>In the case of KNN, the advantage is that it takes no time to train, since it does not try to fit coefficients. Thus, it is much faster to use when performing Grid Search or cross-validation. However, the disadvantage is that it can take a lot of time to make predictions, since it uses the entire training set to make predictions. Furthermore, if we obtain more data later on and add it to the model, the accuracy might increase, but the amount of time needed to make a prediction will definitely increase.</p>
