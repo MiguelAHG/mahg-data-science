@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Using a Neural Network to Classify Handwritten Digits | MG Data Science</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Using a Neural Network to Classify Handwritten Digits" />
+<meta name="author" content="Migs Germar" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="I compare the performance of a neural network to that of a K Nearest Neighbors model in classifying images of handwritten numbers. I also demonstrate the use of Grid Search for hyperparameter optimization." />
+<meta property="og:description" content="I compare the performance of a neural network to that of a K Nearest Neighbors model in classifying images of handwritten numbers. I also demonstrate the use of Grid Search for hyperparameter optimization." />
+<link rel="canonical" href="https://miguelahg.github.io/mahg-data-science/python/pandas/numpy/matplotlib/seaborn/scikit-learn/2022/01/21/Neural-Network-Classify-Handwritten-Digits.html" />
+<meta property="og:url" content="https://miguelahg.github.io/mahg-data-science/python/pandas/numpy/matplotlib/seaborn/scikit-learn/2022/01/21/Neural-Network-Classify-Handwritten-Digits.html" />
+<meta property="og:site_name" content="MG Data Science" />
+<meta property="og:image" content="https://miguelahg.github.io/mahg-data-science/images/notebook-images/neural-network-handwritten-digits/network_clint-adair_unsplash.jpg" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-01-21T00:00:00-06:00" />
+<script type="application/ld+json">
+{"url":"https://miguelahg.github.io/mahg-data-science/python/pandas/numpy/matplotlib/seaborn/scikit-learn/2022/01/21/Neural-Network-Classify-Handwritten-Digits.html","@type":"BlogPosting","headline":"Using a Neural Network to Classify Handwritten Digits","dateModified":"2022-01-21T00:00:00-06:00","datePublished":"2022-01-21T00:00:00-06:00","image":"https://miguelahg.github.io/mahg-data-science/images/notebook-images/neural-network-handwritten-digits/network_clint-adair_unsplash.jpg","mainEntityOfPage":{"@type":"WebPage","@id":"https://miguelahg.github.io/mahg-data-science/python/pandas/numpy/matplotlib/seaborn/scikit-learn/2022/01/21/Neural-Network-Classify-Handwritten-Digits.html"},"author":{"@type":"Person","name":"Migs Germar"},"description":"I compare the performance of a neural network to that of a K Nearest Neighbors model in classifying images of handwritten numbers. I also demonstrate the use of Grid Search for hyperparameter optimization.","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/mahg-data-science/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://miguelahg.github.io/mahg-data-science/feed.xml" title="MG Data Science" /><link rel="shortcut icon" type="image/x-icon" href="/mahg-data-science/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/mahg-data-science/">MG Data Science</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/mahg-data-science/about/">About Me</a><a class="page-link" href="/mahg-data-science/search/">Search</a><a class="page-link" href="/mahg-data-science/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Using a Neural Network to Classify Handwritten Digits</h1><p class="page-description">I compare the performance of a neural network to that of a K Nearest Neighbors model in classifying images of handwritten numbers. I also demonstrate the use of Grid Search for hyperparameter optimization.</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-01-21T00:00:00-06:00" itemprop="datePublished">
+        Jan 21, 2022
+      </time>• 
+          <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+            <span class="p-author h-card" itemprop="name">Migs Germar</span></span>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      13 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/mahg-data-science/categories/#python">python</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/mahg-data-science/categories/#pandas">pandas</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/mahg-data-science/categories/#numpy">numpy</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/mahg-data-science/categories/#matplotlib">matplotlib</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/mahg-data-science/categories/#seaborn">seaborn</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/mahg-data-science/categories/#scikit-learn">scikit-learn</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-wrap flex-justify-end">
+          <div class="px-2">
+
+    <a href="https://github.com/MiguelAHG/mahg-data-science/tree/master/_notebooks/2022-01-21-Neural-Network-Classify-Handwritten-Digits.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/mahg-data-science/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h1"><a href="#Introduction">Introduction </a></li>
+<li class="toc-entry toc-h1"><a href="#The-Dataset">The Dataset </a></li>
+<li class="toc-entry toc-h1"><a href="#K-Nearest-Neighbors">K Nearest Neighbors </a></li>
+<li class="toc-entry toc-h1"><a href="#Neural-Network">Neural Network </a></li>
+<li class="toc-entry toc-h1"><a href="#Summary">Summary </a></li>
+<li class="toc-entry toc-h1"><a href="#Bibliography">Bibliography </a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#Data-Source">Data Source </a></li>
+<li class="toc-entry toc-h2"><a href="#Information-Sources">Information Sources </a></li>
+<li class="toc-entry toc-h2"><a href="#Image-Source">Image Source </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2022-01-21-Neural-Network-Classify-Handwritten-Digits.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<center><img src="https://miguelahg.github.io/mahg-data-science/images/notebook-images/neural-network-handwritten-digits/network_clint-adair_unsplash.jpg" alt=""></center>
+<center><a href="https://unsplash.com/photos/BW0vK-FA3eg">Unsplash | Clint Adair</a></center>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Introduction">
+<a class="anchor" href="#Introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction<a class="anchor-link" href="#Introduction"> </a>
+</h1>
+<p>Neural networks are a class of machine learning models that take inspiration from biological neurons. One network is made up of multiple neurons, which can be visualized as nodes connected to each other with lines. In order to make a prediction, data is fed into input neurons, then various calculations are performed as it passes through the other neurons, until a final output value is reached.</p>
+<p>One main advantage of using a neural network is that it uses nonlinear activation functions. These are functions are "nonlinear" in the sense that the relationship between x (the input) and y (the output) does not form a straight line. For example, the logistic or sigmoid ($\sigma$) function, as well as the $\tanh$ function, have an S-shaped curve which makes them suited for classification tasks. The ReLU (Rectified Linear Unit) function, $ReLU(x) = max(0, x)$, returns 0 if the input is less than or equal to 0, thus making the shape of the function look like a bent line.</p>
+<p>Because these functions are nonlinear, the model is able to find nonlinear relationships between the features (the variables used to make a prediction) and the target (the variable that we want to predict). Thus, it can be more accurate than a linear regression in many scenarios.</p>
+<p>Furthermore, a neural network can be built with "hidden layers": layers of neurons between the input neurons and the output neurons. These add additional depth to the model. Thus, the neural network can potentially make more accurate predictions than other models that also use nonlinear functions.</p>
+<p>In this project, I will compare the performance of a neural network and another type of model (K Nearest Neighbors) in predicting the labels of images of handwritten digits (as in, digits from 0 to 9). Furthermore, I will demonstrate how scikit-learn's Grid Search feature can be used for hyperparameter optimization for both models.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p></p>
+<div class="flash">
+    <svg class="octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info octicon octicon-info" viewbox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm6.5-.25A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75zM8 6a1 1 0 100-2 1 1 0 000 2z"></path></svg>
+    <strong>Note: </strong>I wrote this notebook by following a guided project on the <a href="https://www.dataquest.io/">Dataquest</a> platform, specifically the <a href="https://app.dataquest.io/c/50/m/244/guided-project%3A-building-a-handwritten-digits-classifier/1/introduction">Guided Project: Building a Handwritten Digits Classifier</a>. The general project flow and research questions were guided by Dataquest. Other than what was instructed, I also added my own steps. You can visit the <a href="https://github.com/dataquestio/solutions/blob/master/Mission244Solutions.ipynb">official solution</a> to compare it to my project.
+</div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Below are the packages used in this project.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">from</span> <span class="nn">sklearn.datasets</span> <span class="kn">import</span> <span class="n">load_digits</span>
+<span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="kn">import</span> <span class="n">KNeighborsClassifier</span>
+<span class="kn">from</span> <span class="nn">sklearn.neural_network</span> <span class="kn">import</span> <span class="n">MLPClassifier</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">StratifiedKFold</span><span class="p">,</span> <span class="n">cross_validate</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">GridSearchCV</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="The-Dataset">
+<a class="anchor" href="#The-Dataset" aria-hidden="true"><span class="octicon octicon-link"></span></a>The Dataset<a class="anchor-link" href="#The-Dataset"> </a>
+</h1>
+<p>The dataset for this project is the Optical Recognition of Handwritten Digits dataset. This dataset comes with the scikit-learn package in Python, though it can also be downloaded from the <a href="https://archive.ics.uci.edu/ml/datasets/Optical+Recognition+of+Handwritten+Digits">UCI Machine Learning Repository</a>, where it was donated by Alpaydin and Kaynak in 1998. It contains 1797 different images of handwritten digits.</p>
+<p>Let us inspect the first 5 rows of the features.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">load_digits</span><span class="p">(</span>
+    <span class="n">n_class</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="n">return_X_y</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">as_frame</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">X</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>pixel_0_0</th>
+      <th>pixel_0_1</th>
+      <th>pixel_0_2</th>
+      <th>pixel_0_3</th>
+      <th>pixel_0_4</th>
+      <th>pixel_0_5</th>
+      <th>pixel_0_6</th>
+      <th>pixel_0_7</th>
+      <th>pixel_1_0</th>
+      <th>pixel_1_1</th>
+      <th>...</th>
+      <th>pixel_6_6</th>
+      <th>pixel_6_7</th>
+      <th>pixel_7_0</th>
+      <th>pixel_7_1</th>
+      <th>pixel_7_2</th>
+      <th>pixel_7_3</th>
+      <th>pixel_7_4</th>
+      <th>pixel_7_5</th>
+      <th>pixel_7_6</th>
+      <th>pixel_7_7</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>5.0</td>
+      <td>13.0</td>
+      <td>9.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>6.0</td>
+      <td>13.0</td>
+      <td>10.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>12.0</td>
+      <td>13.0</td>
+      <td>5.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>11.0</td>
+      <td>16.0</td>
+      <td>10.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>4.0</td>
+      <td>15.0</td>
+      <td>12.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>5.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>3.0</td>
+      <td>11.0</td>
+      <td>16.0</td>
+      <td>9.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>7.0</td>
+      <td>15.0</td>
+      <td>13.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>8.0</td>
+      <td>...</td>
+      <td>9.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>7.0</td>
+      <td>13.0</td>
+      <td>13.0</td>
+      <td>9.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>11.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>2.0</td>
+      <td>16.0</td>
+      <td>4.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 64 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Each row represents a different black-and-white image of a handwritten digit. Each column represents the value of a pixel. For example, if you imagine the pixels arranged in a grid, <code>pixel_0_0</code> represents the value of the pixel in the top left of the image (first row, first column). Then, <code>pixel_0_1</code> represents the pixel in the first row and second column, and so on.</p>
+<p>Below, I have reconstructed the first 10 images in the dataset using the pixel data.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sample_indices</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="c1"># Flatten the 2darray into a 1darray so that I can index it with just one axis.</span>
+<span class="n">axes</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+
+    <span class="c1"># Convert a row of data into a 1darray, then reshape it into a 2darray.</span>
+    <span class="n">sample_image</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+    <span class="n">sample_label</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="c1"># current subplot</span>
+    <span class="n">sp</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="n">sp</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">sample_image</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s2">"gray_r"</span><span class="p">)</span>
+    <span class="n">sp</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Label: </span><span class="si">{</span><span class="n">sample_label</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="c1"># Remove all ticks except one, at y = 0, and make its label blank.</span>
+    <span class="c1"># This is done because ticks and tick labels are unnecessary.</span>
+    <span class="c1"># I had to leave one tick in place to avoid an error where the background becomes transparent.</span>
+    <span class="n">sp</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([])</span>
+    <span class="n">sp</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([</span><span class="mf">0.0</span><span class="p">])</span>
+    <span class="n">sp</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">([</span><span class="s2">""</span><span class="p">])</span>
+
+    <span class="c1"># Make the length of the remaining tick 0 so it is invisible.</span>
+    <span class="n">sp</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span> <span class="o">=</span> <span class="s2">"both"</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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">
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Each image has a low resolution because it only contains 64 pixels in an 8-by-8 grid. Above each image, I displayed its label (in other words, the actual value of the handwritten digit).</p>
+<p>Later on in this project, the goal of the machine learning models will be to look at the images and predict their labels.</p>
+<p>Below, I have displayed a frequency table of the labels.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">"Frequency Table of Labels"</span><span class="p">)</span>
+<span class="n">y</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Frequency Table of Labels
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0    178
+1    182
+2    177
+3    183
+4    181
+5    182
+6    181
+7    179
+8    174
+9    180
+Name: target, dtype: int64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>All digits from 0 to 9 are present in the dataset. Furthermore, there are around 180 images for each label. The dataset seems balanced; that is, the labels are equally distributed.</p>
+<p>Now that I understand the contents of the dataset, I can move on to the machine learning models.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="K-Nearest-Neighbors">
+<a class="anchor" href="#K-Nearest-Neighbors" aria-hidden="true"><span class="octicon octicon-link"></span></a>K Nearest Neighbors<a class="anchor-link" href="#K-Nearest-Neighbors"> </a>
+</h1>
+<p>Before I use neural networks, I will use the K Nearest Neighbors (KNN) algorithm for comparison. This algorithm determines the <em>similarity</em> of a test observation to the training observations, then uses the most similar training observations ("nearest neighbors") to make a prediction. For more details on this algorithm, you can visit my past project, <a href="https://miguelahg.github.io/mahg-data-science/python/pandas/numpy/matplotlib/seaborn/scipy/sklearn/2021/12/21/Predicting-Car-Prices-K-Nearest-Neighbors.html">Predicting Car Prices using the K Nearest Neighbors Algorithm</a>.</p>
+<p>Before evaluating the model, I will first perform hyperparameter optimization. This means that I will try to find the optimal "settings" for the model, which will make it perform better. These settings are unrelated to the data being used to train the model.</p>
+<p>In the case of KNN, I am concerned with the <code>n_neighbors</code> hyperparameter, which determines how many of the "nearest neighbors" are used to make a prediction. If this value is too low, the model may not have enough information to make a good prediction. If the value is too high, the model may make a prediction that is very far from the real value. Thus, I have to test various values.</p>
+<p>Below is a list of the values that I will test.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 1 to 10, then 10 to 200 with skips of 10</span>
+<span class="n">k_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">201</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+
+<span class="n">knn_param_grid</span> <span class="o">=</span> <span class="p">[{</span>
+    <span class="s2">"n_neighbors"</span><span class="p">:</span> <span class="n">k_list</span>
+<span class="p">}]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">k_list</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The code below uses scikit-learn's <code>GridSearchCV</code> feature. It takes the grid of the parameter values that I want to try. Then, it tests the model using the different values, and records the model performance. It then identifies the best model based on performance.</p>
+<p>In this case, I will use accuracy as my performance metric. This refers to the number of correct predictions divided by the total number of predictions.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># grid search for knn</span>
+
+<span class="n">skf</span> <span class="o">=</span> <span class="n">StratifiedKFold</span><span class="p">(</span>
+    <span class="n">n_splits</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="n">shuffle</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">random_state</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">gs_knn</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span>
+    <span class="n">KNeighborsClassifier</span><span class="p">(),</span>
+    <span class="n">knn_param_grid</span><span class="p">,</span>
+    <span class="n">scoring</span> <span class="o">=</span> <span class="s2">"accuracy"</span><span class="p">,</span>
+    <span class="n">cv</span> <span class="o">=</span> <span class="n">skf</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">gs_knn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+<span class="n">gs_knn</span><span class="o">.</span><span class="n">best_params_</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{'n_neighbors': 3}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The result above tells me that the Grid Search determined that the model with <code>n_neighbors = 3</code> had the best accuracy compared to models with other values.</p>
+<p>Below is a graph that shows how the accuracy changed as the <code>n_neighbors</code> parameter changed.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">gs_knn_results</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">gs_knn</span><span class="o">.</span><span class="n">cv_results_</span><span class="p">)</span>
+
+<span class="n">sns</span><span class="o">.</span><span class="n">lineplot</span><span class="p">(</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">gs_knn_results</span><span class="p">,</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="s2">"param_n_neighbors"</span><span class="p">,</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="s2">"mean_test_score"</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"KNN: Accuracy against n_neighbors Parameter"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">"n_neighbors"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">"Accuracy"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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">
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Clearly, the general trend is that as the number of neighbors increased, the accuracy decreased. This makes sense because if too many neighbors are used, some of the neighbors may be very different from the observation for which we are trying to make a prediction.</p>
+<p>Next, I will use scikit-learn's <code>cross_validate</code> feature to obtain multiple performance metrics about the best KNN model that Grid Search found.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">stratified_5fcv</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">skf</span><span class="p">):</span>
+
+    <span class="n">metrics</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">"accuracy"</span><span class="p">,</span>
+        <span class="s2">"recall_weighted"</span><span class="p">,</span>
+        <span class="s2">"precision_weighted"</span><span class="p">,</span>
+        <span class="s2">"f1_weighted"</span><span class="p">,</span>
+    <span class="p">]</span>
+
+    <span class="n">scores_dict</span> <span class="o">=</span> <span class="n">cross_validate</span><span class="p">(</span>
+        <span class="n">estimator</span> <span class="o">=</span> <span class="n">model</span><span class="p">,</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="p">,</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="p">,</span>
+        <span class="n">scoring</span> <span class="o">=</span> <span class="n">metrics</span><span class="p">,</span>
+        <span class="n">cv</span> <span class="o">=</span> <span class="n">skf</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">scores_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">scores_dict</span><span class="p">)</span>
+
+    <span class="n">mean_results</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">scores_df</span>
+        <span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">scores_df</span> <span class="k">if</span> <span class="n">col</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"test"</span><span class="p">)]]</span>
+        <span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">mean_results</span>
+
+<span class="c1"># This will use the best estimator found.</span>
+<span class="n">scores_knn</span> <span class="o">=</span> <span class="n">stratified_5fcv</span><span class="p">(</span><span class="n">gs_knn</span><span class="o">.</span><span class="n">best_estimator_</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">skf</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"K Nearest Neighbors"</span><span class="p">)</span>
+<span class="n">scores_knn</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>K Nearest Neighbors
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>test_accuracy              0.987758
+test_recall_weighted       0.987758
+test_precision_weighted    0.988019
+test_f1_weighted           0.987729
+dtype: float64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Above, I have displayed the mean scores of the KNN model from cross-validation. All of the scores were over 98%, which means that the model performed very well.</p>
+<p>I used multiple metrics for the sake of displaying the ability of <code>cross_validate</code> to measure multiple metrics. However, I will not go over these individually. For more information on recall, precision, and F1 score, visit my past project, <a href="https://miguelahg.github.io/mahg-data-science/python/pandas/numpy/matplotlib/scikit-learn/2021/12/14/Naive-Bayes-Algorithm-Detecting-Spam-Messages.html">Naive Bayes Algorithm for Detecting Spam Messages</a>, and scroll down to "Recall, Precision, F1."</p>
+<p>Note that I used the "weighted" versions of some of the metrics. This is helpful when the labels are imbalanced. In the case of this project, there is slight imbalance, as each digit has around 175 to 185 images in the dataset.</p>
+<p>For a general guide on scikit-learn metrics, visit the <a href="https://scikit-learn.org/stable/modules/model_evaluation.html">documentation</a>.</p>
+<p>Moving on, let's compare the KNN model to a neural network.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Neural-Network">
+<a class="anchor" href="#Neural-Network" aria-hidden="true"><span class="octicon octicon-link"></span></a>Neural Network<a class="anchor-link" href="#Neural-Network"> </a>
+</h1>
+<p>Like with KNN, I will first perform hyperparameter optimization. I will focus on three hyperparameters of interest:</p>
+<ul>
+<li>
+<code>hidden_layer_sizes</code>: This represents the number of hidden layers in the model, as well as their size (number of nodes).</li>
+<li>
+<code>activation</code>: The activation function. I have chosen to only test the "logistic" or sigmoid function in order to save time during Grid Search.</li>
+<li>
+<code>max_iter</code>: The maximum number of iterations during model fitting. I have set this to a somewhat high number (1000).</li>
+</ul>
+<p>The only hyperparameter for which I will test multiple values is <code>hidden_layer_sizes</code>. Below is a list of the values that I will try.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">single_layer_list</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">8</span><span class="p">,),</span> <span class="p">(</span><span class="mi">16</span><span class="p">,),</span> <span class="p">(</span><span class="mi">32</span><span class="p">,),</span> <span class="p">(</span><span class="mi">64</span><span class="p">,),</span> <span class="p">(</span><span class="mi">128</span><span class="p">,),</span> <span class="p">(</span><span class="mi">256</span><span class="p">,)]</span>
+
+<span class="n">multi_layer_list</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">all_layer_list</span> <span class="o">=</span> <span class="n">single_layer_list</span> <span class="o">+</span> <span class="n">multi_layer_list</span>
+
+<span class="n">all_layer_list</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[(8,),
+ (16,),
+ (32,),
+ (64,),
+ (128,),
+ (256,),
+ (64, 64),
+ (10, 10, 10),
+ (64, 64, 64),
+ (128, 128, 128)]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Each set of parentheses is a unique value that I will try. The number of items between the parentheses represents the number of hidden layers. For example, with <code>(8,)</code>, there is only one item, so there is one hidden layer. Also, this hidden layer's size is 8, meaning it has 8 neurons.</p>
+<p>The code cell below performs the Grid Search to find the optimal setup of hidden layers.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Grid search for MLP</span>
+
+<span class="c1"># Hide warnings about optimization not converging yet.</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">'ignore'</span><span class="p">)</span> 
+
+<span class="n">mlp_param_grid</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"hidden_layer_sizes"</span><span class="p">:</span> <span class="n">all_layer_list</span><span class="p">,</span>
+    <span class="c1"># I used this funtion because it is commonly used for classification problems.</span>
+    <span class="s2">"activation"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"logistic"</span><span class="p">],</span>
+    <span class="s2">"max_iter"</span><span class="p">:</span> <span class="p">[</span><span class="mi">1000</span><span class="p">],</span>
+<span class="p">}</span>
+
+<span class="n">gs_mlp</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span>
+    <span class="n">MLPClassifier</span><span class="p">(),</span>
+    <span class="n">mlp_param_grid</span><span class="p">,</span>
+    <span class="n">scoring</span> <span class="o">=</span> <span class="s2">"accuracy"</span><span class="p">,</span>
+    <span class="n">cv</span> <span class="o">=</span> <span class="n">skf</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">gs_mlp</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+<span class="n">gs_mlp</span><span class="o">.</span><span class="n">best_params_</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{'activation': 'logistic', 'hidden_layer_sizes': (256,), 'max_iter': 1000}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The result above shows that the model with <code>hidden_layer_sizes = (256,)</code> performed the best. This model had only one hidden layer, which contained 256 neurons.</p>
+<p>I performed cross-validation using the best model. Below are the mean metric scores.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">scores_mlp</span> <span class="o">=</span> <span class="n">stratified_5fcv</span><span class="p">(</span><span class="n">gs_mlp</span><span class="o">.</span><span class="n">best_estimator_</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">skf</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Neural network"</span><span class="p">)</span>
+<span class="n">scores_mlp</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Neural network
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>test_accuracy              0.983863
+test_recall_weighted       0.983863
+test_precision_weighted    0.984525
+test_f1_weighted           0.983880
+dtype: float64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Like the KNN model, the neural network also performed very well. All of its scores are over 98%.</p>
+<p>Let us compare the results of the KNN model and the neural network.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">scores_mlp</span> <span class="o">&gt;</span> <span class="n">scores_knn</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>test_accuracy              False
+test_recall_weighted       False
+test_precision_weighted    False
+test_f1_weighted           False
+dtype: bool</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The table above shows <code>False</code> where the neural network outperformed the KNN, and <code>True</code> where the KNN performed better.</p>
+<p>It seems that the KNN performed slightly better than the neural network on all metrics: accuracy, recall, precision, and F1 score.</p>
+<p>However, this does not mean that KNN is always inherently better than a neural network. There are certain tradeoffs to consider.</p>
+<p>In the case of KNN, the advantage is that it takes no time to train, since it does not try to fit coefficients. Thus, it is much faster to use when performing Grid Search or cross-validation. However, the disadvantage is that it can take a lot of time to make predictions, since it uses the entire training set to make predictions. Furthermore, if we obtain more data later on and add it to the model, the accuracy might increase, but the amount of time needed to make a prediction will definitely increase.</p>
+<p>On the other hand, a neural network's advantage is that it can have multiple neurons and hidden layers, so it can form a deep understanding of variable relationships. What's unfortunate is that it takes a long time to train because it tries to find the optimal coefficent for each connection between two neurons. However, it takes a shorter time than KNN to make predictions. Furthermore, if we obtain more data later on and add it to the model, the amount of time needed to make a prediction will still remain the same (because the network will still have the same size).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Summary">
+<a class="anchor" href="#Summary" aria-hidden="true"><span class="octicon octicon-link"></span></a>Summary<a class="anchor-link" href="#Summary"> </a>
+</h1>
+<p>In summary, I briefly discussed how a neural network works, performed hyperparameter optimization on a KNN model and a neural network, compared the two models' performance, and discussed tradeoffs that must be considered when choosing a model to use.</p>
+<p>Thanks for reading!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Bibliography">
+<a class="anchor" href="#Bibliography" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bibliography<a class="anchor-link" href="#Bibliography"> </a>
+</h1>
+<h2 id="Data-Source">
+<a class="anchor" href="#Data-Source" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data Source<a class="anchor-link" href="#Data-Source"> </a>
+</h2>
+<p>Alpaydin, E., &amp; Kaynak, C. (1998). UCI Machine Learning Repository: Optical Recognition of Handwritten Digits Data Set. UCI Machine Learning Repository. <a href="https://archive.ics.uci.edu/ml/datasets/Optical+Recognition+of+Handwritten+Digits">https://archive.ics.uci.edu/ml/datasets/Optical+Recognition+of+Handwritten+Digits</a></p>
+<p>The data was obtained via the following scikit-learn feature:</p>
+<p>scikit-learn developers. (2021). Sklearn.datasets.load_digits. Scikit-Learn. <a href="https://scikit-learn/stable/modules/generated/sklearn.datasets.load_digits.html">https://scikit-learn/stable/modules/generated/sklearn.datasets.load_digits.html</a></p>
+<h2 id="Information-Sources">
+<a class="anchor" href="#Information-Sources" aria-hidden="true"><span class="octicon octicon-link"></span></a>Information Sources<a class="anchor-link" href="#Information-Sources"> </a>
+</h2>
+<p>Dataquest. (n.d.). Building A Handwritten Digits Classifier—Introduction. Dataquest. Retrieved January 21, 2022, from <a href="https://app.dataquest.io/c/50/m/244/guided-project%3A-building-a-handwritten-digits-classifier/1">https://app.dataquest.io/c/50/m/244/guided-project%3A-building-a-handwritten-digits-classifier/1</a></p>
+<p>scikit-learn developers. (2021a). 3.3. Metrics and scoring: Quantifying the quality of predictions. Scikit-Learn. <a href="https://scikit-learn/stable/modules/model_evaluation.html">https://scikit-learn/stable/modules/model_evaluation.html</a></p>
+<p>scikit-learn developers. (2021b). Sklearn.model_selection.GridSearchCV. Scikit-Learn. <a href="https://scikit-learn/stable/modules/generated/sklearn.model_selection.GridSearchCV.html">https://scikit-learn/stable/modules/generated/sklearn.model_selection.GridSearchCV.html</a></p>
+<h2 id="Image-Source">
+<a class="anchor" href="#Image-Source" aria-hidden="true"><span class="octicon octicon-link"></span></a>Image Source<a class="anchor-link" href="#Image-Source"> </a>
+</h2>
+<p>Adair, C. (2016, February 26). Photo by Clint Adair on Unsplash. Unsplash. <a href="https://unsplash.com/photos/BW0vK-FA3eg">https://unsplash.com/photos/BW0vK-FA3eg</a></p>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="MiguelAHG/mahg-data-science"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/mahg-data-science/python/pandas/numpy/matplotlib/seaborn/scikit-learn/2022/01/21/Neural-Network-Classify-Handwritten-Digits.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/mahg-data-science/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/mahg-data-science/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/mahg-data-science/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>A blog and portfolio of data science projects by Migs Germar.</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/MiguelAHG" target="_blank" title="MiguelAHG"><svg class="svg-icon grey"><use xlink:href="/mahg-data-science/assets/minima-social-icons.svg#github"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
