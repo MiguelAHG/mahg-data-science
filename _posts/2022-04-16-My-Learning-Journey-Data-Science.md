@@ -9,6 +9,7 @@ image: images/migs-germar.png
 hide: false
 search_exclude: false
 categories: [achievement]
+permalink: /my-learning-journey/
 ---
 
 ![](https://miguelahg.github.io/mahg-data-science/images/migs-germar.png)
