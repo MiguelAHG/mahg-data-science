@@ -4,7 +4,7 @@ title: About Me
 permalink: /about/
 ---
 
-I am Miguel Antonio H. Germar, but you can call me Migs. I am currently a high school student in the Philippines. I am interested in pursuing a college degree and career in Data Science. Other than this, my interests also include anime and archery.
+I am Miguel Antonio H. Germar, but you can call me Migs. I am currently a high school student from Quezon City, Philippines. I am interested in pursuing a college degree and career in Data Science.
 
 ![](https://miguelahg.github.io/mahg-data-science/images/migs-germar.png)
 
@@ -18,7 +18,7 @@ Github: [https://github.com/MiguelAHG](https://github.com/MiguelAHG)
 
 # My Learning Journey
 
-I set up this website using [fastpages](https://github.com/fastai/fastpages) as a blog and portfolio for Data Science projects. Below, I outline my learning journey in Data Science. Eventually, I will make blog posts about most of the projects that I have done along the way.
+I set up this website using [fastpages](https://github.com/fastai/fastpages) as a blog and portfolio for Data Science projects. Below, I outline my learning journey in Data Science.
 
 ## How I started in Data Science
 
@@ -47,8 +47,10 @@ I had to learn new things in order to do this, including:
 - Testing the assumptions of OLS regression
 - Interpreting model results
 
-## The Present: Summer of 2021
+## Dataquest Online Platform
 
-Currently, I am working on the Data Scientist in Python course on [Dataquest](https://dataquest.io). The course includes many guided projects in Jupyter Notebook, and I will post each project on my blog as I go along.
+In April of 2022, I completed the Data Scientist in Python track on [Dataquest](https://dataquest.io). The courses included many guided projects in Jupyter Notebook, some of which have been posted on my blog.
+
+I plan to continue studying Dataquest's other courses, such as Data Engineer in Python, and the Power BI skill path.
 
 ![](https://miguelahg.github.io/mahg-data-science/images/logo.png)
