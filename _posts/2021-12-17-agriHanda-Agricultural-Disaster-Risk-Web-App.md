@@ -17,11 +17,13 @@ categories: [python, pandas, altair, streamlit, git]
 
 <br/>
 
-In June 2021, I read that there was an upcoming local competition in data science and analytics. This was the Project SPARTA Open Data Challenge, which was organized by the Development Academy of the Philippines and DOST-PCIEERD. The [Sparta Portal](https://sparta.dap.edu.ph/opendata/) provided open data about Butuan City, which is the "commercial, industrial and administrative center" of the Caraga region ("Butuan City", n.d.). Participants could then use this data to create cleaned datasets, datablogs, data journalism pieces, research papers, dashboards, predictive models, software applications, or visual storytelling pieces ("Approach to innovations", n.d.).
+In June 2021, I read that there was an upcoming local competition in data science and analytics. This was the Project SPARTA Open Data Challenge, which was organized by the Development Academy of the Philippines (DAP) and DOST-PCIEERD. The [Sparta Portal](https://sparta.dap.edu.ph/opendata/) provided open data about Butuan City, which is the "commercial, industrial and administrative center" of the Caraga region ("Butuan City", n.d.). Participants could then use this data to create cleaned datasets, datablogs, data journalism pieces, research papers, dashboards, predictive models, software applications, or visual storytelling pieces ("Approach to innovations", n.d.).
 
 Thus, I formed a team with three of my schoolmates (Fiona Jao, Lorenzo Layug, and Yuri Dolorfino) and we entered the competition as the "Datos Puti" team. We cleaned open data about agricultural disaster risk together, then I programmed agriHanda, an app which would visualize this data.
 
 In the end, we were awarded as "Second Placer" and "Best in Ingenious Solution." I was proud of this because this was the first data science competition that I had ever joined. Furthermore, despite being a senior high school student at the time, I was able to perform well against the other eleven competing teams, most of whom were from the college and professional levels. 
+
+To read the DAP's article about the competition and recognition ceremony, use this link: [Winners of First-ever Hackathon and Open Data Challenge Recognized](https://sparta.dap.edu.ph/news/winners-first-ever-hackathon-and-open-data-challenge-recognized)
 
 In this post, I will talk about the web app, its strengths and points for improvement, and the data science skills that I honed along the way.
 
@@ -38,8 +40,6 @@ For more information, you can watch our short four-minute pitch presentation abo
 To try out the app yourself, visit this link: [bit.ly/agriHanda](https://bit.ly/agriHanda)
 
 For more technical details about the project, visit the documentation through this link: [agriHanda - Agricultural Disaster Risk App](https://docs.google.com/document/d/1feKAvHEzJG2PmKtZrXvsGHOJL4c-kaTc4b_W_fHP-68/edit?usp=sharing)
-
-The recognition ceremony can also be watched here: [SPARTA Recognition Ceremony](https://www.facebook.com/watch/live/?ref=watch_permalink&v=402923554635179)
 
 # Reflection
 
@@ -186,8 +186,9 @@ Development Academy of the Philippines. (n.d.-a). Approach to innovations and in
 
 Development Academy of the Philippines. (n.d.-b). Butuan City. Sparta Portal. Retrieved December 17, 2021, from https://sparta.dap.edu.ph/opendata/lgu/butuancity/details
 
+Development Academy of the Philippines. (2021, November 15). Winners of First-ever Hackathon and Open Data Challenge Recognized. Sparta Portal. https://sparta.dap.edu.ph/news/winners-first-ever-hackathon-and-open-data-challenge-recognized
+
 Fachat, A. (2021, July 20). Learn the workings of Git, not just the commands. IBM Developer. https://developer.ibm.com/tutorials/d-learn-workings-git/
 
 Streamlit • The fastest way to build and share data apps. (2021). Streamlit. https://streamlit.io/
-
 The pandas development team. (2021). MultiIndex / advanced indexing—Pandas 1.3.5 documentation. Pandas. https://pandas.pydata.org/docs/user_guide/advanced.html
