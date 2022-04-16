@@ -8,7 +8,7 @@ comments: true
 image: images/markdown-images/agriHanda/agriHanda-choropleth-map.png
 hide: false
 search_exclude: false
-categories: [python, pandas, altair, streamlit, git]
+categories: [python, competition-open-data, pandas, altair, streamlit, git]
 ---
 
 ![](https://miguelahg.github.io/mahg-data-science/images/markdown-images/agriHanda/agriHanda-choropleth-map.png)
