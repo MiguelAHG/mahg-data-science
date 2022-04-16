@@ -10,14 +10,14 @@
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="I discuss the web app that I created, which won two awards in the Project SPARTA PH Open Data Challenge for Butuan City." />
 <meta property="og:description" content="I discuss the web app that I created, which won two awards in the Project SPARTA PH Open Data Challenge for Butuan City." />
-<link rel="canonical" href="https://miguelahg.github.io/mahg-data-science/python/pandas/altair/streamlit/git/2021/12/17/agriHanda-Agricultural-Disaster-Risk-Web-App.html" />
-<meta property="og:url" content="https://miguelahg.github.io/mahg-data-science/python/pandas/altair/streamlit/git/2021/12/17/agriHanda-Agricultural-Disaster-Risk-Web-App.html" />
+<link rel="canonical" href="https://miguelahg.github.io/mahg-data-science/agriHanda-2021-sparta-butuan-city-open-data-challenge/" />
+<meta property="og:url" content="https://miguelahg.github.io/mahg-data-science/agriHanda-2021-sparta-butuan-city-open-data-challenge/" />
 <meta property="og:site_name" content="MG Data Science" />
 <meta property="og:image" content="https://miguelahg.github.io/mahg-data-science/images/markdown-images/agriHanda/agriHanda-choropleth-map.png" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2021-12-17T00:00:00-06:00" />
 <script type="application/ld+json">
-{"url":"https://miguelahg.github.io/mahg-data-science/python/pandas/altair/streamlit/git/2021/12/17/agriHanda-Agricultural-Disaster-Risk-Web-App.html","@type":"BlogPosting","headline":"agriHanda: an Agricultural Disaster Risk Web App","dateModified":"2021-12-17T00:00:00-06:00","datePublished":"2021-12-17T00:00:00-06:00","image":"https://miguelahg.github.io/mahg-data-science/images/markdown-images/agriHanda/agriHanda-choropleth-map.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://miguelahg.github.io/mahg-data-science/python/pandas/altair/streamlit/git/2021/12/17/agriHanda-Agricultural-Disaster-Risk-Web-App.html"},"description":"I discuss the web app that I created, which won two awards in the Project SPARTA PH Open Data Challenge for Butuan City.","@context":"https://schema.org"}</script>
+{"url":"https://miguelahg.github.io/mahg-data-science/agriHanda-2021-sparta-butuan-city-open-data-challenge/","@type":"BlogPosting","headline":"agriHanda: an Agricultural Disaster Risk Web App","dateModified":"2021-12-17T00:00:00-06:00","datePublished":"2021-12-17T00:00:00-06:00","image":"https://miguelahg.github.io/mahg-data-science/images/markdown-images/agriHanda/agriHanda-choropleth-map.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://miguelahg.github.io/mahg-data-science/agriHanda-2021-sparta-butuan-city-open-data-challenge/"},"description":"I discuss the web app that I created, which won two awards in the Project SPARTA PH Open Data Challenge for Butuan City.","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/mahg-data-science/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://miguelahg.github.io/mahg-data-science/feed.xml" title="MG Data Science" /><link rel="shortcut icon" type="image/x-icon" href="/mahg-data-science/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
@@ -104,6 +104,12 @@ window.onload = wrap_img;
         <a class="category-tags-link" href="/mahg-data-science/categories/#python">python</a>
         &nbsp;
       
+        <a class="category-tags-link" href="/mahg-data-science/categories/#competition-open-data">competition-open-data</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/mahg-data-science/categories/#achievement">achievement</a>
+        &nbsp;
+      
         <a class="category-tags-link" href="/mahg-data-science/categories/#pandas">pandas</a>
         &nbsp;
       
@@ -141,11 +147,15 @@ window.onload = wrap_img;
 
 <p><br></p>
 
-<p>In June 2021, I read that there was an upcoming local competition in data science and analytics. This was the Project SPARTA Open Data Challenge, which was organized by the Development Academy of the Philippines and DOST-PCIEERD. The <a href="https://sparta.dap.edu.ph/opendata/">Sparta Portal</a> provided open data about Butuan City, which is the “commercial, industrial and administrative center” of the Caraga region (“Butuan City”, n.d.). Participants could then use this data to create cleaned datasets, datablogs, data journalism pieces, research papers, dashboards, predictive models, software applications, or visual storytelling pieces (“Approach to innovations”, n.d.).</p>
+<p>In June 2021, I read that there was an upcoming local competition in data science and analytics. This was the Project SPARTA Open Data Challenge, which was organized by the Development Academy of the Philippines (DAP) and DOST-PCIEERD. The <a href="https://sparta.dap.edu.ph/opendata/">Sparta Portal</a> provided open data about Butuan City, which is the “commercial, industrial and administrative center” of the Caraga region (“Butuan City”, n.d.). Participants could then use this data to create cleaned datasets, datablogs, data journalism pieces, research papers, dashboards, predictive models, software applications, or visual storytelling pieces (“Approach to innovations”, n.d.).</p>
 
 <p>Thus, I formed a team with three of my schoolmates (Fiona Jao, Lorenzo Layug, and Yuri Dolorfino) and we entered the competition as the “Datos Puti” team. We cleaned open data about agricultural disaster risk together, then I programmed agriHanda, an app which would visualize this data.</p>
 
 <p>In the end, we were awarded as “Second Placer” and “Best in Ingenious Solution.” I was proud of this because this was the first data science competition that I had ever joined. Furthermore, despite being a senior high school student at the time, I was able to perform well against the other eleven competing teams, most of whom were from the college and professional levels.</p>
+
+<p>To see our certificates, use this link: <a href="https://drive.google.com/drive/folders/1lPbGrsfzzlP8vMLa0EeajrQo3sFz2iAj?usp=sharing">Certificates Folder</a></p>
+
+<p>To read the DAP’s article about the competition and recognition ceremony, use this link: <a href="https://sparta.dap.edu.ph/news/winners-first-ever-hackathon-and-open-data-challenge-recognized">Winners of First-ever Hackathon and Open Data Challenge Recognized</a></p>
 
 <p>In this post, I will talk about the web app, its strengths and points for improvement, and the data science skills that I honed along the way.</p>
 
@@ -162,9 +172,7 @@ window.onload = wrap_img;
 
 <p>To try out the app yourself, visit this link: <a href="https://bit.ly/agriHanda">bit.ly/agriHanda</a></p>
 
-<p>For more technical details about the project, visit the documentation through this link: <a href="https://docs.google.com/document/d/1feKAvHEzJG2PmKtZrXvsGHOJL4c-kaTc4b_W_fHP-68/edit?usp=sharing">agriHanda - Agricultural Disaster Risk App</a></p>
-
-<p>The recognition ceremony can also be watched here: <a href="https://www.facebook.com/watch/live/?ref=watch_permalink&amp;v=402923554635179">SPARTA Recognition Ceremony</a></p>
+<p>For more technical details about the project, visit the documentation through this link: <a href="https://docs.google.com/document/d/e/2PACX-1vSGwaN4kZBjq2OMpkQbZPbE2GUdN6fKcGs-8ctL69KQy2CcT6hINcx91RHKince0DJPDs11_HkzLpiT/pub">agriHanda - Agricultural Disaster Risk App</a></p>
 
 <h1 id="reflection">
 <a class="anchor" href="#reflection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Reflection</h1>
@@ -413,11 +421,12 @@ window.onload = wrap_img;
 
 <p>Development Academy of the Philippines. (n.d.-b). Butuan City. Sparta Portal. Retrieved December 17, 2021, from https://sparta.dap.edu.ph/opendata/lgu/butuancity/details</p>
 
+<p>Development Academy of the Philippines. (2021, November 15). Winners of First-ever Hackathon and Open Data Challenge Recognized. Sparta Portal. https://sparta.dap.edu.ph/news/winners-first-ever-hackathon-and-open-data-challenge-recognized</p>
+
 <p>Fachat, A. (2021, July 20). Learn the workings of Git, not just the commands. IBM Developer. https://developer.ibm.com/tutorials/d-learn-workings-git/</p>
 
-<p>Streamlit • The fastest way to build and share data apps. (2021). Streamlit. https://streamlit.io/</p>
-
-<p>The pandas development team. (2021). MultiIndex / advanced indexing—Pandas 1.3.5 documentation. Pandas. https://pandas.pydata.org/docs/user_guide/advanced.html</p>
+<p>Streamlit • The fastest way to build and share data apps. (2021). Streamlit. https://streamlit.io/
+The pandas development team. (2021). MultiIndex / advanced indexing—Pandas 1.3.5 documentation. Pandas. https://pandas.pydata.org/docs/user_guide/advanced.html</p>
 
   </div><!-- from https://github.com/utterance/utterances -->
 <script src="https://utteranc.es/client.js"
@@ -427,7 +436,7 @@ window.onload = wrap_img;
         theme="github-light"
         crossorigin="anonymous"
         async>
-</script><a class="u-url" href="/mahg-data-science/python/pandas/altair/streamlit/git/2021/12/17/agriHanda-Agricultural-Disaster-Risk-Web-App.html" hidden></a>
+</script><a class="u-url" href="/mahg-data-science/agriHanda-2021-sparta-butuan-city-open-data-challenge/" hidden></a>
 </article>
       </div>
     </main><footer class="site-footer h-card">
