@@ -16,6 +16,8 @@ Facebook: [https://www.facebook.com/miguelantonio.germar/](https://www.facebook.
 
 Github: [https://github.com/MiguelAHG](https://github.com/MiguelAHG)
 
+Resume: [Resume - Miguel Antonio H. Germar](https://docs.google.com/document/d/e/2PACX-1vRCeFkbZ-tVoSm78rvn-jXAdSHZRfca4Piwfly-hmib-KX9Z0l7S0LKF0Hkuy5thncu-rHgOFkoRWFw/pub)
+
 # My Learning Journey
 
 I set up this website using [fastpages](https://github.com/fastai/fastpages) as a blog and portfolio for Data Science projects. Below, I outline my learning journey in Data Science.
