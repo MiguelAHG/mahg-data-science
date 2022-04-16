@@ -1,6 +1,5 @@
 ---
 title: "Completed an Online Course: Dataquest Data Scientist in Python"
-sticky_rank: 1
 description: "Today, I finished a 325-hour online course. In this post, I show my certificate and outline the topics that I learned."
 layout: post
 toc: false
