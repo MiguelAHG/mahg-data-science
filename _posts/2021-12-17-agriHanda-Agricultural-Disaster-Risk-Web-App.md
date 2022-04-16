@@ -23,6 +23,8 @@ Thus, I formed a team with three of my schoolmates (Fiona Jao, Lorenzo Layug, an
 
 In the end, we were awarded as "Second Placer" and "Best in Ingenious Solution." I was proud of this because this was the first data science competition that I had ever joined. Furthermore, despite being a senior high school student at the time, I was able to perform well against the other eleven competing teams, most of whom were from the college and professional levels. 
 
+To see our certificates, use this link: [Certificates Folder](https://drive.google.com/drive/folders/1lPbGrsfzzlP8vMLa0EeajrQo3sFz2iAj?usp=sharing)
+
 To read the DAP's article about the competition and recognition ceremony, use this link: [Winners of First-ever Hackathon and Open Data Challenge Recognized](https://sparta.dap.edu.ph/news/winners-first-ever-hackathon-and-open-data-challenge-recognized)
 
 In this post, I will talk about the web app, its strengths and points for improvement, and the data science skills that I honed along the way.
