@@ -39,7 +39,7 @@ For more information, you can watch our short four-minute pitch presentation abo
 
 To try out the app yourself, visit this link: [bit.ly/agriHanda](https://bit.ly/agriHanda)
 
-For more technical details about the project, visit the documentation through this link: [agriHanda - Agricultural Disaster Risk App](https://docs.google.com/document/d/1feKAvHEzJG2PmKtZrXvsGHOJL4c-kaTc4b_W_fHP-68/edit?usp=sharing)
+For more technical details about the project, visit the documentation through this link: [agriHanda - Agricultural Disaster Risk App](https://docs.google.com/document/d/e/2PACX-1vSGwaN4kZBjq2OMpkQbZPbE2GUdN6fKcGs-8ctL69KQy2CcT6hINcx91RHKince0DJPDs11_HkzLpiT/pub)
 
 # Reflection
 
