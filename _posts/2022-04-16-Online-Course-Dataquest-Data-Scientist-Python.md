@@ -7,7 +7,7 @@ comments: true
 image: images/markdown-images/dataquest-data-scientist-python/Certificate-Dataquest-Data-Scientist-in-Python-Career-Path.png
 hide: false
 search_exclude: false
-categories: [python, online-course]
+categories: [python, online-course, achievement]
 ---
 
 ![](https://miguelahg.github.io/mahg-data-science/images/markdown-images/dataquest-data-scientist-python/Certificate-Dataquest-Data-Scientist-in-Python-Career-Path.png)
