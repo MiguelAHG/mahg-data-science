@@ -9,6 +9,7 @@ image: images/markdown-images/agriHanda/agriHanda-choropleth-map.png
 hide: false
 search_exclude: false
 categories: [python, competition-open-data, achievement, pandas, altair, streamlit, git]
+permalink: /agriHanda-2021-sparta-butuan-city-open-data-challenge/
 ---
 
 ![](https://miguelahg.github.io/mahg-data-science/images/markdown-images/agriHanda/agriHanda-choropleth-map.png)
