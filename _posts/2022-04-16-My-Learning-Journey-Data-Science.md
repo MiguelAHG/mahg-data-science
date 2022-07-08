@@ -9,7 +9,7 @@ comments: true
 image: images/migs-germar.png
 hide: false
 search_exclude: false
-categories: [achievement]
+categories: [journal]
 permalink: /my-learning-journey/
 ---
 
