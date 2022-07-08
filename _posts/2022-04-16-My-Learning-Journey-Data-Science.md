@@ -13,7 +13,7 @@ categories: [journal]
 permalink: /my-learning-journey/
 ---
 
-![](https://miguelahg.github.io/mahg-data-science/images/migs-germar.png)
+<center><img src = "https://miguelahg.github.io/mahg-data-science/images/migs-germar.png" alt = "A photo of Migs Germar." width = 200></center>
 
 <br/>
 

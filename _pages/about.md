@@ -6,7 +6,7 @@ permalink: /about/
 
 I am Miguel Antonio H. Germar, but you can call me Migs. I am currently a high school student from Quezon City, Philippines. I am interested in pursuing a college degree and career in Data Science. I set up this website using [fastpages](https://github.com/fastai/fastpages) as a blog and portfolio for my projects.
 
-![](https://miguelahg.github.io/mahg-data-science/images/migs-germar.png)
+<center><img src = "https://miguelahg.github.io/mahg-data-science/images/migs-germar.png" alt = "A photo of Migs Germar." width = 200></center>
 
 # Contact
 
