@@ -8,7 +8,7 @@ comments: true
 image: images/markdown-images/dataquest-data-scientist-python/Certificate-Dataquest-Data-Scientist-in-Python-Career-Path.png
 hide: false
 search_exclude: false
-categories: [python, online-course, achievement]
+categories: [python, online-course]
 permalink: /online-course-dataquest-data-scientist-in-python/
 ---
 
