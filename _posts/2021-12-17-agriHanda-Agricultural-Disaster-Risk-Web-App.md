@@ -1,7 +1,7 @@
 ---
 title: "[📌] agriHanda: an Agricultural Disaster Risk Web App"
 sticky_rank: 2
-description: "I discuss the web app that I created, which won two awards in the Project SPARTA PH Open Data Challenge for Butuan City."
+description: "I developed a web app that won two awards in the Project SPARTA PH Open Data Challenge for Butuan City."
 layout: post
 toc: true
 comments: true
