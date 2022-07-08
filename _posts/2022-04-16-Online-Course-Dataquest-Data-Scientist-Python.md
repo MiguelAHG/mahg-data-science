@@ -2,6 +2,7 @@
 title: "Completed an Online Course: Dataquest Data Scientist in Python"
 description: "Today, I finished a 325-hour online course. In this post, I show my certificate and outline the topics that I learned."
 layout: post
+author: Migs Germar
 toc: false
 comments: true
 image: images/markdown-images/dataquest-data-scientist-python/Certificate-Dataquest-Data-Scientist-in-Python-Career-Path.png
