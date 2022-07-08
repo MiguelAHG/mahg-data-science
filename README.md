@@ -16,10 +16,20 @@ To view my posts directly in GitHub, open the `_notebooks` and `_posts` director
 
 The website is powered by [fastpages](https://github.com/fastai/fastpages). I made this repository by copying the fastpages template, then I edited its files and added my posts.
 
-Miguel Antonio H. Germar is the author of all posts, as well as some visual assets, such as the MG Data Science logo and favicon.
-
 # License
 
-Author: Miguel Antonio H. Germar
+This repository is licensed under the Apache license, version 2.0, January 2004. Under this license, I may add my own copyright statement and license terms and conditions to my modifications of the original fastpages repository.
 
-Copyright 2022. All rights reserved. Distribution of the software in any form is only allowed with explicit, prior permission from the owner.
+I have modified all files in the following folders:
+
+- `_notebooks`
+- `_pages`
+- `_posts`
+- `_word`
+- `images`
+
+Other files than those mentioned may have been edited, but these are trivial.
+
+For the mentioned files, I have set the following license:
+
+These files are authored by Miguel Antonio H. Germar or Migs Germar ("owner") unless the posts in the MG Data Science website state that these were authored by other parties. Copyright 2022. For files authored by the owner, all rights are reserved. Distribution of the software in any form is only allowed with explicit, prior permission from the owner.
