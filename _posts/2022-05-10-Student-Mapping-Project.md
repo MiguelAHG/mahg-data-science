@@ -1,5 +1,6 @@
 ---
-title: "ASHS Student Mapping Project: A Tool for Disaster Risk Reduction in the Online Set-up"
+title: "[📌] ASHS Student Mapping Project: A Tool for Disaster Risk Reduction in the Online Set-up"
+sticky_rank: 3
 description: "I developed an app for identifying students in my school who are affected by natural hazards."
 layout: post
 author: Migs Germar
