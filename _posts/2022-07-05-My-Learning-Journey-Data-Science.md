@@ -17,7 +17,7 @@ permalink: /my-learning-journey/
 
 <br/>
 
-Welcome to my timeline of my data science learning journey.
+Welcome to my timeline of my data science learning journey. I regularly update this post with new milestones.
 
 # How I started studying data science
 
@@ -48,3 +48,9 @@ Read more about what I learned from the DSP path in this [blog post](https://mig
 I led a team to participate in this competition from June to November of 2021. I developed agriHanda, an agricultural disaster risk dashboard for Butuan City, Philippines. For this, we won the Second Placer award and Best in Ingenious Solution award.
 
 Read more about this competition in this [blog post](https://miguelahg.github.io/mahg-data-science/agriHanda-2021-sparta-butuan-city-open-data-challenge/).
+
+# Data science projects in Grade 12
+
+I made the [Student Mapping Project](https://miguelahg.github.io/mahg-data-science/ashs-student-mapping-project) under the Programming Varsity (ProgVar) in order to help identify students who live in areas affected by natural hazards.
+
+Under the Data Analytics Committee (DAC), I made the [College Applications Dashboard](https://miguelahg.github.io/mahg-data-science/ashs-college-applications-dashboard) to visualize the results of a survey about my schoolmates' college choices and the factors influencing them.
