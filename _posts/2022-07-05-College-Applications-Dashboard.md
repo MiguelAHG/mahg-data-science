@@ -1,5 +1,5 @@
 ---
-title: "[📌] ASHS College Applications Dashboard"
+title: "ASHS College Applications Dashboard"
 description: "I developed a dashboard visualizing my senior high school's college application choices and the factors influencing them."
 layout: post
 author: Migs Germar
