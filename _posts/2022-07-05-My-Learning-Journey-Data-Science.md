@@ -1,6 +1,6 @@
 ---
 title: "[📌] My Learning Journey in Data Science"
-sticky_rank: 1
+sticky_rank: 2
 description: "A timeline of important milestones in my data science learning journey."
 layout: post
 author: Migs Germar
