@@ -9,7 +9,7 @@ comments: true
 image: images/markdown-images/progvar-student-mapping-project/sample-map-metro-manila.png
 hide: false
 search_exclude: false
-categories: [python, school-project]
+categories: [python, streamlit, school-project]
 permalink: /ashs-student-mapping-project
 ---
 
