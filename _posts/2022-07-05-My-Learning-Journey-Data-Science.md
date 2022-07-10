@@ -6,16 +6,12 @@ layout: post
 author: Migs Germar
 toc: false
 comments: true
-image: images/migs-germar.png
+image: 
 hide: false
 search_exclude: false
 categories: [journal]
 permalink: /my-learning-journey/
 ---
-
-<center><img src = "https://miguelahg.github.io/mahg-data-science/images/migs-germar.png" alt = "A photo of Migs Germar." width = 200></center>
-
-<br/>
 
 Welcome to my timeline of my data science learning journey. I regularly update this post with new milestones.
 
