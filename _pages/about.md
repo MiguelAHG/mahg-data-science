@@ -16,6 +16,6 @@ Facebook: [https://www.facebook.com/miguelantonio.germar/](https://www.facebook.
 
 GitHub: [https://github.com/MiguelAHG](https://github.com/MiguelAHG)
 
-Resume: [Resume - Miguel Antonio H. Germar](https://docs.google.com/document/d/e/2PACX-1vRCeFkbZ-tVoSm78rvn-jXAdSHZRfca4Piwfly-hmib-KX9Z0l7S0LKF0Hkuy5thncu-rHgOFkoRWFw/pub)
+Resume: [Resume - Miguel Antonio H. Germar](https://docs.google.com/document/d/1ZjdTP_qGQqXxSuEiMGI9BOB68L2mlSqRE4gYCSHtMKA/edit?usp=sharing)
 
 ![](https://miguelahg.github.io/mahg-data-science/images/logo.png)
