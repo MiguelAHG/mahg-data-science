@@ -8,7 +8,11 @@
 
 # Description
 
-This is the repository hosting files for the first version of my data science blog and portfolio website, MG Data Science. This version is outdated so it can no longer be accessed. View the new website here: https://miguelahg.github.io/migs-germar-data-science-blog/
+This is the repository hosting files for the first version of my data science blog and portfolio website, MG Data Science. This version is outdated.
+
+View the new website here: https://miguelahg.github.io/migs-germar-data-science-blog/
+
+The outdated website can still be viewed here: https://miguelahg.github.io/mahg-data-science/
 
 To view my posts directly in GitHub, open the `_notebooks` and `_posts` directories.
 
